@@ -22,7 +22,8 @@ bool Grid::init()
 			auto square = Gap::create();
 			square->initWithFile("square.png");
 
-			gaps[i][j] = square;
+			gaps[j][i] = square;
+			square->gridLocation = Point(j, i);
 
 			// Set the position of this square from the left corner to the right corner
 			square->setPosition(Vec2(j * 50 + 25,  i * 50 + 25));

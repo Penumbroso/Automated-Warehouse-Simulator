@@ -29,7 +29,7 @@ bool Gap::containsTouchLocation(Touch* touch)
 
 bool Gap::onTouchBegan(Touch* touch, Event* event)
 {
-	CCLOG("Paddle::onTouchBegan id = %d, x = %f, y = %f", touch->getID(), touch->getLocation().x, touch->getLocation().y);
+	//CCLOG("Paddle::onTouchBegan id = %d, x = %f, y = %f", touch->getID(), touch->getLocation().x, touch->getLocation().y);
 
 	if (!containsTouchLocation(touch)) return false;
 
@@ -38,8 +38,28 @@ bool Gap::onTouchBegan(Touch* touch, Event* event)
 
 bool Gap::onTouchEnded(Touch* touch, Event* event)
 {
-	CCLOG("Touch ended.");
-	this->setColor(Color3B::GRAY);
+	switch (this->state) {
+	case EMPTY:
+		this->setColor(Color3B::GRAY);
+		this->state = FILLED;
+		CCLOG("x: %f y: %f", this->gridLocation.x, this->gridLocation.y);
+		break;
+
+	case FILLED:
+		this->setColor(Color3B::ORANGE);
+		this->state = START;
+		break;
+
+	case START:
+		this->setColor(Color3B::MAGENTA);
+		this->state = END;
+		break;
+	case END:
+		this->setColor(Color3B::WHITE);
+		this->state = EMPTY;
+		break;
+	}
+	
 	return true;
 }
 
