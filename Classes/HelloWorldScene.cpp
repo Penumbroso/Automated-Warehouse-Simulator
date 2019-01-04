@@ -20,7 +20,8 @@ bool HelloWorld::init()
     }
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
 
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
@@ -43,7 +44,7 @@ bool HelloWorld::init()
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
-	auto background = LayerColor::create(Color4B::WHITE);
+	auto background = LayerColor::create(Color4B::RED);
 	this->addChild(background);
 
 	auto grid = Grid::create();

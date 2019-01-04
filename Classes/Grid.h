@@ -6,7 +6,7 @@
 class Grid : public cocos2d::Layer
 {
 public:
-	static cocos2d::Scene* createLayer();
+	//static cocos2d::Scene* createLayer();
 
 	virtual bool init();
 
