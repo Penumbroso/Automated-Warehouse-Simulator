@@ -1,4 +1,5 @@
 #include "Gap.h"
+#include "Globals.h"
 
 using namespace cocos2d;
 
@@ -48,15 +49,18 @@ bool Gap::onTouchEnded(Touch* touch, Event* event)
 	case FILLED:
 		this->setColor(Color3B::ORANGE);
 		this->state = START;
+		
 		break;
 
 	case START:
 		this->setColor(Color3B::MAGENTA);
 		this->state = END;
+		g_start = this->gridLocation;
 		break;
 	case END:
 		this->setColor(Color3B::WHITE);
 		this->state = EMPTY;
+		g_end = this->gridLocation;
 		break;
 	}
 	

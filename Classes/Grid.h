@@ -14,4 +14,4 @@ public:
 	CREATE_FUNC(Grid);
 };
 
-#endif // __HELLOWORLD_SCENE_H__
+#endif

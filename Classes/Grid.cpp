@@ -5,6 +5,10 @@ USING_NS_CC;
 
 bool Grid::init()
 {
+	if (!Layer::init())
+	{
+		return false;
+	}
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();

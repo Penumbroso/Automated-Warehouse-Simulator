@@ -18,13 +18,19 @@
     <ClCompile Include="..\Classes\AppDelegate.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Grid.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Gap.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Globals.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Simulator.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Robot.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,13 +41,19 @@
     <ClInclude Include="..\Classes\AppDelegate.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\HelloWorldScene.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Grid.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Gap.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Globals.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Simulator.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Robot.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

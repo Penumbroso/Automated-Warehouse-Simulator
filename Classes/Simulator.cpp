@@ -1,16 +1,17 @@
-#include "HelloWorldScene.h"
+#include "Simulator.h"
 #include "SimpleAudioEngine.h"
 #include "Grid.h"
+#include "Robot.h"
 
 USING_NS_CC;
 
-Scene* HelloWorld::createScene()
+Scene* Simulator::createScene()
 {
-    return HelloWorld::create();
+    return Simulator::create();
 }
 
 // on "init" you need to initialize your instance
-bool HelloWorld::init()
+bool Simulator::init()
 {
     //////////////////////////////
     // 1. super init first
@@ -22,7 +23,7 @@ bool HelloWorld::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-
+	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::something), 3);
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
     //    you may modify it.
@@ -31,16 +32,26 @@ bool HelloWorld::init()
     auto closeItem = MenuItemImage::create(
                                            "CloseNormal.png",
                                            "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
+                                           CC_CALLBACK_1(Simulator::menuCloseCallback, this));
 
 
     float x = origin.x + visibleSize.width - closeItem->getContentSize().width/2;
     float y = origin.y + closeItem->getContentSize().height/2;
     closeItem->setPosition(Vec2(x,y));
+
+	auto playItem = MenuItemImage::create(
+		"PlayNormal.png",
+		"PlayNormal.png",
+		CC_CALLBACK_1(Simulator::menuPlayCallback, this));
+
+	// Must correct the image size
+	playItem->setScale(0.1);
+
+	playItem->setPosition(Vec2(x - 40, y));
     
 
     // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
+    auto menu = Menu::create(closeItem, playItem, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
@@ -50,11 +61,16 @@ bool HelloWorld::init()
 	auto grid = Grid::create();
 	this->addChild(grid);
 
+	auto robot = Robot::create();
+	robot->initWithFile("Robot.png");
+	robot->setPosition(Point(100, 100));
+	this->addChild(robot);
+	
     return true;
 }
 
 
-void HelloWorld::menuCloseCallback(Ref* pSender)
+void Simulator::menuCloseCallback(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application
     Director::getInstance()->end();
@@ -65,4 +81,18 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 
 
+}
+
+void Simulator::menuPlayCallback(Ref* pSender)
+{
+	CCLOG("Play button");
+
+
+	// Create a robot
+	// Say to the robot to go get something
+	// Say to the robot to deliver the package
+}
+
+void Simulator::something(float dt) {
+	CCLOG("Hey there");
 }
