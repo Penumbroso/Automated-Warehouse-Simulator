@@ -49,18 +49,19 @@ bool Gap::onTouchEnded(Touch* touch, Event* event)
 	case FILLED:
 		this->setColor(Color3B::ORANGE);
 		this->state = START;
-		
+		g_start = this->gridLocation;
+		g_startPosition = this->getPosition();
 		break;
 
 	case START:
 		this->setColor(Color3B::MAGENTA);
 		this->state = END;
-		g_start = this->gridLocation;
+		g_end = this->gridLocation;
 		break;
 	case END:
 		this->setColor(Color3B::WHITE);
 		this->state = EMPTY;
-		g_end = this->gridLocation;
+
 		break;
 	}
 	

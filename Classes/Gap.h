@@ -10,10 +10,10 @@ public:
 
 	enum State 
 	{
-		EMPTY = 0,
-		FILLED = 1,
-		START = 2,
-		END = 3
+		EMPTY,
+		FILLED,
+		START,
+		END
 	};
 
 	State state = EMPTY;

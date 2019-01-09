@@ -8,8 +8,8 @@ class Robot : public cocos2d::Sprite
 public:
 
 	virtual bool init();
-
 	// implement the "static create()" method manually
+
 	CREATE_FUNC(Robot);
 };
 

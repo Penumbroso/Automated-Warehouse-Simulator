@@ -2,6 +2,7 @@
 #include "SimpleAudioEngine.h"
 #include "Grid.h"
 #include "Robot.h"
+#include "Globals.h"
 
 USING_NS_CC;
 
@@ -60,11 +61,6 @@ bool Simulator::init()
 
 	auto grid = Grid::create();
 	this->addChild(grid);
-
-	auto robot = Robot::create();
-	robot->initWithFile("Robot.png");
-	robot->setPosition(Point(100, 100));
-	this->addChild(robot);
 	
     return true;
 }
@@ -87,12 +83,20 @@ void Simulator::menuPlayCallback(Ref* pSender)
 {
 	CCLOG("Play button");
 
-
 	// Create a robot
+	auto robot = Robot::create();
+	robot->initWithFile("Robot.png");
+	robot->setPosition(g_startPosition);
+	//robot->setPositionInGrid(g_start);
+	robot->setColor(Color3B::BLUE);
+	this->addChild(robot);
+
 	// Say to the robot to go get something
 	// Say to the robot to deliver the package
 }
 
 void Simulator::something(float dt) {
-	CCLOG("Hey there");
+	if (this->state == EDITING)
+		CCLOG("Editing");
+
 }
