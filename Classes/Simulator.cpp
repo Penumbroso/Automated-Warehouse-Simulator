@@ -1,6 +1,5 @@
 #include "Simulator.h"
 #include "SimpleAudioEngine.h"
-#include "Grid.h"
 #include "Robot.h"
 #include "Globals.h"
 
@@ -59,7 +58,7 @@ bool Simulator::init()
 	auto background = LayerColor::create(Color4B::RED);
 	this->addChild(background);
 
-	auto grid = Grid::create();
+	grid = Grid::create();
 	this->addChild(grid);
 	
     return true;
@@ -90,6 +89,9 @@ void Simulator::menuPlayCallback(Ref* pSender)
 	//robot->setPositionInGrid(g_start);
 	robot->setColor(Color3B::BLUE);
 	this->addChild(robot);
+
+	auto position = grid->getPositionOf(g_start);
+	CCLOG("%f %f", position.x, position.y);
 
 	// Say to the robot to go get something
 	// Say to the robot to deliver the package

@@ -43,7 +43,11 @@ bool Gap::onTouchEnded(Touch* touch, Event* event)
 	case EMPTY:
 		this->setColor(Color3B::GRAY);
 		this->state = FILLED;
-		CCLOG("x: %f y: %f", this->gridLocation.x, this->gridLocation.y);
+		//CCLOG("x: %f y: %f", this->gridLocation.x, this->gridLocation.y);
+		g_packages.push_back(this->gridLocation);
+		//for (auto i = g_packages.begin(); i != g_packages.end(); ++i) {
+		//	CCLOG("x: %f y:%f", i->x, i->y);
+		//}
 		break;
 
 	case FILLED:

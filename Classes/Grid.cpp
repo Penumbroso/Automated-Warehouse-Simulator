@@ -1,5 +1,4 @@
 #include "Grid.h"
-#include "Gap.h"
 
 USING_NS_CC;
 
@@ -16,9 +15,6 @@ bool Grid::init()
 	const auto numberOfLines = visibleSize.height / 50;
 	const auto numberOfColumns = visibleSize.width / 50;
 
-	// This need to be fixed to the correct size
-	Gap* gaps[100][100];
-
 	for (int j = 0; j < numberOfColumns; j++) {
 		for (int i = 0; i < numberOfLines; i++) {
 
@@ -26,7 +22,7 @@ bool Grid::init()
 			auto square = Gap::create();
 			square->initWithFile("square.png");
 
-			gaps[j][i] = square;
+			this->gaps[j][i] = square;
 			square->gridLocation = Point(j, i);
 
 			// Set the position of this square from the left corner to the right corner
@@ -53,4 +49,11 @@ bool Grid::init()
 
 	return true;
 
+}
+
+Point Grid::getPositionOf(Point gridLocation) {
+	int x = gridLocation.x;
+	int y = gridLocation.y;
+	
+	return gaps[x][y]->getPosition();
 }

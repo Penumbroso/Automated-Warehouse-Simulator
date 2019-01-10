@@ -2,6 +2,7 @@
 #define __SIMULATOR_SCENE_H__
 
 #include "cocos2d.h"
+#include "Grid.h"
 
 class Simulator : public cocos2d::Scene
 {
@@ -18,6 +19,8 @@ public:
 	};
 
 	State state = EDITING;
+
+	Grid* grid;
     
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
