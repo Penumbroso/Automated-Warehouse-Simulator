@@ -1,0 +1,4 @@
+
+namespace Astar {
+	int helper();
+}

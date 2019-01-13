@@ -18,7 +18,7 @@ public:
 
 	State state = EMPTY;
 
-	cocos2d::Point  gridLocation;
+	cocos2d::Point gridLocation;
 
 	cocos2d::Rect getRect();
 	bool containsTouchLocation(cocos2d::Touch* touch);

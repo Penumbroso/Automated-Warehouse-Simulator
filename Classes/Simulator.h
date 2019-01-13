@@ -10,6 +10,7 @@ public:
     static cocos2d::Scene* createScene();
 
     virtual bool init();
+	virtual void onEnter() override;
 
 	enum State
 	{
@@ -23,10 +24,9 @@ public:
 	Grid* grid;
     
     // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
 	void menuPlayCallback(cocos2d::Ref* pSender);
     
-	void something(float dt);
+	void tick(float dt);
     // implement the "static create()" method manually
     CREATE_FUNC(Simulator);
 };

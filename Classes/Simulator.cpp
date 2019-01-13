@@ -2,6 +2,7 @@
 #include "SimpleAudioEngine.h"
 #include "Robot.h"
 #include "Globals.h"
+#include "Astar.h"
 
 USING_NS_CC;
 
@@ -43,16 +44,19 @@ bool Simulator::init()
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
-	// Something in this line of code is making autocomplete not working
-	//this->schedule(CC_SCHEDULE_SELECTOR(Simulator::something), 3);
-
     return true;
+}
+
+void Simulator::onEnter()
+{
+	Scene::onEnter();
+	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::tick), 1.0f);
 }
 
 void Simulator::menuPlayCallback(Ref* pSender)
 {
 	CCLOG("Play button");
-
+	
 	// Create a robot
 	auto robot = Robot::create();
 	robot->initWithFile("Robot.png");
@@ -64,11 +68,13 @@ void Simulator::menuPlayCallback(Ref* pSender)
 	auto position = grid->getPositionOf(g_start);
 	CCLOG("%f %f", position.x, position.y);
 
+	CCLOG("%i", Astar::helper());
+
 	// Say to the robot to go get something
 	// Say to the robot to deliver the package
 }
 
-void Simulator::something(float dt) {
+void Simulator::tick(float dt) {
 	if (this->state == EDITING)
 		CCLOG("Editing");
 
