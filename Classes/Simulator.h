@@ -25,10 +25,17 @@ public:
     
     // a selector callback
 	void menuPlayCallback(cocos2d::Ref* pSender);
+
+	virtual void onClickTrackNode(bool bClicked, const cocos2d::Vec2& touchPos);
+	bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
+	void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
     
 	void tick(float dt);
     // implement the "static create()" method manually
     CREATE_FUNC(Simulator);
+
+protected:
+	cocos2d::Node*  _trackNode;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

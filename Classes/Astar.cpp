@@ -1,9 +1,13 @@
 #include "Astar.h"
+#include <vector>
 
-
-int Astar::helper()
+void Astar::Astar()
 {
-	return 10;
+	CCLOG("A* Algorithm");
+	std::vector<cocos2d::Point> closed;
+	std::vector<cocos2d::Point> open;
+
+
 }
 
 struct Node

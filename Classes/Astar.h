@@ -1,4 +1,5 @@
+#include "cocos2d.h"
 
 namespace Astar {
-	int helper();
+	void Astar();
 }

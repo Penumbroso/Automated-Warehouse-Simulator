@@ -18,6 +18,24 @@ bool Simulator::init()
         return false;
     }
 
+	// Register Touch Event
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->onTouchBegan = CC_CALLBACK_2(Simulator::onTouchBegan, this);
+	listener->onTouchEnded = CC_CALLBACK_2(Simulator::onTouchEnded, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
+
+	auto pTextField = TextFieldTTF::textFieldWithPlaceHolder("<click here for input>",
+		"fonts/arial.ttf",
+		24);
+	this->addChild(pTextField, 1);
+
+	pTextField->setPosition(300, 300);
+
+	_trackNode = pTextField;
+
+
+
     auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
@@ -50,7 +68,7 @@ bool Simulator::init()
 void Simulator::onEnter()
 {
 	Scene::onEnter();
-	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::tick), 1.0f);
+	//this->schedule(CC_SCHEDULE_SELECTOR(Simulator::tick), 1.0f);
 }
 
 void Simulator::menuPlayCallback(Ref* pSender)
@@ -66,9 +84,9 @@ void Simulator::menuPlayCallback(Ref* pSender)
 	this->addChild(robot);
 
 	auto position = grid->getPositionOf(g_start);
-	CCLOG("%f %f", position.x, position.y);
 
-	CCLOG("%i", Astar::helper());
+	Astar::Astar();
+
 
 	// Say to the robot to go get something
 	// Say to the robot to deliver the package
@@ -78,4 +96,42 @@ void Simulator::tick(float dt) {
 	if (this->state == EDITING)
 		CCLOG("Editing");
 
+}
+
+void Simulator::onClickTrackNode(bool bClicked, const Vec2& touchPos)
+{
+	auto pTextField = (TextFieldTTF*)_trackNode;
+	if (bClicked)
+	{
+		// TextFieldTTFTest be clicked
+		CCLOG("TextFieldTTFDefaultTest:TextFieldTTF attachWithIME");
+		pTextField->attachWithIME();
+	}
+	else
+	{
+		// TextFieldTTFTest not be clicked
+		CCLOG("TextFieldTTFDefaultTest:TextFieldTTF detachWithIME");
+		pTextField->detachWithIME();
+	}
+}
+
+bool Simulator::onTouchBegan(Touch  *touch, Event  *event)
+{
+	CCLOG("++++++++++++++++++++++++++++++++++++++++++++");
+	//_beginPos = touch->getLocation();
+	return true;
+}
+
+void Simulator::onTouchEnded(Touch  *touch, Event  *event)
+{
+
+	auto endPos = touch->getLocation();
+
+
+	// decide the trackNode is clicked.
+	Rect rect;
+	rect.size = _trackNode->getContentSize();
+	auto clicked = isScreenPointInRect(endPos, Camera::getVisitingCamera(), _trackNode->getWorldToNodeTransform(), rect, nullptr);
+	this->onClickTrackNode(clicked, endPos);
+	CCLOG("----------------------------------");
 }
