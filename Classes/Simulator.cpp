@@ -85,7 +85,7 @@ void Simulator::menuPlayCallback(Ref* pSender)
 
 	auto position = grid->getPositionOf(g_start);
 
-	Astar::Astar();
+	Astar::Astar(g_start, g_end, g_packages);
 
 
 	// Say to the robot to go get something
