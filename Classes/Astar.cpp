@@ -1,16 +1,18 @@
 #include "Astar.h"
 #include <vector>
 #include <limits>
+#include <stdlib.h>
 
 struct Node
 {
-	int y;
-	int x;
+	float y;
+	float x;
 	int parentX;
 	int parentY;
 	float gCost;
 	float hCost;
 	float fCost;
+	Node* parent;
 };
 
 std::vector<Node> getValidAdjacents(Node current, std::vector<Node> obstacles) {
@@ -62,10 +64,15 @@ std::vector<Node> getValidAdjacents(Node current, std::vector<Node> obstacles) {
 	return validAdjacents;
 }
 
+float calculateManhattanDistance(Node origin, Node destination) 
+{
+	float x_distance = abs(origin.x - destination.x);
+	float y_distance = abs(origin.y - destination.y);
+	return x_distance + y_distance;
+}
+
 void Astar::Astar(cocos2d::Point start, cocos2d::Point destination, std::vector<cocos2d::Point> obstacles)
 {
-	CCLOG("A* Algorithm");
-
 	// I need to know the total size of the grid? Probrably for bounderies
 
 	std::vector<Node> closed;
@@ -98,28 +105,26 @@ void Astar::Astar(cocos2d::Point start, cocos2d::Point destination, std::vector<
 	// to the destination, ignore obstacles, 10 points for each step
 
 	std::vector<Node> validAdjacents = getValidAdjacents(currentParent, obstaclesNodes);
-	//for (Node adjacent : validAdjacents) {
-	//	open.push_back(adjacent);
-	//	adjacent.parent = currentParent;
-	//	adjacent.hCost = calculateManhattanDistance(adjacent, destinationNode);
-	//}
-	//
-	//int lowestH = std::numeric_limits<int>::max();
-	//Node lowestHNode = NULL;
-	//for (Node nodeInOpenList : open) {
-	//	if (nodeInOpenList.hCost < lowestH)
-	//		lowestHNode = nodeInOpenList;
-	//}
+	for (Node adjacent : validAdjacents) {
+		
+		adjacent.parent = &currentParent;
+		adjacent.hCost = calculateManhattanDistance(adjacent, destinationNode);
+		open.push_back(adjacent);
+	}
+	
+	// Check all the values on the open list for which one has the lowest F score (Back to the loop)
+	float lowestH = std::numeric_limits<float>::max();
+	Node lowestHNode;
+	for (Node nodeInOpenList : open) {
+		if (nodeInOpenList.hCost < lowestH)
+			lowestHNode = nodeInOpenList;
+	}
 	
 	// Calculate the G value, which is the cost from the current Node to the adjecent node ( probraby gonna ignore this step)
 	// Calculate F score, which is F = H + G
-	// Check all the values on the open list for which one has the lowest F score (Back to the loop)
+
 
 }
 
 
 
-int calculateManhattanDistance(Node origin, Node destination) {
-	// TODO
-	return 0;
-}

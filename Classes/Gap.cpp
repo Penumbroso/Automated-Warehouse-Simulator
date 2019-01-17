@@ -51,10 +51,13 @@ bool Gap::onTouchEnded(Touch* touch, Event* event)
 		break;
 
 	case FILLED:
-		this->setColor(Color3B::ORANGE);
+		if (g_start.x == 0 && g_start.y == 0) {
+			this->setColor(Color3B::ORANGE);
+			g_start = this->gridLocation;
+			CCLOG("g_start.x = %f g_start.y = %f", g_start.x, g_start.y);
+			g_startPosition = this->getPosition();
+		}
 		this->state = START;
-		g_start = this->gridLocation;
-		g_startPosition = this->getPosition();
 		break;
 
 	case START:
