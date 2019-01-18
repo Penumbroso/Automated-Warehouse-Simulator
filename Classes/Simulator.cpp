@@ -2,7 +2,7 @@
 #include "SimpleAudioEngine.h"
 #include "Robot.h"
 #include "Globals.h"
-#include "Astar.h"
+#include "AStar.hpp"
 
 USING_NS_CC;
 
@@ -85,7 +85,18 @@ void Simulator::menuPlayCallback(Ref* pSender)
 
 	auto position = grid->getPositionOf(g_start);
 
-	Astar::Astar(g_start, g_end, g_packages);
+	AStar::Generator generator;
+	generator.setWorldSize({ 25, 25 });
+	generator.setHeuristic(AStar::Heuristic::euclidean);
+	generator.setDiagonalMovement(true);
+
+	CCLOG("Generate path ... \n");
+	auto path = generator.findPath({ (int)g_start.x, (int)g_start.y }, { (int)g_end.x, (int)g_end.y });
+
+	for (auto& coordinate : path) {
+		CCLOG("x: %i y: %i", coordinate.x, coordinate.y);
+		//std::cout << coordinate.x << " " << coordinate.y << "\n";
+	}
 
 
 	// Say to the robot to go get something

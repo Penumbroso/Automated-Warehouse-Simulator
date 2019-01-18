@@ -1,130 +1,176 @@
-#include "Astar.h"
-#include <vector>
-#include <limits>
-#include <stdlib.h>
+#include "AStar.hpp"
+#include <algorithm>
 
-struct Node
+using namespace std::placeholders;
+
+bool AStar::Vec2i::operator == (const Vec2i& coordinates_)
 {
-	float y;
-	float x;
-	int parentX;
-	int parentY;
-	float gCost;
-	float hCost;
-	float fCost;
-	Node* parent;
-};
-
-std::vector<Node> getValidAdjacents(Node current, std::vector<Node> obstacles) {
-	std::vector<Node> validAdjacents;
-	std::vector<Node> possibleAdjacents;
-
-	Node up;
-	up.x = current.x;
-	up.y = current.y + 1;
-	up.parentX = current.x;
-	up.parentY = current.y;
-	possibleAdjacents.push_back(up);
-
-	Node down;
-	down.x = current.x;
-	down.y = current.y - 1;
-	down.parentX = current.x;
-	down.parentY = current.y;
-	possibleAdjacents.push_back(down);
-
-	Node left;
-	left.x = current.x - 1;
-	left.y = current.y;
-	left.parentX = current.x;
-	left.parentY = current.y;
-	possibleAdjacents.push_back(left);
-
-	Node right;
-	right.x = current.x + 1;
-	right.y = current.y;
-	right.parentX = current.x;
-	right.parentY = current.y;
-	possibleAdjacents.push_back(right);
-
-	for (Node adjacent : possibleAdjacents)
-	{
-		boolean valid = true;
-		for (Node obstacle : obstacles)
-		{
-			if (obstacle.x == adjacent.x && obstacle.y == adjacent.y) {
-				valid = false;
-				break;
-			}
-
-		}
-		if (valid) validAdjacents.push_back(adjacent);
-	}
-
-	return validAdjacents;
+    return (x == coordinates_.x && y == coordinates_.y);
 }
 
-float calculateManhattanDistance(Node origin, Node destination) 
+AStar::Vec2i operator + (const AStar::Vec2i& left_, const AStar::Vec2i& right_)
 {
-	float x_distance = abs(origin.x - destination.x);
-	float y_distance = abs(origin.y - destination.y);
-	return x_distance + y_distance;
+    return{ left_.x + right_.x, left_.y + right_.y };
 }
 
-void Astar::Astar(cocos2d::Point start, cocos2d::Point destination, std::vector<cocos2d::Point> obstacles)
+AStar::Node::Node(Vec2i coordinates_, Node *parent_)
 {
-	// I need to know the total size of the grid? Probrably for bounderies
-
-	std::vector<Node> closed;
-	std::vector<Node> open;
-
-	Node startNode;
-	startNode.x = start.x;
-	startNode.y = start.y;
-
-	Node destinationNode;
-	destinationNode.x = destination.x;
-	destinationNode.y = destination.y;
-
-	std::vector<Node> obstaclesNodes;
-	
-	for (cocos2d::Point obstacle : obstacles) 
-	{
-		Node obstacleNode;
-		obstacleNode.x = obstacle.x;
-		obstacleNode.y = obstacle.y;
-		obstaclesNodes.push_back(obstacleNode);
-	}
-
-	// First step: add start node to the closed list, define him as current Node
-	closed.push_back(startNode);
-	Node currentParent = startNode;
-	// Second step: add all adjecent nodes of the lowest value from the closed list to the open list
-	// Say to all the adjacent nodes who their parent is
-	// Using the manhatan euristic, calulete the value of H which correspond to the distance of the current node from the open list
-	// to the destination, ignore obstacles, 10 points for each step
-
-	std::vector<Node> validAdjacents = getValidAdjacents(currentParent, obstaclesNodes);
-	for (Node adjacent : validAdjacents) {
-		
-		adjacent.parent = &currentParent;
-		adjacent.hCost = calculateManhattanDistance(adjacent, destinationNode);
-		open.push_back(adjacent);
-	}
-	
-	// Check all the values on the open list for which one has the lowest F score (Back to the loop)
-	float lowestH = std::numeric_limits<float>::max();
-	Node lowestHNode;
-	for (Node nodeInOpenList : open) {
-		if (nodeInOpenList.hCost < lowestH)
-			lowestHNode = nodeInOpenList;
-	}
-	
-	// Calculate the G value, which is the cost from the current Node to the adjecent node ( probraby gonna ignore this step)
-	// Calculate F score, which is F = H + G
-
-
+    parent = parent_;
+    coordinates = coordinates_;
+    G = H = 0;
 }
 
+AStar::uint AStar::Node::getScore()
+{
+    return G + H;
+}
 
+AStar::Generator::Generator()
+{
+    setDiagonalMovement(false);
+    setHeuristic(&Heuristic::manhattan);
+    direction = {
+        { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 },
+        { -1, -1 }, { 1, 1 }, { -1, 1 }, { 1, -1 }
+    };
+}
 
+void AStar::Generator::setWorldSize(Vec2i worldSize_)
+{
+    worldSize = worldSize_;
+}
+
+void AStar::Generator::setDiagonalMovement(bool enable_)
+{
+    directions = (enable_ ? 8 : 4);
+}
+
+void AStar::Generator::setHeuristic(HeuristicFunction heuristic_)
+{
+    heuristic = std::bind(heuristic_, _1, _2);
+}
+
+void AStar::Generator::addCollision(Vec2i coordinates_)
+{
+    walls.push_back(coordinates_);
+}
+
+void AStar::Generator::removeCollision(Vec2i coordinates_)
+{
+    auto it = std::find(walls.begin(), walls.end(), coordinates_);
+    if (it != walls.end()) {
+        walls.erase(it);
+    }
+}
+
+void AStar::Generator::clearCollisions()
+{
+    walls.clear();
+}
+
+AStar::CoordinateList AStar::Generator::findPath(Vec2i source_, Vec2i target_)
+{
+    Node *current = nullptr;
+    NodeSet openSet, closedSet;
+    openSet.insert(new Node(source_));
+
+    while (!openSet.empty()) {
+        current = *openSet.begin();
+        for (auto node : openSet) {
+            if (node->getScore() <= current->getScore()) {
+                current = node;
+            }
+        }
+
+        if (current->coordinates == target_) {
+            break;
+        }
+
+        closedSet.insert(current);
+        openSet.erase(std::find(openSet.begin(), openSet.end(), current));
+
+        for (uint i = 0; i < directions; ++i) {
+            Vec2i newCoordinates(current->coordinates + direction[i]);
+            if (detectCollision(newCoordinates) ||
+                findNodeOnList(closedSet, newCoordinates)) {
+                continue;
+            }
+
+            uint totalCost = current->G + ((i < 4) ? 10 : 14);
+
+            Node *successor = findNodeOnList(openSet, newCoordinates);
+            if (successor == nullptr) {
+                successor = new Node(newCoordinates, current);
+                successor->G = totalCost;
+                successor->H = heuristic(successor->coordinates, target_);
+                openSet.insert(successor);
+            }
+            else if (totalCost < successor->G) {
+                successor->parent = current;
+                successor->G = totalCost;
+            }
+        }
+    }
+
+    CoordinateList path;
+    while (current != nullptr) {
+        path.push_back(current->coordinates);
+        current = current->parent;
+    }
+
+    releaseNodes(openSet);
+    releaseNodes(closedSet);
+
+    return path;
+}
+
+AStar::Node* AStar::Generator::findNodeOnList(NodeSet& nodes_, Vec2i coordinates_)
+{
+    for (auto node : nodes_) {
+        if (node->coordinates == coordinates_) {
+            return node;
+        }
+    }
+    return nullptr;
+}
+
+void AStar::Generator::releaseNodes(NodeSet& nodes_)
+{
+    for (auto it = nodes_.begin(); it != nodes_.end();) {
+        delete *it;
+        it = nodes_.erase(it);
+    }
+}
+
+bool AStar::Generator::detectCollision(Vec2i coordinates_)
+{
+    if (coordinates_.x < 0 || coordinates_.x >= worldSize.x ||
+        coordinates_.y < 0 || coordinates_.y >= worldSize.y ||
+        std::find(walls.begin(), walls.end(), coordinates_) != walls.end()) {
+        return true;
+    }
+    return false;
+}
+
+AStar::Vec2i AStar::Heuristic::getDelta(Vec2i source_, Vec2i target_)
+{
+    return{ abs(source_.x - target_.x),  abs(source_.y - target_.y) };
+}
+
+AStar::uint AStar::Heuristic::manhattan(Vec2i source_, Vec2i target_)
+{
+    auto delta = std::move(getDelta(source_, target_));
+    return static_cast<uint>(10 * (delta.x + delta.y));
+}
+
+AStar::uint AStar::Heuristic::euclidean(Vec2i source_, Vec2i target_)
+{
+    auto delta = std::move(getDelta(source_, target_));
+    return static_cast<uint>(10 * sqrt(pow(delta.x, 2) + pow(delta.y, 2)));
+}
+
+AStar::uint AStar::Heuristic::octagonal(Vec2i source_, Vec2i target_)
+{
+    auto delta = std::move(getDelta(source_, target_));
+    return 10 * (delta.x + delta.y) + (-6) * std::min(delta.x, delta.y);
+}
