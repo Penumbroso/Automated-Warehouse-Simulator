@@ -1,5 +1,6 @@
 #include "Gap.h"
 #include "Globals.h"
+#include <algorithm>
 
 using namespace cocos2d;
 
@@ -43,32 +44,38 @@ bool Gap::onTouchEnded(Touch* touch, Event* event)
 	case EMPTY:
 		this->setColor(Color3B::GRAY);
 		this->state = FILLED;
-		//CCLOG("x: %f y: %f", this->gridLocation.x, this->gridLocation.y);
 		g_packages.push_back(this->gridLocation);
-		//for (auto i = g_packages.begin(); i != g_packages.end(); ++i) {
-		//	CCLOG("x: %f y:%f", i->x, i->y);
-		//}
 		break;
 
 	case FILLED:
-		if (g_start.x == 0 && g_start.y == 0) {
-			this->setColor(Color3B::ORANGE);
+		if (g_start.x == -1)
+		{
+			this->state = START;
 			g_start = this->gridLocation;
-			CCLOG("g_start.x = %f g_start.y = %f", g_start.x, g_start.y);
-			g_startPosition = this->getPosition();
+			this->setColor(Color3B::ORANGE);
 		}
-		this->state = START;
+		else if (g_end.x == -1) {
+			this->setColor(Color3B::MAGENTA);
+			this->state = END;
+			g_end = this->gridLocation;
+		}
+		else
+		{
+			this->setColor(Color3B::WHITE);
+			this->state = EMPTY;
+			std::remove(g_packages.begin(), g_packages.end(), this->gridLocation);
+		}
 		break;
 
 	case START:
-		this->setColor(Color3B::MAGENTA);
-		this->state = END;
-		g_end = this->gridLocation;
+		this->setColor(Color3B::WHITE);
+		this->state = EMPTY;
+		g_start = Point(-1, -1);
 		break;
 	case END:
 		this->setColor(Color3B::WHITE);
 		this->state = EMPTY;
-
+		g_end = Point(-1, -1);
 		break;
 	}
 	

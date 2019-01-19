@@ -2,13 +2,15 @@
 #define __ROBOT_H__
 
 #include "cocos2d.h"
+#include <vector>
 
 class Robot : public cocos2d::Sprite
 {
 public:
 
 	virtual bool init();
-	// implement the "static create()" method manually
+	
+	std::vector<cocos2d::Point> path;
 
 	CREATE_FUNC(Robot);
 };

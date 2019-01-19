@@ -9,14 +9,10 @@ USING_NS_CC;
 class Grid : public cocos2d::Layer
 {
 public:
-	//static cocos2d::Scene* createLayer();
-
 	virtual bool init();
 
 	Point getPositionOf(Point gridLocation);
 	
-
-	// implement the "static create()" method manually
 	CREATE_FUNC(Grid);
 
 private:
