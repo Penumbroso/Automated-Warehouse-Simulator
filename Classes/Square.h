@@ -1,6 +1,6 @@
 #include "cocos2d.h"
 
-class Gap : public cocos2d::Sprite
+class Square : public cocos2d::Sprite
 {
 public:
 	//static Gap* createWithSpriteFrameName(const std::string& spriteFrameName);
@@ -25,7 +25,7 @@ public:
 	bool onTouchBegan(cocos2d::Touch* t, cocos2d::Event* e);
 	bool onTouchEnded(cocos2d::Touch* t, cocos2d::Event* e);
 
-	CREATE_FUNC(Gap);
+	CREATE_FUNC(Square);
 	cocos2d::EventListenerTouchOneByOne* getTouchListener() const { return _touchListener; }
 
 private:

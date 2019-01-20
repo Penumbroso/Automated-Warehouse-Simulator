@@ -60,7 +60,7 @@ bool Simulator::init()
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
-	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::tick), 1.0f);
+	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::tick), 0.5f);
     return true;
 }
 
@@ -72,27 +72,27 @@ void Simulator::menuPlayCallback(Ref* pSender)
 	robot->setColor(Color3B(200, 100, 100));
 	this->addChild(robot);
 
-	// number of squares
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
 	int numberOfLines = visibleSize.height / 50;
 	int numberOfColumns = visibleSize.width / 50;
-
+	
 	AStar::Generator generator;
 	generator.setWorldSize({ numberOfColumns, numberOfLines });
-	generator.setHeuristic(AStar::Heuristic::euclidean);
+	generator.setHeuristic(AStar::Heuristic::manhattan);
 	generator.setDiagonalMovement(false);
 
-	auto path = generator.findPath({ (int)g_start.x, (int)g_start.y }, { (int)g_end.x, (int)g_end.y });
-	std::vector<Point> pathing;
-
-	for (auto& coordinate : path) {
-		auto point = Point(coordinate.x, coordinate.y);
-		pathing.push_back(point);
+	for (Point point : g_packages)
+	{
+		AStar::Vec2i vec2i;
+		vec2i.x = point.x;
+		vec2i.y = point.y;
+		generator.addCollision(vec2i);
 	}
 
-	robot->path = pathing;
+	auto path = generator.findPath({ (int)g_start.x, (int)g_start.y }, { (int)g_end.x, (int)g_end.y });
 
+	robot->path = path;
 
 	this->robots.push_back(robot);
 	this->state = RUNNING;
@@ -106,8 +106,8 @@ void Simulator::tick(float dt) {
 		for (Robot* robot : this->robots) {
 			if (!robot->path.empty())
 			{	
-				Point position = robot->path.back();
-				position = Point(25 + position.x * 50, 25 + position.y * 50);
+				auto pos = robot->path.back();
+				auto position = Point(25 + pos.x * 50, 25 + pos.y * 50);
 				robot->setPosition(position);
 				robot->path.pop_back();
 			}
@@ -143,13 +143,13 @@ bool Simulator::onTouchBegan(Touch  *touch, Event  *event)
 void Simulator::onTouchEnded(Touch  *touch, Event  *event)
 {
 
-	auto endPos = touch->getLocation();
+	//auto endPos = touch->getLocation();
 
 
-	// decide the trackNode is clicked.
-	Rect rect;
-	rect.size = _trackNode->getContentSize();
-	auto clicked = isScreenPointInRect(endPos, Camera::getVisitingCamera(), _trackNode->getWorldToNodeTransform(), rect, nullptr);
-	this->onClickTrackNode(clicked, endPos);
-	CCLOG("----------------------------------");
+	//// decide the trackNode is clicked.
+	//Rect rect;
+	//rect.size = _trackNode->getContentSize();
+	//auto clicked = isScreenPointInRect(endPos, Camera::getVisitingCamera(), _trackNode->getWorldToNodeTransform(), rect, nullptr);
+	//this->onClickTrackNode(clicked, endPos);
+	//CCLOG("----------------------------------");
 }

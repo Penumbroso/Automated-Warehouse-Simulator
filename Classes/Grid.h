@@ -2,7 +2,7 @@
 #define __GRID_H__
 
 #include "cocos2d.h"
-#include "Gap.h"
+#include "Square.h"
 
 USING_NS_CC;
 
@@ -16,7 +16,7 @@ public:
 	CREATE_FUNC(Grid);
 
 private:
-	Gap* gaps[100][100];
+	Square* squares[100][100];
 };
 
 #endif
