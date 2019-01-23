@@ -3,10 +3,7 @@
 class Square : public cocos2d::Sprite
 {
 public:
-	//static Gap* createWithSpriteFrameName(const std::string& spriteFrameName);
-
 	void onEnter() override;
-	//void onExit() override;
 
 	enum State 
 	{

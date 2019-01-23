@@ -24,7 +24,6 @@ bool Simulator::init()
 	listener->onTouchEnded = CC_CALLBACK_2(Simulator::onTouchEnded, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-
 	auto pTextField = TextFieldTTF::textFieldWithPlaceHolder("<click here for input>",
 		"fonts/arial.ttf",
 		24);
@@ -50,13 +49,34 @@ bool Simulator::init()
 
 	// Button
 	auto playItem = MenuItemImage::create(
-											"PlayNormal.png",
-											"PlayPressed.png",
-											CC_CALLBACK_1(Simulator::menuPlayCallback, this));
+		"PlayNormal.png",
+		"PlayPressed.png",
+		CC_CALLBACK_1(Simulator::menuPlayCallback, this));
 
-	playItem->setPosition(Vec2(visibleSize.width / 2, 24));
+	playItem->setPosition(Vec2(visibleSize.width / 2 - 25, 24));
+
+	auto packageItem = MenuItemImage::create(
+		"PackageButton.png",
+		"PackageButton.png",
+		CC_CALLBACK_1(Simulator::menuPackageCallback, this));
+
+	packageItem->setPosition(Vec2(visibleSize.width / 2 + 25, 24));
+
+	auto beginningItem = MenuItemImage::create(
+		"BeginningButton.png",
+		"BeginninbButton.png",
+		CC_CALLBACK_1(Simulator::menuBeginningCallback, this));
+
+	beginningItem->setPosition(Vec2(visibleSize.width / 2 + 75, 24));
+
+	auto endItem = MenuItemImage::create(
+		"EndButton.png",
+		"EndButton.png",
+		CC_CALLBACK_1(Simulator::menuEndCallback, this));
+
+	endItem->setPosition(Vec2(visibleSize.width / 2 + 125, 24));
     
-    auto menu = Menu::create(playItem, NULL);
+    auto menu = Menu::create(playItem, packageItem, beginningItem, endItem, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
@@ -96,6 +116,21 @@ void Simulator::menuPlayCallback(Ref* pSender)
 
 	this->robots.push_back(robot);
 	this->state = RUNNING;
+}
+
+void Simulator::menuPackageCallback(cocos2d::Ref * pSender)
+{
+	g_currentTool = PACKAGE;
+}
+
+void Simulator::menuBeginningCallback(cocos2d::Ref * pSender)
+{
+	g_currentTool = BEGIN;
+}
+
+void Simulator::menuEndCallback(cocos2d::Ref * pSender)
+{
+	g_currentTool = END;
 }
 
 void Simulator::tick(float dt) {

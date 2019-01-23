@@ -37,44 +37,22 @@ bool Square::onTouchBegan(Touch* touch, Event* event)
 
 bool Square::onTouchEnded(Touch* touch, Event* event)
 {
-	switch (this->state) {
-	case EMPTY:
+	switch (g_currentTool)
+	{
+	case Tool::PACKAGE:
 		this->setColor(Color3B::GRAY);
 		this->state = FILLED;
 		g_packages.push_back(this->gridLocation);
 		break;
-
-	case FILLED:
-		if (g_start.x == -1)
-		{
-			this->state = START;
-			g_start = this->gridLocation;
-			this->setColor(Color3B::ORANGE);
-			g_packages.pop_back();
-		}
-		else if (g_end.x == -1) {
-			this->setColor(Color3B::MAGENTA);
-			this->state = END;
-			g_end = this->gridLocation;
-			g_packages.pop_back();
-		}
-		else
-		{
-			this->setColor(Color3B::WHITE);
-			this->state = EMPTY;
-			std::remove(g_packages.begin(), g_packages.end(), this->gridLocation);
-		}
+	case Tool::BEGIN:
+		this->state = START;
+		g_start = this->gridLocation;
+		this->setColor(Color3B::BLUE);
 		break;
-
-	case START:
-		this->setColor(Color3B::WHITE);
-		this->state = EMPTY;
-		g_start = Point(-1, -1);
-		break;
-	case END:
-		this->setColor(Color3B::WHITE);
-		this->state = EMPTY;
-		g_end = Point(-1, -1);
+	case Tool::END:
+		this->setColor(Color3B::MAGENTA);
+		this->state = END;
+		g_end = this->gridLocation;
 		break;
 	}
 	
