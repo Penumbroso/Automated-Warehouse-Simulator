@@ -26,13 +26,10 @@ public:
 	Grid* grid;
     
 	void menuPlayCallback(cocos2d::Ref* pSender);
-	void menuPackageCallback(cocos2d::Ref* pSender);
-	void menuBeginningCallback(cocos2d::Ref* pSender);
-	void menuEndCallback(cocos2d::Ref* pSender);
 
-	virtual void onClickTrackNode(bool bClicked, const cocos2d::Vec2& touchPos);
-	bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
-	void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
+	//virtual void onClickTrackNode(bool bClicked, const cocos2d::Vec2& touchPos);
+	//bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
+	//void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
     
 	void tick(float dt);
 

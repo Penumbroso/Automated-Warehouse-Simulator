@@ -8,6 +8,8 @@ enum Tool {
 	BEGIN,
 	END
 };
+
+extern const int g_square_size;
 extern Point g_start;
 extern Point g_end;
 extern std::vector<Point> g_packages;

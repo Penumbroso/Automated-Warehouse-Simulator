@@ -1,4 +1,5 @@
 #include "Grid.h"
+#include "Globals.h"
 
 USING_NS_CC;
 
@@ -12,8 +13,8 @@ bool Grid::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	const auto numberOfLines = visibleSize.height / 50;
-	const auto numberOfColumns = visibleSize.width / 50;
+	const auto numberOfLines = visibleSize.height / g_square_size;
+	const auto numberOfColumns = visibleSize.width / g_square_size;
 
 
 	for (int j = 0; j < numberOfColumns; j++) {
@@ -24,7 +25,7 @@ bool Grid::init()
 			this->squares[j][i] = square;
 			square->gridLocation = Point(j, i);
 
-			square->setPosition(Vec2(j * 50 + 25,  i * 50 + 25));
+			square->setPosition(Vec2(j * g_square_size + g_square_size / 2,  i * g_square_size + g_square_size / 2));
 
 			this->addChild(square, 0);
 		}
@@ -34,13 +35,13 @@ bool Grid::init()
 
 	for (int i = 0; i < numberOfColumns; i++) {
 		auto drawVerticalLine = DrawNode::create();
-		drawVerticalLine->drawLine(Point(i * 50, 0), Point(i * 50, visibleSize.height), lightGray);
+		drawVerticalLine->drawLine(Point(i * g_square_size, 0), Point(i * g_square_size, visibleSize.height), lightGray);
 		addChild(drawVerticalLine);
 	}
 
 	for (int i = 0; i < numberOfLines; i++) {
 		auto drawHorizontalLine = DrawNode::create();
-		drawHorizontalLine->drawLine(Point(0, i * 50), Point(visibleSize.width, i * 50), lightGray);
+		drawHorizontalLine->drawLine(Point(0, i * g_square_size), Point(visibleSize.width, i * g_square_size), lightGray);
 		addChild(drawHorizontalLine);
 	}
 

@@ -7,7 +7,7 @@ using namespace cocos2d;
 void Square::onEnter()
 {
 	Sprite::onEnter();
-	// Register Touch Event
+
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
 
@@ -15,7 +15,6 @@ void Square::onEnter()
 	listener->onTouchEnded = CC_CALLBACK_2(Square::onTouchEnded, this);
 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-
 }
 
 Rect Square::getRect()

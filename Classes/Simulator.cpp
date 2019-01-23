@@ -3,6 +3,7 @@
 #include "Globals.h"
 #include "AStar.hpp"
 #include <algorithm>
+#include "Toolbar.h"
 
 USING_NS_CC;
 
@@ -18,20 +19,20 @@ bool Simulator::init()
         return false;
     }
 
-	// Register Touch Event
-	auto listener = EventListenerTouchOneByOne::create();
-	listener->onTouchBegan = CC_CALLBACK_2(Simulator::onTouchBegan, this);
-	listener->onTouchEnded = CC_CALLBACK_2(Simulator::onTouchEnded, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+	//// Register Touch Event
+	//auto listener = EventListenerTouchOneByOne::create();
+	//listener->onTouchBegan = CC_CALLBACK_2(Simulator::onTouchBegan, this);
+	//listener->onTouchEnded = CC_CALLBACK_2(Simulator::onTouchEnded, this);
+	//_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-	auto pTextField = TextFieldTTF::textFieldWithPlaceHolder("<click here for input>",
-		"fonts/arial.ttf",
-		24);
-	//this->addChild(pTextField, 1);
+	//auto pTextField = TextFieldTTF::textFieldWithPlaceHolder("<click here for input>",
+	//	"fonts/arial.ttf",
+	//	24);
+	////this->addChild(pTextField, 1);
 
-	pTextField->setPosition(300, 300);
+	//pTextField->setPosition(300, 300);
 
-	_trackNode = pTextField;
+	//_trackNode = pTextField;
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -41,44 +42,9 @@ bool Simulator::init()
 
 	grid = Grid::create();
 	this->addChild(grid);
-	
-	// Menu
-	auto menuContainer = Sprite::create("MenuContainer.png");
-	menuContainer->setPosition(Vec2(visibleSize.width / 2, 25));
-	this->addChild(menuContainer);
 
-	// Button
-	auto playItem = MenuItemImage::create(
-		"PlayNormal.png",
-		"PlayPressed.png",
-		CC_CALLBACK_1(Simulator::menuPlayCallback, this));
-
-	playItem->setPosition(Vec2(visibleSize.width / 2 - 25, 24));
-
-	auto packageItem = MenuItemImage::create(
-		"PackageButton.png",
-		"PackageButton.png",
-		CC_CALLBACK_1(Simulator::menuPackageCallback, this));
-
-	packageItem->setPosition(Vec2(visibleSize.width / 2 + 25, 24));
-
-	auto beginningItem = MenuItemImage::create(
-		"BeginningButton.png",
-		"BeginninbButton.png",
-		CC_CALLBACK_1(Simulator::menuBeginningCallback, this));
-
-	beginningItem->setPosition(Vec2(visibleSize.width / 2 + 75, 24));
-
-	auto endItem = MenuItemImage::create(
-		"EndButton.png",
-		"EndButton.png",
-		CC_CALLBACK_1(Simulator::menuEndCallback, this));
-
-	endItem->setPosition(Vec2(visibleSize.width / 2 + 125, 24));
-    
-    auto menu = Menu::create(playItem, packageItem, beginningItem, endItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
+	auto toolbar = Toolbar::create(CC_CALLBACK_1(Simulator::menuPlayCallback, this));
+	this->addChild(toolbar);
 
 	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::tick), 0.5f);
     return true;
@@ -90,7 +56,7 @@ void Simulator::menuPlayCallback(Ref* pSender)
 	robot->initWithFile("Robot.png");
 	robot->setPosition(25 + (g_start.x ) * 50, 25 + (g_start.y ) * 50);
 	robot->setColor(Color3B(200, 100, 100));
-	this->addChild(robot);
+	grid->addChild(robot);
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -118,21 +84,6 @@ void Simulator::menuPlayCallback(Ref* pSender)
 	this->state = RUNNING;
 }
 
-void Simulator::menuPackageCallback(cocos2d::Ref * pSender)
-{
-	g_currentTool = PACKAGE;
-}
-
-void Simulator::menuBeginningCallback(cocos2d::Ref * pSender)
-{
-	g_currentTool = BEGIN;
-}
-
-void Simulator::menuEndCallback(cocos2d::Ref * pSender)
-{
-	g_currentTool = END;
-}
-
 void Simulator::tick(float dt) {
 	if (this->state == EDITING)
 		CCLOG("Editing");
@@ -151,40 +102,40 @@ void Simulator::tick(float dt) {
 
 }
 
-void Simulator::onClickTrackNode(bool bClicked, const Vec2& touchPos)
-{
-	auto pTextField = (TextFieldTTF*)_trackNode;
-	if (bClicked)
-	{
-		// TextFieldTTFTest be clicked
-		CCLOG("TextFieldTTFDefaultTest:TextFieldTTF attachWithIME");
-		pTextField->attachWithIME();
-	}
-	else
-	{
-		// TextFieldTTFTest not be clicked
-		CCLOG("TextFieldTTFDefaultTest:TextFieldTTF detachWithIME");
-		pTextField->detachWithIME();
-	}
-}
-
-bool Simulator::onTouchBegan(Touch  *touch, Event  *event)
-{
-	CCLOG("++++++++++++++++++++++++++++++++++++++++++++");
-	//_beginPos = touch->getLocation();
-	return true;
-}
-
-void Simulator::onTouchEnded(Touch  *touch, Event  *event)
-{
-
-	//auto endPos = touch->getLocation();
-
-
-	//// decide the trackNode is clicked.
-	//Rect rect;
-	//rect.size = _trackNode->getContentSize();
-	//auto clicked = isScreenPointInRect(endPos, Camera::getVisitingCamera(), _trackNode->getWorldToNodeTransform(), rect, nullptr);
-	//this->onClickTrackNode(clicked, endPos);
-	//CCLOG("----------------------------------");
-}
+//void Simulator::onClickTrackNode(bool bClicked, const Vec2& touchPos)
+//{
+//	auto pTextField = (TextFieldTTF*)_trackNode;
+//	if (bClicked)
+//	{
+//		// TextFieldTTFTest be clicked
+//		CCLOG("TextFieldTTFDefaultTest:TextFieldTTF attachWithIME");
+//		pTextField->attachWithIME();
+//	}
+//	else
+//	{
+//		// TextFieldTTFTest not be clicked
+//		CCLOG("TextFieldTTFDefaultTest:TextFieldTTF detachWithIME");
+//		pTextField->detachWithIME();
+//	}
+//}
+//
+//bool Simulator::onTouchBegan(Touch  *touch, Event  *event)
+//{
+//	CCLOG("++++++++++++++++++++++++++++++++++++++++++++");
+//	//_beginPos = touch->getLocation();
+//	return true;
+//}
+//
+//void Simulator::onTouchEnded(Touch  *touch, Event  *event)
+//{
+//
+//	//auto endPos = touch->getLocation();
+//
+//
+//	//// decide the trackNode is clicked.
+//	//Rect rect;
+//	//rect.size = _trackNode->getContentSize();
+//	//auto clicked = isScreenPointInRect(endPos, Camera::getVisitingCamera(), _trackNode->getWorldToNodeTransform(), rect, nullptr);
+//	//this->onClickTrackNode(clicked, endPos);
+//	//CCLOG("----------------------------------");
+//}
