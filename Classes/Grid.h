@@ -12,11 +12,12 @@ public:
 	virtual bool init();
 
 	Point getPositionOf(Point gridLocation);
+	Square* squares[100][100];
 	
 	CREATE_FUNC(Grid);
 
 private:
-	Square* squares[100][100];
+
 };
 
 #endif

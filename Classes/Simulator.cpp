@@ -4,6 +4,7 @@
 #include "AStar.hpp"
 #include <algorithm>
 #include "Toolbar.h"
+#include <vector>
 
 USING_NS_CC;
 
@@ -76,9 +77,17 @@ void Simulator::menuPlayCallback(Ref* pSender)
 		generator.addCollision(vec2i);
 	}
 
-	auto path = generator.findPath({ (int)g_start.x, (int)g_start.y }, { (int)g_end.x, (int)g_end.y });
+	Point destination = g_packages.back();
+	AStar::Vec2i dest;
+	dest.x = destination.x;
+	dest.y = destination.y;
+	generator.removeCollision(dest);
 
-	robot->path = path;
+	std::vector<AStar::Vec2i> pathToPackage = generator.findPath({ (int)g_start.x, (int)g_start.y }, { (int)destination.x, (int)destination.y });
+	std::vector<AStar::Vec2i> pathToDelivery = generator.findPath({ (int)destination.x, (int)destination.y }, { (int)g_end.x, (int)g_end.y });
+
+	pathToDelivery.insert(pathToDelivery.end(), pathToPackage.begin(), pathToPackage.end());
+	robot->path = pathToDelivery;
 
 	this->robots.push_back(robot);
 	this->state = RUNNING;
@@ -96,10 +105,60 @@ void Simulator::tick(float dt) {
 				auto position = Point(25 + pos.x * 50, 25 + pos.y * 50);
 				robot->setPosition(position);
 				robot->path.pop_back();
+				robot->grid_position = Point(pos.x, pos.y);
+			}
+			else
+			{
+				if (!g_packages.empty()) {
+					CCLOG("Hey there");
+					auto pos = g_packages.back();
+					int x = pos.x;
+					int y = pos.y;
+					this->grid->squares[x][y]->setColor(Color3B::WHITE);
+					g_packages.pop_back();
+					if (!g_packages.empty()) {
+						this->createPath(robot);
+					}
+				}
+
 			}
 		}
 	}
 
+}
+
+void Simulator::createPath(Robot* robot)
+{
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+
+	int numberOfLines = visibleSize.height / 50;
+	int numberOfColumns = visibleSize.width / 50;
+
+	AStar::Generator generator;
+	generator.setWorldSize({ numberOfColumns, numberOfLines });
+	generator.setHeuristic(AStar::Heuristic::manhattan);
+	generator.setDiagonalMovement(false);
+
+	for (Point point : g_packages)
+	{
+		AStar::Vec2i vec2i;
+		vec2i.x = point.x;
+		vec2i.y = point.y;
+		generator.addCollision(vec2i);
+	}
+
+
+	Point destination = g_packages.back();
+	AStar::Vec2i dest;
+	dest.x = destination.x;
+	dest.y = destination.y;
+	generator.removeCollision(dest);
+
+	std::vector<AStar::Vec2i> pathToPackage = generator.findPath({ (int)robot->grid_position.x, (int)robot->grid_position.y }, { (int)destination.x, (int)destination.y });
+	std::vector<AStar::Vec2i> pathToDelivery = generator.findPath({ (int)destination.x, (int)destination.y }, { (int)g_end.x, (int)g_end.y });
+
+	pathToDelivery.insert(pathToDelivery.end(), pathToPackage.begin(), pathToPackage.end());
+	robot->path = pathToDelivery;
 }
 
 //void Simulator::onClickTrackNode(bool bClicked, const Vec2& touchPos)

@@ -13,6 +13,8 @@ public:
 	
 	std::vector<AStar::Vec2i> path;
 
+	cocos2d::Point grid_position;
+
 	CREATE_FUNC(Robot);
 };
 

@@ -37,6 +37,8 @@ public:
 
 protected:
 	cocos2d::Node*  _trackNode;
+
+	void createPath(Robot* r);
 };
 
 #endif // __HELLOWORLD_SCENE_H__
