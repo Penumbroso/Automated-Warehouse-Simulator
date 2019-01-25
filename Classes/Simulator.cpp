@@ -47,7 +47,7 @@ bool Simulator::init()
 	auto toolbar = Toolbar::create(CC_CALLBACK_1(Simulator::menuPlayCallback, this));
 	this->addChild(toolbar);
 
-	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::tick), 0.5f);
+	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::tick), 0.2f);
     return true;
 }
 
@@ -55,54 +55,27 @@ void Simulator::menuPlayCallback(Ref* pSender)
 {
 	auto robot = Robot::create();
 	robot->initWithFile("Robot.png");
-	robot->setPosition(25 + (g_start.x ) * 50, 25 + (g_start.y ) * 50);
+	robot->setPosition(g_square_size / 2 + (g_start.x ) * g_square_size, g_square_size / 2 + (g_start.y ) * g_square_size);
 	robot->setColor(Color3B(200, 100, 100));
+	robot->setContentSize(Size(g_square_size, g_square_size));
+	robot->grid_position = g_start;
 	grid->addChild(robot);
 
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-
-	int numberOfLines = visibleSize.height / 50;
-	int numberOfColumns = visibleSize.width / 50;
-	
-	AStar::Generator generator;
-	generator.setWorldSize({ numberOfColumns, numberOfLines });
-	generator.setHeuristic(AStar::Heuristic::manhattan);
-	generator.setDiagonalMovement(false);
-
-	for (Point point : g_packages)
-	{
-		AStar::Vec2i vec2i;
-		vec2i.x = point.x;
-		vec2i.y = point.y;
-		generator.addCollision(vec2i);
-	}
-
-	Point destination = g_packages.back();
-	AStar::Vec2i dest;
-	dest.x = destination.x;
-	dest.y = destination.y;
-	generator.removeCollision(dest);
-
-	std::vector<AStar::Vec2i> pathToPackage = generator.findPath({ (int)g_start.x, (int)g_start.y }, { (int)destination.x, (int)destination.y });
-	std::vector<AStar::Vec2i> pathToDelivery = generator.findPath({ (int)destination.x, (int)destination.y }, { (int)g_end.x, (int)g_end.y });
-
-	pathToDelivery.insert(pathToDelivery.end(), pathToPackage.begin(), pathToPackage.end());
-	robot->path = pathToDelivery;
+	this->createPath(robot);
 
 	this->robots.push_back(robot);
 	this->state = RUNNING;
 }
 
 void Simulator::tick(float dt) {
-	if (this->state == EDITING)
-		CCLOG("Editing");
+	if (this->state == EDITING);
 
 	if (this->state == RUNNING) {
 		for (Robot* robot : this->robots) {
 			if (!robot->path.empty())
 			{	
 				auto pos = robot->path.back();
-				auto position = Point(25 + pos.x * 50, 25 + pos.y * 50);
+				auto position = Point(g_square_size / 2 + pos.x * g_square_size, g_square_size / 2 + pos.y * g_square_size);
 				robot->setPosition(position);
 				robot->path.pop_back();
 				robot->grid_position = Point(pos.x, pos.y);
@@ -110,7 +83,6 @@ void Simulator::tick(float dt) {
 			else
 			{
 				if (!g_packages.empty()) {
-					CCLOG("Hey there");
 					auto pos = g_packages.back();
 					int x = pos.x;
 					int y = pos.y;
@@ -131,8 +103,8 @@ void Simulator::createPath(Robot* robot)
 {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
-	int numberOfLines = visibleSize.height / 50;
-	int numberOfColumns = visibleSize.width / 50;
+	int numberOfLines = visibleSize.height / g_square_size;
+	int numberOfColumns = visibleSize.width / g_square_size;
 
 	AStar::Generator generator;
 	generator.setWorldSize({ numberOfColumns, numberOfLines });

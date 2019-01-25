@@ -14,4 +14,4 @@ extern Point g_start;
 extern Point g_end;
 extern std::vector<Point> g_packages;
 
-extern Tool g_currentTool;
+extern Tool g_current_tool;

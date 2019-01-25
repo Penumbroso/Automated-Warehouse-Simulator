@@ -61,15 +61,15 @@ bool Toolbar::init(ccMenuCallback callbackFunc)
 
 void Toolbar::menuPackageCallback(cocos2d::Ref * pSender)
 {
-	g_currentTool = PACKAGE;
+	g_current_tool = PACKAGE;
 }
 
 void Toolbar::menuBeginningCallback(cocos2d::Ref * pSender)
 {
-	g_currentTool = BEGIN;
+	g_current_tool = BEGIN;
 }
 
 void Toolbar::menuEndCallback(cocos2d::Ref * pSender)
 {
-	g_currentTool = END;
+	g_current_tool = END;
 }

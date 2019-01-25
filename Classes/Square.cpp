@@ -19,7 +19,8 @@ void Square::onEnter()
 
 Rect Square::getRect()
 {
-	auto s = getTexture()->getContentSize();
+	//auto s = getTexture()->getContentSize();
+	auto s = this->getContentSize();
 	return Rect(-s.width / 2, -s.height / 2, s.width, s.height);
 }
 
@@ -36,7 +37,7 @@ bool Square::onTouchBegan(Touch* touch, Event* event)
 
 bool Square::onTouchEnded(Touch* touch, Event* event)
 {
-	switch (g_currentTool)
+	switch (g_current_tool)
 	{
 	case Tool::PACKAGE:
 		this->setColor(Color3B::GRAY);
