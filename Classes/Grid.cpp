@@ -16,7 +16,6 @@ bool Grid::init()
 	const auto number_of_lines = visibleSize.height / g_square_size;
 	const auto number_of_columns = visibleSize.width / g_square_size;
 
-
 	for (int j = 0; j < number_of_columns; j++) {
 		for (int i = 0; i < number_of_lines; i++) {
 			auto square = Square::create();

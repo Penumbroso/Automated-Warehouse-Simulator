@@ -6,7 +6,8 @@ USING_NS_CC;
 enum Tool {
 	PACKAGE,
 	BEGIN,
-	END
+	END,
+	ERASE
 };
 
 extern const int g_square_size;

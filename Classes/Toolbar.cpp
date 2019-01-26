@@ -29,30 +29,37 @@ bool Toolbar::init(ccMenuCallback callbackFunc)
 		"PlayPressed.png",
 		callbackFunc);
 
-	playItem->setPosition(Vec2(visibleSize.width / 2 - 25, 24));
+	playItem->setPosition(Vec2(visibleSize.width / 2 - 100, 24));
 
 	auto packageItem = MenuItemImage::create(
 	"PackageButton.png",
 	"PackageButton.png",
 	CC_CALLBACK_1(Toolbar::menuPackageCallback, this));
 
-	packageItem->setPosition(Vec2(visibleSize.width / 2 + 25, 24));
+	packageItem->setPosition(Vec2(visibleSize.width / 2 - 50, 24));
 
 	auto beginningItem = MenuItemImage::create(
 	"BeginningButton.png",
 	"BeginninbButton.png",
 	CC_CALLBACK_1(Toolbar::menuBeginningCallback, this));
 
-	beginningItem->setPosition(Vec2(visibleSize.width / 2 + 75, 24));
+	beginningItem->setPosition(Vec2(visibleSize.width / 2 + 0, 24));
 
 	auto endItem = MenuItemImage::create(
 	"EndButton.png",
 	"EndButton.png",
 	CC_CALLBACK_1(Toolbar::menuEndCallback, this));
 
-	endItem->setPosition(Vec2(visibleSize.width / 2 + 125, 24));
+	endItem->setPosition(Vec2(visibleSize.width / 2 + 50, 24));
+
+	auto eraseItem = MenuItemImage::create(
+		"EraseButton.png",
+		"EraseButton.png",
+		CC_CALLBACK_1(Toolbar::menuEraseCallback, this));
+
+	eraseItem->setPosition(Vec2(visibleSize.width / 2 + 100, 24));
 	  
-	auto menu = Menu::create(playItem, packageItem, beginningItem, endItem, NULL);
+	auto menu = Menu::create(playItem, packageItem, beginningItem, endItem, eraseItem, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 
@@ -72,4 +79,9 @@ void Toolbar::menuBeginningCallback(cocos2d::Ref * pSender)
 void Toolbar::menuEndCallback(cocos2d::Ref * pSender)
 {
 	g_current_tool = END;
+}
+
+void Toolbar::menuEraseCallback(cocos2d::Ref * pSender)
+{
+	g_current_tool = ERASE;
 }

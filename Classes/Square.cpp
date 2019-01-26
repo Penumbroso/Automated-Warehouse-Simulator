@@ -54,6 +54,14 @@ bool Square::onTouchEnded(Touch* touch, Event* event)
 		this->state = END;
 		g_end = this->gridLocation;
 		break;
+	case Tool::ERASE:
+		this->state = EMPTY;
+		this->setColor(Color3B::WHITE);
+		auto it = std::find(g_packages.begin(), g_packages.end(), this->gridLocation);
+		if (it != g_packages.end()) {
+			g_packages.erase(it);
+		}
+		break;
 	}
 	
 	return true;
