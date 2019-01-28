@@ -12,6 +12,7 @@ public:
 	virtual bool init();
 
 	Point getPositionOf(Point gridLocation);
+	// TODO: find a way to make a definitive size for the grid.
 	Square* squares[100][100];
 	
 	CREATE_FUNC(Grid);

@@ -20,27 +20,14 @@ bool Simulator::init()
         return false;
     }
 
-	//// Register Touch Event
-	//auto listener = EventListenerTouchOneByOne::create();
-	//listener->onTouchBegan = CC_CALLBACK_2(Simulator::onTouchBegan, this);
-	//listener->onTouchEnded = CC_CALLBACK_2(Simulator::onTouchEnded, this);
-	//_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-
-	//auto pTextField = TextFieldTTF::textFieldWithPlaceHolder("<click here for input>",
-	//	"fonts/arial.ttf",
-	//	24);
-	////this->addChild(pTextField, 1);
-
-	//pTextField->setPosition(300, 300);
-
-	//_trackNode = pTextField;
-
     auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	auto background = LayerColor::create(Color4B::RED);
 	this->addChild(background);
 
+	// TODO: make the grid draggable.
+	// TODO: make grid zoomable.
 	grid = Grid::create();
 	this->addChild(grid);
 
@@ -53,6 +40,8 @@ bool Simulator::init()
 
 void Simulator::menuPlayCallback(Ref* pSender)
 {
+	// TODO: create one robot for each start point.
+	// Create a 'for' for each begin in the global vector.
 	auto robot = Robot::create();
 	robot->initWithFile("Robot.png");
 	robot->setPosition(g_square_size / 2 + (g_start.x ) * g_square_size, g_square_size / 2 + (g_start.y ) * g_square_size);
@@ -70,10 +59,14 @@ void Simulator::menuPlayCallback(Ref* pSender)
 void Simulator::tick(float dt) {
 	if (this->state == EDITING);
 
+	// TODO: change state of simulator when all packages have been delivered.
+	// It ends when the list of packages to be delivered is empty. ( the clone one )
 	if (this->state == RUNNING) {
 		for (Robot* robot : this->robots) {
 			if (!robot->path.empty())
-			{	
+			{	// TODO: create smooth movement instead of current grid based movement.
+				// Move pixel by pixel until it gets to the correct position ( got to check every move ).
+				// Then pop the path and do it again.
 				auto pos = robot->path.back();
 				auto position = Point(g_square_size / 2 + pos.x * g_square_size, g_square_size / 2 + pos.y * g_square_size);
 				robot->setPosition(position);
@@ -86,6 +79,8 @@ void Simulator::tick(float dt) {
 					auto pos = g_packages.back();
 					int x = pos.x;
 					int y = pos.y;
+					// TODO: erase package from the UI and vector when the robot is ON the package placement instead of after delivering.
+					// Most likely has to be done on the if instead of else (current)
 					this->grid->squares[x][y]->setColor(Color3B::WHITE);
 					g_packages.pop_back();
 					if (!g_packages.empty()) {
@@ -126,47 +121,11 @@ void Simulator::createPath(Robot* robot)
 	dest.y = destination.y;
 	generator.removeCollision(dest);
 
+	// TODO: remove the duplicate destination point that is a result of the merge between both vectors.
+	// Perhaps removing the first or last element of one of the vectors solves this easily.
 	std::vector<AStar::Vec2i> pathToPackage = generator.findPath({ (int)robot->grid_position.x, (int)robot->grid_position.y }, { (int)destination.x, (int)destination.y });
 	std::vector<AStar::Vec2i> pathToDelivery = generator.findPath({ (int)destination.x, (int)destination.y }, { (int)g_end.x, (int)g_end.y });
 
 	pathToDelivery.insert(pathToDelivery.end(), pathToPackage.begin(), pathToPackage.end());
 	robot->path = pathToDelivery;
 }
-
-//void Simulator::onClickTrackNode(bool bClicked, const Vec2& touchPos)
-//{
-//	auto pTextField = (TextFieldTTF*)_trackNode;
-//	if (bClicked)
-//	{
-//		// TextFieldTTFTest be clicked
-//		CCLOG("TextFieldTTFDefaultTest:TextFieldTTF attachWithIME");
-//		pTextField->attachWithIME();
-//	}
-//	else
-//	{
-//		// TextFieldTTFTest not be clicked
-//		CCLOG("TextFieldTTFDefaultTest:TextFieldTTF detachWithIME");
-//		pTextField->detachWithIME();
-//	}
-//}
-//
-//bool Simulator::onTouchBegan(Touch  *touch, Event  *event)
-//{
-//	CCLOG("++++++++++++++++++++++++++++++++++++++++++++");
-//	//_beginPos = touch->getLocation();
-//	return true;
-//}
-//
-//void Simulator::onTouchEnded(Touch  *touch, Event  *event)
-//{
-//
-//	//auto endPos = touch->getLocation();
-//
-//
-//	//// decide the trackNode is clicked.
-//	//Rect rect;
-//	//rect.size = _trackNode->getContentSize();
-//	//auto clicked = isScreenPointInRect(endPos, Camera::getVisitingCamera(), _trackNode->getWorldToNodeTransform(), rect, nullptr);
-//	//this->onClickTrackNode(clicked, endPos);
-//	//CCLOG("----------------------------------");
-//}

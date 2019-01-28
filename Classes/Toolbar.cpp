@@ -18,7 +18,6 @@ Toolbar* Toolbar::create(ccMenuCallback callbackFunc)
 bool Toolbar::init(ccMenuCallback callbackFunc) 
 {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	auto menuContainer = Sprite::create("MenuContainer.png");
 	menuContainer->setPosition(Vec2(visibleSize.width / 2, 25));
@@ -58,6 +57,12 @@ bool Toolbar::init(ccMenuCallback callbackFunc)
 		CC_CALLBACK_1(Toolbar::menuEraseCallback, this));
 
 	eraseItem->setPosition(Vec2(visibleSize.width / 2 + 100, 24));
+
+	// TODO: create pause button.
+	// Perhaps changing the state of the simulator would achieve that.
+
+	// TODO: create reset button.
+	// Have to save all the globals before the simulation begin and then load the save.
 	  
 	auto menu = Menu::create(playItem, packageItem, beginningItem, endItem, eraseItem, NULL);
 	menu->setPosition(Vec2::ZERO);
