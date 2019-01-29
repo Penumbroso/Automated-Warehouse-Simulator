@@ -26,8 +26,7 @@ public:
 
 	Grid* grid;
     
-	// TODO: change name to run instead of play.
-	void menuPlayCallback(cocos2d::Ref* pSender);
+	void menuRunCallback(cocos2d::Ref* pSender);
     
 	void tick(float dt);
 

@@ -12,6 +12,7 @@ public:
 	virtual bool init();
 	
 	std::vector<AStar::Vec2i> path;
+	cocos2d::Point package;
 
 	cocos2d::Point grid_position;
 

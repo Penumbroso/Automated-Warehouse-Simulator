@@ -19,7 +19,6 @@ void Square::onEnter()
 
 Rect Square::getRect()
 {
-	//auto s = getTexture()->getContentSize();
 	auto s = this->getContentSize();
 	return Rect(-s.width / 2, -s.height / 2, s.width, s.height);
 }
@@ -46,23 +45,32 @@ bool Square::onTouchEnded(Touch* touch, Event* event)
 		break;
 	case Tool::BEGIN:
 		this->state = START;
-		g_start = this->gridLocation;
+		g_start.push_back(this->gridLocation);
 		this->setColor(Color3B::BLUE);
 		break;
 	case Tool::END:
 		this->setColor(Color3B::MAGENTA);
 		this->state = END;
-		g_end = this->gridLocation;
+		g_end.push_back(this->gridLocation);
 		break;
 	case Tool::ERASE:
-		// TODO: erase should also remove begins and ends from their respective lists.
+		std::vector<Point>* vector;
+		switch(this->state)
+		{
+		case FILLED:
+			vector = &g_packages;
+			break;
+		case START:
+			vector = &g_start;
+			break;
+		case END:
+			vector = &g_end;
+			break;
+		}
+		auto it = std::find(vector->begin(), vector->end(), this->gridLocation);
+		if (it != vector->end()) vector->erase(it);
 		this->state = EMPTY;
 		this->setColor(Color3B::WHITE);
-		auto it = std::find(g_packages.begin(), g_packages.end(), this->gridLocation);
-		if (it != g_packages.end()) {
-			g_packages.erase(it);
-		}
-		break;
 	}
 	
 	return true;
