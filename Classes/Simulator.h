@@ -27,6 +27,7 @@ public:
 	Grid* grid;
     
 	void menuRunCallback(cocos2d::Ref* pSender);
+	void createRobots();
     
 	void tick(float dt);
 

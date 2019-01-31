@@ -39,23 +39,13 @@ bool Simulator::init()
     return true;
 }
 
+// TODO: remove this call from simulator and simply make the state of the simulator a global variable.
 void Simulator::menuRunCallback(Ref* pSender)
 {
-	for (Point start : g_start) {
-		auto robot = Robot::create();
-		robot->initWithFile("Robot.png");
-		robot->setPosition(g_square_size / 2 + (start.x) * g_square_size, g_square_size / 2 + (start.y) * g_square_size);
-		robot->setColor(Color3B(200, 100, 100));
-		robot->setContentSize(Size(g_square_size, g_square_size));
-		robot->grid_position = start;
-		grid->addChild(robot);
-
-		this->createPath(robot);
-
-		this->robots.push_back(robot);
-	}
-
-	this->state = RUNNING;
+	if (this->state == RUNNING) 
+		this->state = PAUSED;
+	else
+		this->state = RUNNING;
 }
 
 void Simulator::tick(float dt) {
@@ -64,6 +54,8 @@ void Simulator::tick(float dt) {
 	// TODO: change state of simulator when all packages have been delivered.
 	// It ends when the list of packages to be delivered is empty. ( the clone one )
 	if (this->state == RUNNING) {
+		if (this->robots.empty())
+			this->createRobots();
 		for (Robot* robot : this->robots) {
 			if (!robot->path.empty())
 			{	// TODO: create smooth movement instead of current grid based movement.
@@ -75,8 +67,8 @@ void Simulator::tick(float dt) {
 				if (x == robot->package.x && y == robot->package.y) 
 				{
 					this->grid->squares[x][y]->setColor(Color3B::WHITE);
-					// TODO: change to remove the specific point instead of popping the one on the back of the vector.
-					g_packages.pop_back();
+					auto it = std::find(g_packages.begin(), g_packages.end(), robot->package);
+					if (it != g_packages.end()) g_packages.erase(it);
 				}
 				auto position = Point(g_square_size / 2 + x * g_square_size, g_square_size / 2 + y * g_square_size);
 				robot->setPosition(position);
@@ -97,7 +89,7 @@ void Simulator::tick(float dt) {
 void Simulator::createPath(Robot* robot)
 {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
-
+	CCLOG("Grid_position of robot: %f %f", robot->grid_position.x, robot->grid_position.y);
 	int numberOfLines = visibleSize.height / g_square_size;
 	int numberOfColumns = visibleSize.width / g_square_size;
 
@@ -114,8 +106,23 @@ void Simulator::createPath(Robot* robot)
 		generator.addCollision(vec2i);
 	}
 
-	// TODO: select closest package to your current location.
-	Point destination = g_packages.back();
+	// TODO: fix shortest distance calculation
+	// For some reason, he is utilizing the shortest distance from the package already collected here.
+	Point destination;
+	float shortest_distance = std::numeric_limits<float>::max();
+	for (Point package : g_packages) 
+	{
+		float distance = abs(package.x - robot->grid_position.x), abs(package.y - robot->grid_position.y);
+		CCLOG("Package_distance : %f" ,distance);
+		CCLOG("Package: %f %f", package.x, package.y);
+		if (distance < shortest_distance)
+		{
+			shortest_distance = distance;
+			destination = package;
+		}
+	}
+
+	CCLOG("Shortest_distance : %f", shortest_distance);
 	AStar::Vec2i dest;
 	dest.x = destination.x;
 	dest.y = destination.y;
@@ -135,4 +142,20 @@ void Simulator::createPath(Robot* robot)
 
 	robot->package = destination;
 	robot->path = min_path;
+}
+
+void Simulator::createRobots() {
+	for (Point start : g_start) {
+		auto robot = Robot::create();
+		robot->initWithFile("Robot.png");
+		robot->setPosition(g_square_size / 2 + (start.x) * g_square_size, g_square_size / 2 + (start.y) * g_square_size);
+		robot->setColor(Color3B(200, 100, 100));
+		robot->setContentSize(Size(g_square_size, g_square_size));
+		robot->grid_position = start;
+		grid->addChild(robot);
+
+		this->createPath(robot);
+
+		this->robots.push_back(robot);
+	}
 }
