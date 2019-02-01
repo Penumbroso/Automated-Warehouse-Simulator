@@ -32,28 +32,20 @@ bool Simulator::init()
 	grid = Grid::create();
 	this->addChild(grid);
 
-	auto toolbar = Toolbar::create(CC_CALLBACK_1(Simulator::menuRunCallback, this));
+	auto toolbar = Toolbar::create();
 	this->addChild(toolbar);
 
-	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::tick), 0.5f);
+	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::tick), 0.15f);
     return true;
 }
 
-// TODO: remove this call from simulator and simply make the state of the simulator a global variable.
-void Simulator::menuRunCallback(Ref* pSender)
-{
-	if (this->state == RUNNING) 
-		this->state = PAUSED;
-	else
-		this->state = RUNNING;
-}
-
 void Simulator::tick(float dt) {
-	if (this->state == EDITING);
+	if (!g_running) CCLOG("Paused");
 
 	// TODO: change state of simulator when all packages have been delivered.
 	// It ends when the list of packages to be delivered is empty. ( the clone one )
-	if (this->state == RUNNING) {
+	if (g_running) 
+	{
 		if (this->robots.empty())
 			this->createRobots();
 		for (Robot* robot : this->robots) {
@@ -75,12 +67,7 @@ void Simulator::tick(float dt) {
 				robot->path.pop_back();
 				robot->grid_position = Point(x, y);
 			}
-			else
-			{	
-				if (!g_packages.empty()) {
-					this->createPath(robot);
-				}
-			}
+			else if (!g_packages.empty()) this->createPath(robot);
 		}
 	}
 
@@ -89,7 +76,6 @@ void Simulator::tick(float dt) {
 void Simulator::createPath(Robot* robot)
 {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
-	CCLOG("Grid_position of robot: %f %f", robot->grid_position.x, robot->grid_position.y);
 	int numberOfLines = visibleSize.height / g_square_size;
 	int numberOfColumns = visibleSize.width / g_square_size;
 
@@ -106,15 +92,11 @@ void Simulator::createPath(Robot* robot)
 		generator.addCollision(vec2i);
 	}
 
-	// TODO: fix shortest distance calculation
-	// For some reason, he is utilizing the shortest distance from the package already collected here.
 	Point destination;
 	float shortest_distance = std::numeric_limits<float>::max();
 	for (Point package : g_packages) 
 	{
-		float distance = abs(package.x - robot->grid_position.x), abs(package.y - robot->grid_position.y);
-		CCLOG("Package_distance : %f" ,distance);
-		CCLOG("Package: %f %f", package.x, package.y);
+		float distance = abs(package.x - robot->grid_position.x) + abs(package.y - robot->grid_position.y);
 		if (distance < shortest_distance)
 		{
 			shortest_distance = distance;
@@ -122,7 +104,6 @@ void Simulator::createPath(Robot* robot)
 		}
 	}
 
-	CCLOG("Shortest_distance : %f", shortest_distance);
 	AStar::Vec2i dest;
 	dest.x = destination.x;
 	dest.y = destination.y;
@@ -145,7 +126,8 @@ void Simulator::createPath(Robot* robot)
 }
 
 void Simulator::createRobots() {
-	for (Point start : g_start) {
+	for (Point start : g_start) 
+	{
 		auto robot = Robot::create();
 		robot->initWithFile("Robot.png");
 		robot->setPosition(g_square_size / 2 + (start.x) * g_square_size, g_square_size / 2 + (start.y) * g_square_size);

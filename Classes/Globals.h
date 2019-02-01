@@ -20,3 +20,5 @@ extern std::vector<Point> g_end;
 extern std::vector<Point> g_packages;
 
 extern Tool g_current_tool;
+
+extern bool g_running;

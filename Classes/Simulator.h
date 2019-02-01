@@ -13,30 +13,17 @@ public:
 
     virtual bool init();
 
-	enum State
-	{
-		EDITING,
-		RUNNING,
-		PAUSED
-	};
-
-	State state = EDITING;
-
 	std::vector<Robot*> robots;
 
 	Grid* grid;
-    
-	void menuRunCallback(cocos2d::Ref* pSender);
-	void createRobots();
     
 	void tick(float dt);
 
     CREATE_FUNC(Simulator);
 
 protected:
-	cocos2d::Node*  _trackNode;
-
 	void createPath(Robot* r);
+	void createRobots();
 };
 
 #endif // __HELLOWORLD_SCENE_H__

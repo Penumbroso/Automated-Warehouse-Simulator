@@ -5,11 +5,13 @@ USING_NS_CC;
 class Toolbar : public cocos2d::Layer
 {
 	public:
-		static Toolbar* create(ccMenuCallback callbackFunc);
-		virtual bool init(ccMenuCallback callbackFunc);
+		virtual bool init();
 
 		void menuPackageCallback(cocos2d::Ref* pSender);
 		void menuBeginningCallback(cocos2d::Ref* pSender);
 		void menuEndCallback(cocos2d::Ref* pSender);
 		void menuEraseCallback(cocos2d::Ref* pSender);
+		void menuRunCallback(cocos2d::Ref* pSender);
+
+		CREATE_FUNC(Toolbar);
 };

@@ -1,21 +1,8 @@
 #include "Toolbar.h"
 #include "Globals.h"
 
-Toolbar* Toolbar::create(ccMenuCallback callbackFunc)
-{
-	Toolbar* tb = new (std::nothrow) Toolbar();
-	if (tb && tb->init(callbackFunc))
-	{
-		tb->autorelease();
-	}
-	else
-	{
-		CC_SAFE_DELETE(tb);
-	}
-	return tb;
-}
 
-bool Toolbar::init(ccMenuCallback callbackFunc) 
+bool Toolbar::init() 
 {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -26,28 +13,28 @@ bool Toolbar::init(ccMenuCallback callbackFunc)
 	auto playItem = MenuItemImage::create(
 		"PlayNormal.png",
 		"PlayPressed.png",
-		callbackFunc);
+		CC_CALLBACK_1(Toolbar::menuRunCallback, this));
 
 	playItem->setPosition(Vec2(visibleSize.width / 2 - 100, 24));
 
 	auto packageItem = MenuItemImage::create(
-	"PackageButton.png",
-	"PackageButton.png",
-	CC_CALLBACK_1(Toolbar::menuPackageCallback, this));
+		"PackageButton.png",
+		"PackageButton.png",
+		CC_CALLBACK_1(Toolbar::menuPackageCallback, this));
 
 	packageItem->setPosition(Vec2(visibleSize.width / 2 - 50, 24));
 
 	auto beginningItem = MenuItemImage::create(
-	"BeginningButton.png",
-	"BeginninbButton.png",
-	CC_CALLBACK_1(Toolbar::menuBeginningCallback, this));
+		"BeginningButton.png",
+		"BeginninbButton.png",
+		CC_CALLBACK_1(Toolbar::menuBeginningCallback, this));
 
 	beginningItem->setPosition(Vec2(visibleSize.width / 2 + 0, 24));
 
 	auto endItem = MenuItemImage::create(
-	"EndButton.png",
-	"EndButton.png",
-	CC_CALLBACK_1(Toolbar::menuEndCallback, this));
+		"EndButton.png",
+		"EndButton.png",
+		CC_CALLBACK_1(Toolbar::menuEndCallback, this));
 
 	endItem->setPosition(Vec2(visibleSize.width / 2 + 50, 24));
 
@@ -57,9 +44,6 @@ bool Toolbar::init(ccMenuCallback callbackFunc)
 		CC_CALLBACK_1(Toolbar::menuEraseCallback, this));
 
 	eraseItem->setPosition(Vec2(visibleSize.width / 2 + 100, 24));
-
-	// TODO: create pause button.
-	// Perhaps changing the state of the simulator would achieve that.
 
 	// TODO: create reset button.
 	// Have to save all the globals before the simulation begin and then load the save.
@@ -89,4 +73,10 @@ void Toolbar::menuEndCallback(cocos2d::Ref * pSender)
 void Toolbar::menuEraseCallback(cocos2d::Ref * pSender)
 {
 	g_current_tool = ERASE;
+}
+
+void Toolbar::menuRunCallback(cocos2d::Ref * pSender)
+{
+	// TODO: change symbol from play to pause icon
+	g_running = !g_running;
 }
