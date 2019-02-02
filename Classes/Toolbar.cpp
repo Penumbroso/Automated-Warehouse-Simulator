@@ -45,10 +45,14 @@ bool Toolbar::init()
 
 	eraseItem->setPosition(Vec2(visibleSize.width / 2 + 100, 24));
 
-	// TODO: create reset button.
-	// Have to save all the globals before the simulation begin and then load the save.
+	auto resetItem = MenuItemImage::create(
+		"EraseButton.png",
+		"EraseButton.png",
+		CC_CALLBACK_1(Toolbar::menuResetCallback, this));
+
+	resetItem->setPosition(Vec2(visibleSize.width / 2 + 150, 24));
 	  
-	auto menu = Menu::create(playItem, packageItem, beginningItem, endItem, eraseItem, NULL);
+	auto menu = Menu::create(playItem, packageItem, beginningItem, endItem, eraseItem, resetItem,  NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 
@@ -80,4 +84,9 @@ void Toolbar::menuRunCallback(cocos2d::Ref * pSender)
 	g_running = !g_running;
 	// TODO: change from pause to play and vice versa.
 	playItem->setNormalImage(Sprite::create("EndButton.png"));
+}
+
+void Toolbar::menuResetCallback(cocos2d::Ref * pSender)
+{
+	g_request_load = true;
 }

@@ -12,6 +12,7 @@ class Toolbar : public cocos2d::Layer
 		void menuEndCallback(cocos2d::Ref* pSender);
 		void menuEraseCallback(cocos2d::Ref* pSender);
 		void menuRunCallback(cocos2d::Ref* pSender);
+		void menuResetCallback(cocos2d::Ref* pSender);
 
 		cocos2d::MenuItemImage* playItem;
 
