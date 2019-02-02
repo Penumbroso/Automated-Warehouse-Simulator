@@ -10,7 +10,7 @@ bool Toolbar::init()
 	menuContainer->setPosition(Vec2(visibleSize.width / 2, 25));
 	this->addChild(menuContainer);
 
-	auto playItem = MenuItemImage::create(
+	playItem = MenuItemImage::create(
 		"PlayNormal.png",
 		"PlayPressed.png",
 		CC_CALLBACK_1(Toolbar::menuRunCallback, this));
@@ -77,6 +77,7 @@ void Toolbar::menuEraseCallback(cocos2d::Ref * pSender)
 
 void Toolbar::menuRunCallback(cocos2d::Ref * pSender)
 {
-	// TODO: change symbol from play to pause icon
 	g_running = !g_running;
+	// TODO: change from pause to play and vice versa.
+	playItem->setNormalImage(Sprite::create("EndButton.png"));
 }

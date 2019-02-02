@@ -48,11 +48,14 @@ void Simulator::tick(float dt) {
 	{
 		if (this->robots.empty())
 			this->createRobots();
+
 		for (Robot* robot : this->robots) {
 			if (!robot->path.empty())
 			{	// TODO: create smooth movement instead of current grid based movement.
 				// Move pixel by pixel until it gets to the correct position ( got to check every move ).
 				// Then pop the path and do it again.
+
+				// TODO: check for collision. If so, recreate path with obstacle.
 				auto pos = robot->path.back();
 				int x = pos.x;
 				int y = pos.y;
