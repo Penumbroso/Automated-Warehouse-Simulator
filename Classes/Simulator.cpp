@@ -40,14 +40,20 @@ bool Simulator::init()
 }
 
 void Simulator::tick(float dt) {
-	if (!g_running) CCLOG("Paused");
 
 	// TODO: change state of simulator when all packages have been delivered.
 	// It ends when the list of packages to be delivered is empty. ( the clone one )
 	if (g_running) 
 	{
+		if (g_request_load)
+			this->load();
+
+		if (s_start.empty())
+			this->save();
+
 		if (this->robots.empty())
 			this->createRobots();
+
 		for (Robot* robot : this->robots) {
 			if (!robot->path.empty())
 			{	// TODO: create smooth movement instead of current grid based movement.
@@ -140,4 +146,52 @@ void Simulator::createRobots() {
 
 		this->robots.push_back(robot);
 	}
+}
+
+void Simulator::load()
+{
+	for (Point start : s_start)
+	{
+		int x = start.x;
+		int y = start.y;
+		grid->squares[x][y]->state = Square::State::START;
+		grid->squares[x][y]->setColor(Color3B::BLUE);
+	}
+
+	for (Point end : s_end)
+	{
+		int x = end.x;
+		int y = end.y;
+		grid->squares[x][y]->state = Square::State::END;
+		grid->squares[x][y]->setColor(Color3B::RED);
+	}
+
+	for (Point package : s_packages)
+	{
+		int x = package.x;
+		int y = package.y;
+		grid->squares[x][y]->state = Square::State::FILLED;
+		grid->squares[x][y]->setColor(Color3B::GRAY);
+	}
+
+	g_start = s_start;
+	g_end = s_end;
+	g_packages = s_packages;
+
+	s_start = {};
+	s_end = {};
+	s_packages = {};
+	g_request_load = false;
+
+	for (Robot* robot : this->robots)
+		robot->removeFromParent();
+	
+	this->robots = {};
+}
+
+void Simulator::save()
+{
+	s_start = g_start;
+	s_end = g_end;
+	s_packages = g_packages;
 }

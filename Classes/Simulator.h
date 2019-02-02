@@ -22,6 +22,8 @@ public:
     CREATE_FUNC(Simulator);
 
 protected:
+	void load();
+	void save();
 	void createPath(Robot* r);
 	void createRobots();
 };
