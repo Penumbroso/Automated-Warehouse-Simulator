@@ -7,14 +7,23 @@ class Toolbar : public cocos2d::Layer
 	public:
 		virtual bool init();
 
-		void menuPackageCallback(cocos2d::Ref* pSender);
-		void menuBeginningCallback(cocos2d::Ref* pSender);
-		void menuEndCallback(cocos2d::Ref* pSender);
-		void menuEraseCallback(cocos2d::Ref* pSender);
-		void menuRunCallback(cocos2d::Ref* pSender);
-		void menuResetCallback(cocos2d::Ref* pSender);
+		enum Tool {
+			PACKAGE,
+			BEGIN,
+			END,
+			ERASE
+		};
 
-		cocos2d::MenuItemImage* playItem;
+		Tool current = PACKAGE;
+
+		void setCallback(MenuItemImage* btn, ccMenuCallback callback);
+
+		MenuItemImage* runItem;
+		MenuItemImage* endItem;
+		MenuItemImage* packageItem;
+		MenuItemImage* beginItem;
+		MenuItemImage* resetItem;
+		MenuItemImage* eraseItem;
 
 		CREATE_FUNC(Toolbar);
 };

@@ -26,8 +26,4 @@ extern std::vector<Point> s_packages;
 
 extern Tool g_current_tool;
 
-extern bool g_running;
-
-extern bool g_request_load;
-
 // TODO: make global colors

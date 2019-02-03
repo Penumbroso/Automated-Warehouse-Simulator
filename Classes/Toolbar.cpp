@@ -10,83 +10,45 @@ bool Toolbar::init()
 	menuContainer->setPosition(Vec2(visibleSize.width / 2, 25));
 	this->addChild(menuContainer);
 
-	playItem = MenuItemImage::create(
+	runItem = MenuItemImage::create(
 		"PlayNormal.png",
-		"PlayPressed.png",
-		CC_CALLBACK_1(Toolbar::menuRunCallback, this));
+		"PlayPressed.png");
 
-	playItem->setPosition(Vec2(visibleSize.width / 2 - 100, 24));
-
-	auto packageItem = MenuItemImage::create(
+	packageItem = MenuItemImage::create(
 		"PackageButton.png",
-		"PackageButton.png",
-		CC_CALLBACK_1(Toolbar::menuPackageCallback, this));
+		"PackageButton.png");
 
-	packageItem->setPosition(Vec2(visibleSize.width / 2 - 50, 24));
-
-	auto beginningItem = MenuItemImage::create(
+	beginItem = MenuItemImage::create(
 		"BeginningButton.png",
-		"BeginninbButton.png",
-		CC_CALLBACK_1(Toolbar::menuBeginningCallback, this));
+		"BeginninbButton.png");
 
-	beginningItem->setPosition(Vec2(visibleSize.width / 2 + 0, 24));
-
-	auto endItem = MenuItemImage::create(
+	endItem = MenuItemImage::create(
 		"EndButton.png",
-		"EndButton.png",
-		CC_CALLBACK_1(Toolbar::menuEndCallback, this));
+		"EndButton.png");
 
+	eraseItem = MenuItemImage::create(
+		"EraseButton.png",
+		"EraseButton.png");
+
+	resetItem = MenuItemImage::create(
+		"EraseButton.png",
+		"EraseButton.png");
+
+	runItem->setPosition(Vec2(visibleSize.width / 2 - 100, 24));
+	packageItem->setPosition(Vec2(visibleSize.width / 2 - 50, 24));
+	beginItem->setPosition(Vec2(visibleSize.width / 2 + 0, 24));
 	endItem->setPosition(Vec2(visibleSize.width / 2 + 50, 24));
-
-	auto eraseItem = MenuItemImage::create(
-		"EraseButton.png",
-		"EraseButton.png",
-		CC_CALLBACK_1(Toolbar::menuEraseCallback, this));
-
 	eraseItem->setPosition(Vec2(visibleSize.width / 2 + 100, 24));
-
-	auto resetItem = MenuItemImage::create(
-		"EraseButton.png",
-		"EraseButton.png",
-		CC_CALLBACK_1(Toolbar::menuResetCallback, this));
-
 	resetItem->setPosition(Vec2(visibleSize.width / 2 + 150, 24));
 	  
-	auto menu = Menu::create(playItem, packageItem, beginningItem, endItem, eraseItem, resetItem,  NULL);
+	auto menu = Menu::create(runItem, packageItem, beginItem, endItem, eraseItem, resetItem,  NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 
 	return true;
 }
 
-void Toolbar::menuPackageCallback(cocos2d::Ref * pSender)
+void Toolbar::setCallback(MenuItemImage* btn, ccMenuCallback callback)
 {
-	g_current_tool = PACKAGE;
-}
-
-void Toolbar::menuBeginningCallback(cocos2d::Ref * pSender)
-{
-	g_current_tool = BEGIN;
-}
-
-void Toolbar::menuEndCallback(cocos2d::Ref * pSender)
-{
-	g_current_tool = END;
-}
-
-void Toolbar::menuEraseCallback(cocos2d::Ref * pSender)
-{
-	g_current_tool = ERASE;
-}
-
-void Toolbar::menuRunCallback(cocos2d::Ref * pSender)
-{
-	g_running = !g_running;
-	// TODO: change from pause to play and vice versa.
-	playItem->setNormalImage(Sprite::create("EndButton.png"));
-}
-
-void Toolbar::menuResetCallback(cocos2d::Ref * pSender)
-{
-	g_request_load = true;
+	btn->setCallback(callback);
 }

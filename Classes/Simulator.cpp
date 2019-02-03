@@ -1,9 +1,7 @@
 #include "Simulator.h"
 #include "SimpleAudioEngine.h"
-#include "Globals.h"
 #include "AStar.hpp"
 #include <algorithm>
-#include "Toolbar.h"
 #include <vector>
 #include <limits>
 
@@ -32,51 +30,47 @@ bool Simulator::init()
 	grid = Grid::create();
 	this->addChild(grid);
 
-	auto toolbar = Toolbar::create();
+	toolbar = Toolbar::create();
+	toolbar->setCallback(toolbar->runItem, CC_CALLBACK_1(Simulator::menuRunCallback, this));
+	toolbar->setCallback(toolbar->packageItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Tool::PACKAGE));
+	toolbar->setCallback(toolbar->beginItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Tool::BEGIN));
+	toolbar->setCallback(toolbar->endItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Tool::END));
+	toolbar->setCallback(toolbar->eraseItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Tool::ERASE));
+	toolbar->setCallback(toolbar->resetItem, CC_CALLBACK_1(Simulator::menuResetCallback, this));
 	this->addChild(toolbar);
 
-	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::tick), 0.15f);
     return true;
 }
 
-void Simulator::tick(float dt) {
+void Simulator::tick(float dt) 
+{
 
 	// TODO: change state of simulator when all packages have been delivered.
 	// It ends when the list of packages to be delivered is empty. ( the clone one )
-	if (g_running) 
-	{
-		if (g_request_load)
-			this->load();
 
-		if (s_start.empty())
-			this->save();
+	for (Robot* robot : this->robots) {
+		if (!robot->path.empty())
+		{	// TODO: create smooth movement instead of current grid based movement.
+			// Move pixel by pixel until it gets to the correct position ( got to check every move ).
+			// Then pop the path and do it again.
 
-		if (this->robots.empty())
-			this->createRobots();
-
-		for (Robot* robot : this->robots) {
-			if (!robot->path.empty())
-			{	// TODO: create smooth movement instead of current grid based movement.
-				// Move pixel by pixel until it gets to the correct position ( got to check every move ).
-				// Then pop the path and do it again.
-
-				// TODO: check for collision. If so, recreate path with obstacle.
-				auto pos = robot->path.back();
-				int x = pos.x;
-				int y = pos.y;
-				if (x == robot->package.x && y == robot->package.y) 
-				{
-					this->grid->squares[x][y]->setColor(Color3B::WHITE);
-					auto it = std::find(g_packages.begin(), g_packages.end(), robot->package);
-					if (it != g_packages.end()) g_packages.erase(it);
-				}
-				auto position = Point(g_square_size / 2 + x * g_square_size, g_square_size / 2 + y * g_square_size);
-				robot->setPosition(position);
-				robot->path.pop_back();
-				robot->grid_position = Point(x, y);
+			// TODO: check for collision. If so, recreate path with obstacle.
+			auto pos = robot->path.back();
+			int x = pos.x;
+			int y = pos.y;
+			if (x == robot->package.x && y == robot->package.y) 
+			{
+				this->grid->squares[x][y]->setColor(Color3B::WHITE);
+				auto it = std::find(g_packages.begin(), g_packages.end(), robot->package);
+				if (it != g_packages.end()) g_packages.erase(it);
 			}
-			else if (!g_packages.empty()) this->createPath(robot);
+			auto position = Point(g_square_size / 2 + x * g_square_size, g_square_size / 2 + y * g_square_size);
+			robot->setPosition(position);
+			robot->path.pop_back();
+			robot->grid_position = Point(x, y);
 		}
+		else if (!g_packages.empty()) 
+			this->createPath(robot);
 	}
 
 }
@@ -134,6 +128,8 @@ void Simulator::createPath(Robot* robot)
 }
 
 void Simulator::createRobots() {
+	if (!robots.empty()) return;
+
 	for (Point start : g_start) 
 	{
 		auto robot = Robot::create();
@@ -183,7 +179,6 @@ void Simulator::load()
 	s_start = {};
 	s_end = {};
 	s_packages = {};
-	g_request_load = false;
 
 	for (Robot* robot : this->robots)
 		robot->removeFromParent();
@@ -193,7 +188,37 @@ void Simulator::load()
 
 void Simulator::save()
 {
+	if (this->saved) return;
+
 	s_start = g_start;
 	s_end = g_end;
 	s_packages = g_packages;
+
+	this->saved = true;
+}
+
+void Simulator::menuToolCallback(Tool tool)
+{
+	g_current_tool = tool;
+}
+
+void Simulator::menuRunCallback(cocos2d::Ref * pSender)
+{
+	this->save();
+	this->createRobots();
+
+	if (!this->running)
+		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::tick), 0.15f);
+	else
+		this->unscheduleAllSelectors();
+
+	this->running = !this->running;
+}
+
+void Simulator::menuResetCallback(cocos2d::Ref * pSender)
+{
+	this->unscheduleAllSelectors();
+	this->load();
+	this->saved = false;
+	this->running = false;
 }

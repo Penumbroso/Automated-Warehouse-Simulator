@@ -4,6 +4,8 @@
 #include "cocos2d.h"
 #include "Grid.h"
 #include "Robot.h"
+#include "Toolbar.h"
+#include "Globals.h"
 #include <vector>
 
 class Simulator : public cocos2d::Scene
@@ -16,6 +18,7 @@ public:
 	std::vector<Robot*> robots;
 
 	Grid* grid;
+	Toolbar* toolbar;
     
 	void tick(float dt);
 
@@ -24,8 +27,15 @@ public:
 protected:
 	void load();
 	void save();
+	void menuToolCallback(Tool tool);
+	void menuRunCallback(cocos2d::Ref * pSender);
+	void menuResetCallback(cocos2d::Ref * pSender);
 	void createPath(Robot* r);
 	void createRobots();
+
+private:
+	bool running = false;
+	bool saved = false;
 };
 
 #endif // __HELLOWORLD_SCENE_H__
