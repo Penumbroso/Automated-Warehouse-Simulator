@@ -3,13 +3,6 @@
 
 USING_NS_CC;
 
-enum Tool {
-	PACKAGE,
-	BEGIN,
-	END,
-	ERASE
-};
-
 extern const int g_square_size;
 
 extern std::vector<Point> g_start;
@@ -24,6 +17,5 @@ extern std::vector<Point> g_packages;
 
 extern std::vector<Point> s_packages;
 
-extern Tool g_current_tool;
 
 // TODO: make global colors

@@ -27,9 +27,10 @@ public:
 protected:
 	void load();
 	void save();
-	void menuToolCallback(Tool tool);
+	void menuToolCallback(Toolbar::Tool tool);
 	void menuRunCallback(cocos2d::Ref * pSender);
 	void menuResetCallback(cocos2d::Ref * pSender);
+	void gridSquareCallback(Square* square);
 	void createPath(Robot* r);
 	void createRobots();
 

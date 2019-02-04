@@ -6,9 +6,11 @@ USING_NS_CC;
 bool Grid::init()
 {
 	if (!Layer::init())
-	{
 		return false;
-	}
+	
+	menu = Menu::create();
+	menu->setPosition(Vec2::ZERO);
+	this->addChild(menu);
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -19,15 +21,15 @@ bool Grid::init()
 	for (int j = 0; j < number_of_columns; j++) {
 		for (int i = 0; i < number_of_lines; i++) {
 			auto square = Square::create();
-			square->initWithFile("square.png");
+			square->setNormalImage(Sprite::create("square.png"));
 			square->setContentSize(Size(g_square_size, g_square_size));
 
-			this->squares[j][i] = square;
+			squares[std::make_pair(j, i)] = square;
 			square->gridLocation = Point(j, i);
 
 			square->setPosition(Vec2(j * g_square_size + g_square_size / 2,  i * g_square_size + g_square_size / 2));
 
-			this->addChild(square, 0);
+			menu->addChild(square);
 		}
 	}
 
@@ -46,5 +48,9 @@ bool Grid::init()
 	}
 
 	return true;
+}
+
+void Grid::setCallback(ccMenuCallback callback)
+{
 
 }

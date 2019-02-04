@@ -10,15 +10,15 @@
     <Filter Include="src">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\GUI">
+      <UniqueIdentifier>{6c1e890c-b9c0-4f16-8929-435d95f20d76}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\AppDelegate.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Grid.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Globals.cpp">
@@ -37,7 +37,10 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Toolbar.cpp">
-      <Filter>src</Filter>
+      <Filter>src\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Grid.cpp">
+      <Filter>src\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -45,9 +48,6 @@
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\AppDelegate.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Grid.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Globals.h">
@@ -66,7 +66,10 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Toolbar.h">
-      <Filter>src</Filter>
+      <Filter>src\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Grid.h">
+      <Filter>src\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

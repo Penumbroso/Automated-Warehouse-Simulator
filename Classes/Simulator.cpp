@@ -28,14 +28,21 @@ bool Simulator::init()
 	// TODO: make the grid draggable.
 	// TODO: make grid zoomable.
 	grid = Grid::create();
+	for (const auto &p : grid->squares)
+	{
+		auto square = p.second;
+		// TODO: put the CC_CALLBACK inside the grid and instead pass the only the function
+		square->setCallback(CC_CALLBACK_0(Simulator::gridSquareCallback, this, square));
+	}
+		
 	this->addChild(grid);
 
 	toolbar = Toolbar::create();
 	toolbar->setCallback(toolbar->runItem, CC_CALLBACK_1(Simulator::menuRunCallback, this));
-	toolbar->setCallback(toolbar->packageItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Tool::PACKAGE));
-	toolbar->setCallback(toolbar->beginItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Tool::BEGIN));
-	toolbar->setCallback(toolbar->endItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Tool::END));
-	toolbar->setCallback(toolbar->eraseItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Tool::ERASE));
+	toolbar->setCallback(toolbar->packageItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::PACKAGE));
+	toolbar->setCallback(toolbar->beginItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::BEGIN));
+	toolbar->setCallback(toolbar->endItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::END));
+	toolbar->setCallback(toolbar->eraseItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::ERASE));
 	toolbar->setCallback(toolbar->resetItem, CC_CALLBACK_1(Simulator::menuResetCallback, this));
 	this->addChild(toolbar);
 
@@ -60,7 +67,9 @@ void Simulator::tick(float dt)
 			int y = pos.y;
 			if (x == robot->package.x && y == robot->package.y) 
 			{
-				this->grid->squares[x][y]->setColor(Color3B::WHITE);
+				// TODO: have to fix this since I removed the 2d vector
+				//this->grid->squares[x][y]->setColor(Color3B::WHITE);
+				this->grid->squares.at(std::make_pair(x, y))->setColor(Color3B::WHITE);
 				auto it = std::find(g_packages.begin(), g_packages.end(), robot->package);
 				if (it != g_packages.end()) g_packages.erase(it);
 			}
@@ -152,24 +161,24 @@ void Simulator::load()
 	{
 		int x = start.x;
 		int y = start.y;
-		grid->squares[x][y]->state = Square::State::START;
-		grid->squares[x][y]->setColor(Color3B::BLUE);
+		grid->squares.at(std::make_pair(x, y))->setColor(Color3B::BLUE);
+		grid->squares.at(std::make_pair(x, y))->state = Square::State::START;
 	}
 
 	for (Point end : s_end)
 	{
 		int x = end.x;
 		int y = end.y;
-		grid->squares[x][y]->state = Square::State::END;
-		grid->squares[x][y]->setColor(Color3B::RED);
+		grid->squares.at(std::make_pair(x, y))->state = Square::State::END;
+		grid->squares.at(std::make_pair(x, y))->setColor(Color3B::RED);
 	}
 
 	for (Point package : s_packages)
 	{
 		int x = package.x;
 		int y = package.y;
-		grid->squares[x][y]->state = Square::State::FILLED;
-		grid->squares[x][y]->setColor(Color3B::GRAY);
+		grid->squares.at(std::make_pair(x, y))->state = Square::State::FILLED;
+		grid->squares.at(std::make_pair(x, y))->setColor(Color3B::GRAY);
 	}
 
 	g_start = s_start;
@@ -197,9 +206,9 @@ void Simulator::save()
 	this->saved = true;
 }
 
-void Simulator::menuToolCallback(Tool tool)
+void Simulator::menuToolCallback(Toolbar::Tool tool)
 {
-	g_current_tool = tool;
+	this->toolbar->selected = tool;
 }
 
 void Simulator::menuRunCallback(cocos2d::Ref * pSender)
@@ -221,4 +230,44 @@ void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 	this->load();
 	this->saved = false;
 	this->running = false;
+}
+
+void Simulator::gridSquareCallback(Square* square)
+{
+	switch (this->toolbar->selected)
+	{
+	case Toolbar::Tool::PACKAGE:
+		square->setColor(Color3B::GRAY);
+		square->state = Square::FILLED;
+		g_packages.push_back(square->gridLocation);
+		break;
+	case Toolbar::Tool::BEGIN:
+		square->setColor(Color3B::BLUE);
+		square->state = Square::START;
+		g_start.push_back(square->gridLocation);
+		break;
+	case Toolbar::Tool::END:
+		square->setColor(Color3B::MAGENTA);
+		square->state = Square::END;
+		g_end.push_back(square->gridLocation);
+		break;
+	case Toolbar::Tool::ERASE:
+		std::vector<Point>* vector;
+		switch (square->state)
+		{
+		case Square::FILLED:
+			vector = &g_packages;
+			break;
+		case Square::START:
+			vector = &g_start;
+			break;
+		case Square::END:
+			vector = &g_end;
+			break;
+		}
+		auto it = std::find(vector->begin(), vector->end(), square->gridLocation);
+		if (it != vector->end()) vector->erase(it);
+		square->state = Square::EMPTY;
+		square->setColor(Color3B::WHITE);
+	}
 }

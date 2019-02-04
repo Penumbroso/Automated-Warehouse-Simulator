@@ -14,7 +14,7 @@ class Toolbar : public cocos2d::Layer
 			ERASE
 		};
 
-		Tool current = PACKAGE;
+		Tool selected = PACKAGE;
 
 		void setCallback(MenuItemImage* btn, ccMenuCallback callback);
 
