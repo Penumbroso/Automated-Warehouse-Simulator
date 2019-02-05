@@ -15,8 +15,8 @@ bool Grid::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	const auto number_of_lines = visibleSize.height / g_square_size;
-	const auto number_of_columns = visibleSize.width / g_square_size;
+	number_of_lines = visibleSize.height / g_square_size + 1;
+	number_of_columns = visibleSize.width / g_square_size + 1;
 
 	for (int j = 0; j < number_of_columns; j++) {
 		for (int i = 0; i < number_of_lines; i++) {
@@ -24,7 +24,7 @@ bool Grid::init()
 			square->setNormalImage(Sprite::create("square.png"));
 			square->setContentSize(Size(g_square_size, g_square_size));
 
-			squares[std::make_pair(j, i)] = square;
+			squares[Point(j, i)] = square;
 			square->gridLocation = Point(j, i);
 
 			square->setPosition(Vec2(j * g_square_size + g_square_size / 2,  i * g_square_size + g_square_size / 2));
@@ -33,6 +33,8 @@ bool Grid::init()
 		}
 	}
 
+
+	// Draw lines
 	Color4F lightGray = Color4F(0.9f, 0.9f, 0.9f, 1);
 
 	for (int i = 0; i < number_of_columns; i++) {
@@ -48,9 +50,4 @@ bool Grid::init()
 	}
 
 	return true;
-}
-
-void Grid::setCallback(ccMenuCallback callback)
-{
-
 }

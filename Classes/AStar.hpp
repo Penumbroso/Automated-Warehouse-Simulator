@@ -9,15 +9,11 @@
 #include <vector>
 #include <functional>
 #include <set>
+#include "cocos2d.h"
 
 namespace AStar
 {
-    struct Vec2i
-    {
-        int x, y;
-
-        bool operator == (const Vec2i& coordinates_);
-    };
+	typedef cocos2d::Point Vec2i;
 
     using uint = unsigned int;
     using HeuristicFunction = std::function<uint(Vec2i, Vec2i)>;

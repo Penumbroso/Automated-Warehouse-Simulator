@@ -11,11 +11,13 @@ class Grid : public cocos2d::Layer
 public:
 	virtual bool init();
 
-	std::map<std::pair<int, int>, Square*> squares;
+	// TODO: use point instead of pair
+	std::map<Point, Square*> squares;
 
 	Menu * menu;
 
-	void setCallback(ccMenuCallback callback);
+	float number_of_columns;
+	float number_of_lines;
 	
 	CREATE_FUNC(Grid);
 

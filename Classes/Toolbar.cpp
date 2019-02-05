@@ -47,8 +47,3 @@ bool Toolbar::init()
 
 	return true;
 }
-
-void Toolbar::setCallback(MenuItemImage* btn, ccMenuCallback callback)
-{
-	btn->setCallback(callback);
-}

@@ -16,8 +16,6 @@ class Toolbar : public cocos2d::Layer
 
 		Tool selected = PACKAGE;
 
-		void setCallback(MenuItemImage* btn, ccMenuCallback callback);
-
 		MenuItemImage* runItem;
 		MenuItemImage* endItem;
 		MenuItemImage* packageItem;

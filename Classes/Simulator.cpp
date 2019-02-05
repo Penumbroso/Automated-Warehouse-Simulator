@@ -32,127 +32,123 @@ bool Simulator::init()
 	{
 		auto square = p.second;
 		// TODO: put the CC_CALLBACK inside the grid and instead pass the only the function
+		// It might be better not to do this.
 		square->setCallback(CC_CALLBACK_0(Simulator::gridSquareCallback, this, square));
 	}
 		
 	this->addChild(grid);
 
 	toolbar = Toolbar::create();
-	toolbar->setCallback(toolbar->runItem, CC_CALLBACK_1(Simulator::menuRunCallback, this));
-	toolbar->setCallback(toolbar->packageItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::PACKAGE));
-	toolbar->setCallback(toolbar->beginItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::BEGIN));
-	toolbar->setCallback(toolbar->endItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::END));
-	toolbar->setCallback(toolbar->eraseItem, CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::ERASE));
-	toolbar->setCallback(toolbar->resetItem, CC_CALLBACK_1(Simulator::menuResetCallback, this));
+	toolbar->runItem->setCallback(CC_CALLBACK_1(Simulator::menuRunCallback, this));
+	toolbar->packageItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::PACKAGE));
+	toolbar->beginItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::BEGIN));
+	toolbar->endItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::END));
+	toolbar->eraseItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::ERASE));
+	toolbar->resetItem->setCallback(CC_CALLBACK_1(Simulator::menuResetCallback, this));
+
 	this->addChild(toolbar);
 
     return true;
 }
 
-void Simulator::tick(float dt) 
+void Simulator::run(float dt) 
 {
-
 	// TODO: change state of simulator when all packages have been delivered.
 	// It ends when the list of packages to be delivered is empty. ( the clone one )
 
 	for (Robot* robot : this->robots) {
 		if (!robot->path.empty())
-		{	// TODO: create smooth movement instead of current grid based movement.
-			// Move pixel by pixel until it gets to the correct position ( got to check every move ).
-			// Then pop the path and do it again.
-
+		{	
 			// TODO: check for collision. If so, recreate path with obstacle.
-			auto pos = robot->path.back();
-			int x = pos.x;
-			int y = pos.y;
-			if (x == robot->package.x && y == robot->package.y) 
+			auto next_position = robot->path.back();
+			auto square = this->grid->squares.at(next_position);
+			if (next_position == robot->package) 
 			{
-				// TODO: have to fix this since I removed the 2d vector
-				//this->grid->squares[x][y]->setColor(Color3B::WHITE);
-				this->grid->squares.at(std::make_pair(x, y))->setColor(Color3B::WHITE);
-				auto it = std::find(g_packages.begin(), g_packages.end(), robot->package);
-				if (it != g_packages.end()) g_packages.erase(it);
+				square->setColor(Color3B::WHITE);
+				// TODO: it should remove from another list that shows only packages without robots searching or carrying them
+				auto it = std::find(packages.begin(), packages.end(), robot->package);
+				if (it != packages.end()) packages.erase(it);
 			}
-			auto position = Point(g_square_size / 2 + x * g_square_size, g_square_size / 2 + y * g_square_size);
-			robot->setPosition(position);
+			// TODO: make conversion from grid position to screen position easier.
+			robot->setPosition(square->getPosition());
 			robot->path.pop_back();
-			robot->grid_position = Point(x, y);
+			robot->grid_position = next_position;
 		}
-		else if (!g_packages.empty()) 
-			this->createPath(robot);
+		else if (!packages.empty())
+		{
+			auto package = this->getClosestPackageFrom(robot->grid_position);
+			auto path = this->createPath(robot->grid_position, package);
+			robot->path = path;
+			robot->package = package;
+		}
+			
 	}
 
 }
 
-void Simulator::createPath(Robot* robot)
+vector<Point> Simulator::createPath(Point origin, Point package)
 {
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	int numberOfLines = visibleSize.height / g_square_size;
-	int numberOfColumns = visibleSize.width / g_square_size;
-
+	// Create A* generator and specify its properties
 	AStar::Generator generator;
-	generator.setWorldSize({ numberOfColumns, numberOfLines });
+	generator.setWorldSize({ grid->number_of_columns, grid->number_of_lines });
 	generator.setHeuristic(AStar::Heuristic::manhattan);
 	generator.setDiagonalMovement(false);
 
-	for (Point point : g_packages)
-	{
-		AStar::Vec2i vec2i;
-		vec2i.x = point.x;
-		vec2i.y = point.y;
-		generator.addCollision(vec2i);
-	}
+	// Add collision for each package
+	for (Point pack : packages)
+		generator.addCollision(pack);
+	
+	// Remove collision from target package
+	generator.removeCollision(package);
 
-	Point destination;
-	float shortest_distance = std::numeric_limits<float>::max();
-	for (Point package : g_packages) 
-	{
-		float distance = abs(package.x - robot->grid_position.x) + abs(package.y - robot->grid_position.y);
-		if (distance < shortest_distance)
-		{
-			shortest_distance = distance;
-			destination = package;
-		}
-	}
-
-	AStar::Vec2i dest;
-	dest.x = destination.x;
-	dest.y = destination.y;
-	generator.removeCollision(dest);
-
+	// Select which path is the shortest from the package to one of the ends
 	int min_length = std::numeric_limits<int>::max();
-	std::vector<AStar::Vec2i> min_path;
-	for (Point end : g_end) 
+	vector<Point> shortest_path;
+	for (Point end : ends) 
 	{
-		auto pathToPackage = generator.findPath({ (int)robot->grid_position.x, (int)robot->grid_position.y }, { (int)destination.x, (int)destination.y });
-		auto pathToDelivery = generator.findPath({ (int)destination.x, (int)destination.y }, { (int)end.x, (int)end.y });
+		auto pathToPackage = generator.findPath({ origin.x, origin.y }, { package.x, package.y });
+		auto pathToDelivery = generator.findPath({ package.x, package.y }, { end.x, end.y });
 		pathToDelivery.pop_back();
 		pathToDelivery.insert(pathToDelivery.end(), pathToPackage.begin(), pathToPackage.end());
 
-		if (pathToDelivery.size() < min_length) min_path = pathToDelivery;
+		if (pathToDelivery.size() < min_length) shortest_path = pathToDelivery;
 	}
-
-	robot->package = destination;
-	robot->path = min_path;
+	
+	return shortest_path;
 }
 
 void Simulator::createRobots() {
 	if (!robots.empty()) return;
 
-	for (Point start : g_start) 
+	for (Point start : starts) 
 	{
 		auto robot = Robot::create();
 		robot->initWithFile("Robot.png");
+		// TODO: create method to convert grid position to screen position
 		robot->setPosition(g_square_size / 2 + (start.x) * g_square_size, g_square_size / 2 + (start.y) * g_square_size);
 		robot->setColor(Color3B(200, 100, 100));
 		robot->setContentSize(Size(g_square_size, g_square_size));
 		robot->grid_position = start;
 		grid->addChild(robot);
 
-		this->createPath(robot);
-
 		this->robots.push_back(robot);
 	}
+}
+
+Point Simulator::getClosestPackageFrom(Point position)
+{
+	Point closest;
+	float shortest_distance = std::numeric_limits<float>::max();
+	for (Point package : packages)
+	{
+		float distance = abs(package.x - position.x) + abs(package.y - position.y);
+		if (distance < shortest_distance)
+		{
+			shortest_distance = distance;
+			closest = package;
+		}
+	}
+	return closest;
 }
 
 void Simulator::load()
@@ -161,29 +157,29 @@ void Simulator::load()
 	{
 		int x = start.x;
 		int y = start.y;
-		grid->squares.at(std::make_pair(x, y))->setColor(Color3B::BLUE);
-		grid->squares.at(std::make_pair(x, y))->state = Square::State::START;
+		grid->squares.at(Point(x, y))->setColor(Color3B::BLUE);
+		grid->squares.at(Point(x, y))->state = Square::State::START;
 	}
 
 	for (Point end : s_end)
 	{
 		int x = end.x;
 		int y = end.y;
-		grid->squares.at(std::make_pair(x, y))->state = Square::State::END;
-		grid->squares.at(std::make_pair(x, y))->setColor(Color3B::RED);
+		grid->squares.at(Point(x, y))->state = Square::State::END;
+		grid->squares.at(Point(x, y))->setColor(Color3B::RED);
 	}
 
 	for (Point package : s_packages)
 	{
 		int x = package.x;
 		int y = package.y;
-		grid->squares.at(std::make_pair(x, y))->state = Square::State::FILLED;
-		grid->squares.at(std::make_pair(x, y))->setColor(Color3B::GRAY);
+		grid->squares.at(Point(x, y))->state = Square::State::FILLED;
+		grid->squares.at(Point(x, y))->setColor(Color3B::GRAY);
 	}
 
-	g_start = s_start;
-	g_end = s_end;
-	g_packages = s_packages;
+	starts = s_start;
+	ends = s_end;
+	packages = s_packages;
 
 	s_start = {};
 	s_end = {};
@@ -199,9 +195,9 @@ void Simulator::save()
 {
 	if (this->saved) return;
 
-	s_start = g_start;
-	s_end = g_end;
-	s_packages = g_packages;
+	s_start = starts;
+	s_end = ends;
+	s_packages = packages;
 
 	this->saved = true;
 }
@@ -217,7 +213,7 @@ void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 	this->createRobots();
 
 	if (!this->running)
-		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::tick), 0.15f);
+		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.15f);
 	else
 		this->unscheduleAllSelectors();
 
@@ -239,30 +235,30 @@ void Simulator::gridSquareCallback(Square* square)
 	case Toolbar::Tool::PACKAGE:
 		square->setColor(Color3B::GRAY);
 		square->state = Square::FILLED;
-		g_packages.push_back(square->gridLocation);
+		packages.push_back(square->gridLocation);
 		break;
 	case Toolbar::Tool::BEGIN:
 		square->setColor(Color3B::BLUE);
 		square->state = Square::START;
-		g_start.push_back(square->gridLocation);
+		starts.push_back(square->gridLocation);
 		break;
 	case Toolbar::Tool::END:
 		square->setColor(Color3B::MAGENTA);
 		square->state = Square::END;
-		g_end.push_back(square->gridLocation);
+		ends.push_back(square->gridLocation);
 		break;
 	case Toolbar::Tool::ERASE:
-		std::vector<Point>* vector;
+		vector<Point>* vector;
 		switch (square->state)
 		{
 		case Square::FILLED:
-			vector = &g_packages;
+			vector = &packages;
 			break;
 		case Square::START:
-			vector = &g_start;
+			vector = &starts;
 			break;
 		case Square::END:
-			vector = &g_end;
+			vector = &ends;
 			break;
 		}
 		auto it = std::find(vector->begin(), vector->end(), square->gridLocation);
