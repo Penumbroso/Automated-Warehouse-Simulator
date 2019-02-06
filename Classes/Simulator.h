@@ -49,6 +49,7 @@ protected:
 private:
 	bool running = false;
 	bool saved = false;
+	AStar::Generator generator;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

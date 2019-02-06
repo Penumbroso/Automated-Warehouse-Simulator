@@ -6,9 +6,10 @@ bool Toolbar::init()
 {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
-	auto menuContainer = Sprite::create("MenuContainer.png");
-	menuContainer->setPosition(Vec2(visibleSize.width / 2, 25));
-	this->addChild(menuContainer);
+
+	auto rectangle = DrawNode::create();
+	rectangle->drawSolidRect(Vec2(0, 0), Vec2(50, visibleSize.height), Color4F(0.3f, 0.3f, 0.3f, 1));
+	this->addChild(rectangle);
 
 	runItem = MenuItemImage::create(
 		"PlayNormal.png",
@@ -34,12 +35,12 @@ bool Toolbar::init()
 		"EraseButton.png",
 		"EraseButton.png");
 
-	runItem->setPosition(Vec2(visibleSize.width / 2 - 100, 24));
-	packageItem->setPosition(Vec2(visibleSize.width / 2 - 50, 24));
-	beginItem->setPosition(Vec2(visibleSize.width / 2 + 0, 24));
-	endItem->setPosition(Vec2(visibleSize.width / 2 + 50, 24));
-	eraseItem->setPosition(Vec2(visibleSize.width / 2 + 100, 24));
-	resetItem->setPosition(Vec2(visibleSize.width / 2 + 150, 24));
+	runItem->setPosition(Vec2(25, visibleSize.height - 25 * 2));
+	packageItem->setPosition(Vec2(25, visibleSize.height - 25 * 4));
+	beginItem->setPosition(Vec2(25, visibleSize.height - 25 * 6));
+	endItem->setPosition(Vec2(25, visibleSize.height - 25 * 8));
+	eraseItem->setPosition(Vec2(25, visibleSize.height - 25 * 10));
+	resetItem->setPosition(Vec2(25, visibleSize.height - 25 * 12));
 	  
 	auto menu = Menu::create(runItem, packageItem, beginItem, endItem, eraseItem, resetItem,  NULL);
 	menu->setPosition(Vec2::ZERO);

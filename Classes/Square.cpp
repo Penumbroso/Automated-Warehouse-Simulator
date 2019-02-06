@@ -8,5 +8,6 @@ void Square::onEnter()
 {
 	MenuItemImage::onEnter();
 
+
 }
 

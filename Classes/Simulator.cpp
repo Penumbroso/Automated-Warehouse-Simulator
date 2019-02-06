@@ -22,6 +22,8 @@ bool Simulator::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+
+
 	auto background = LayerColor::create(Color4B::RED);
 	this->addChild(background);
 
@@ -47,6 +49,10 @@ bool Simulator::init()
 	toolbar->resetItem->setCallback(CC_CALLBACK_1(Simulator::menuResetCallback, this));
 
 	this->addChild(toolbar);
+
+	generator.setWorldSize({ grid->number_of_columns, grid->number_of_lines });
+	generator.setHeuristic(AStar::Heuristic::manhattan);
+	generator.setDiagonalMovement(false);
 
     return true;
 }
@@ -88,17 +94,11 @@ void Simulator::run(float dt)
 
 vector<Point> Simulator::createPath(Point origin, Point package)
 {
-	// Create A* generator and specify its properties
-	AStar::Generator generator;
-	generator.setWorldSize({ grid->number_of_columns, grid->number_of_lines });
-	generator.setHeuristic(AStar::Heuristic::manhattan);
-	generator.setDiagonalMovement(false);
+	generator.clearCollisions();
 
-	// Add collision for each package
 	for (Point pack : packages)
 		generator.addCollision(pack);
 	
-	// Remove collision from target package
 	generator.removeCollision(package);
 
 	// Select which path is the shortest from the package to one of the ends
@@ -157,7 +157,7 @@ void Simulator::load()
 	{
 		int x = start.x;
 		int y = start.y;
-		grid->squares.at(Point(x, y))->setColor(Color3B::BLUE);
+		grid->squares.at(Point(x, y))->setColor(Color3B::GRAY);
 		grid->squares.at(Point(x, y))->state = Square::State::START;
 	}
 
@@ -166,7 +166,7 @@ void Simulator::load()
 		int x = end.x;
 		int y = end.y;
 		grid->squares.at(Point(x, y))->state = Square::State::END;
-		grid->squares.at(Point(x, y))->setColor(Color3B::RED);
+		grid->squares.at(Point(x, y))->setColor(Color3B::GRAY);
 	}
 
 	for (Point package : s_packages)
@@ -230,6 +230,12 @@ void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 
 void Simulator::gridSquareCallback(Square* square)
 {
+	auto plus = Sprite::create("Plus.png");
+	plus->setContentSize(Size(g_square_size - 10, g_square_size- 10));
+
+	auto minus = Sprite::create("Minus.png");
+	minus->setContentSize(Size(g_square_size - 10, g_square_size - 10));
+
 	switch (this->toolbar->selected)
 	{
 	case Toolbar::Tool::PACKAGE:
@@ -238,13 +244,17 @@ void Simulator::gridSquareCallback(Square* square)
 		packages.push_back(square->gridLocation);
 		break;
 	case Toolbar::Tool::BEGIN:
-		square->setColor(Color3B::BLUE);
+		square->setColor(Color3B::GRAY);
 		square->state = Square::START;
+		grid->addChild(plus);
+		plus->setPosition(square->getPosition());
 		starts.push_back(square->gridLocation);
 		break;
 	case Toolbar::Tool::END:
-		square->setColor(Color3B::MAGENTA);
+		square->setColor(Color3B::GRAY);
 		square->state = Square::END;
+		grid->addChild(minus);
+		minus->setPosition(square->getPosition());
 		ends.push_back(square->gridLocation);
 		break;
 	case Toolbar::Tool::ERASE:
