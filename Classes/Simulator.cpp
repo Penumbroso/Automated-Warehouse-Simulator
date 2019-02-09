@@ -83,9 +83,11 @@ void Simulator::run(float dt)
 		}
 		else if (!packages.empty())
 		{
-			auto package = this->getClosestPackageFrom(robot->grid_position);
+			// TODO: substitute this function for the getClosestFrom, the problem is: I believe collision is not allowing a correct assesment of which is the closest.
+			auto package = this->getClosestFrom(robot->grid_position, packages);
+			auto end = this->getClosestFrom(package, ends);
+			auto path = this->createPath(robot->grid_position, package, end);
 
-			auto path = this->createPath(robot->grid_position, package);
 			robot->path = path;
 			robot->package = package;
 
@@ -98,31 +100,18 @@ void Simulator::run(float dt)
 
 }
 
-vector<Point> Simulator::createPath(Point origin, Point package)
+vector<Point> Simulator::createPath(Point origin, Point package, Point end)
 {
 	generator.clearCollisions();
-
-	for (Point collision : collidables)
-		generator.addCollision(collision);
-	
+	generator.addCollisions(collidables);
 	generator.removeCollision(package);
 
-	// Select which path is the shortest from the package to one of the ends
-	int min_length = std::numeric_limits<int>::max();
-	vector<Point> shortest_path;
-
-	// TODO: fix problem where the robots always go for one end and never change
-	for (Point end : ends) 
-	{
-		auto pathToPackage = generator.findPath({ origin.x, origin.y }, { package.x, package.y });
-		auto pathToDelivery = generator.findPath({ package.x, package.y }, { end.x, end.y });
-		pathToDelivery.pop_back();
-		pathToDelivery.insert(pathToDelivery.end(), pathToPackage.begin(), pathToPackage.end());
-
-		if (pathToDelivery.size() < min_length) shortest_path = pathToDelivery;
-	}
+	auto pathToPackage = generator.findPath({ origin.x, origin.y }, { package.x, package.y });
+	auto pathToDelivery = generator.findPath({ package.x, package.y }, { end.x, end.y });
+	pathToDelivery.pop_back();
+	pathToDelivery.insert(pathToDelivery.end(), pathToPackage.begin(), pathToPackage.end());
 	
-	return shortest_path;
+	return pathToDelivery;
 }
 
 void Simulator::createRobots() {
@@ -142,19 +131,24 @@ void Simulator::createRobots() {
 	}
 }
 
-Point Simulator::getClosestPackageFrom(Point position)
-{
+// TODO: rename this or change it so it returns the path instead of the point, this would optmize.
+Point Simulator::getClosestFrom(Point origin, vector<Point> destinations) {
 	Point closest;
-	float shortest_distance = std::numeric_limits<float>::max();
-	for (Point package : packages)
+	int min_length = std::numeric_limits<int>::max();
+
+	for (Point destination : destinations)
 	{
-		float distance = abs(package.x - position.x) + abs(package.y - position.y);
-		if (distance < shortest_distance)
-		{
-			shortest_distance = distance;
-			closest = package;
+		generator.clearCollisions();
+		generator.addCollisions(collidables);
+		generator.removeCollision(destination);
+
+		auto path = generator.findPath({ origin.x, origin.y }, { destination.x, destination.y });
+		if (path.size() < min_length) {
+			closest = destination;
+			min_length = path.size();
 		}
 	}
+
 	return closest;
 }
 
@@ -234,6 +228,8 @@ void Simulator::gridSquareCallback(Square* square)
 		// TODO: change filled to package
 		grid->setState(Square::FILLED, square->gridLocation);
 		packages.push_back(square->gridLocation);
+
+		// TODO: its allowing to add duplicates, it shouldnt
 		collidables.push_back(square->gridLocation);
 		break;
 

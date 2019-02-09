@@ -34,9 +34,9 @@ protected:
 	void menuRunCallback(cocos2d::Ref * pSender);
 	void menuResetCallback(cocos2d::Ref * pSender);
 	void gridSquareCallback(Square* square);
-	vector<Point> createPath(Point origin, Point package);
+	vector<Point> createPath(Point origin, Point package, Point end);
 	void createRobots();
-	Point getClosestPackageFrom(Point position);
+	Point getClosestFrom(Point origin, vector<Point> destinations);
 
 	vector<Point> starts;
 	vector<Point> ends;

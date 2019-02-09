@@ -44,6 +44,7 @@ namespace AStar
         void setHeuristic(HeuristicFunction heuristic_);
         CoordinateList findPath(Vec2i source_, Vec2i target_);
         void addCollision(Vec2i coordinates_);
+		void addCollisions(std::vector<Vec2i> coordinates_);
         void removeCollision(Vec2i coordinates_);
         void clearCollisions();
 

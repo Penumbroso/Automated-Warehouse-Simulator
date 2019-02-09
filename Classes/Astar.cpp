@@ -45,6 +45,12 @@ void AStar::Generator::addCollision(Vec2i coordinates_)
     walls.push_back(coordinates_);
 }
 
+void AStar::Generator::addCollisions(std::vector<Vec2i> coordinates_)
+{
+	for (auto coordinate_ : coordinates_)
+		this->addCollision(coordinate_);
+}
+
 void AStar::Generator::removeCollision(Vec2i coordinates_)
 {
     auto it = std::find(walls.begin(), walls.end(), coordinates_);

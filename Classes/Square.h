@@ -5,6 +5,7 @@ class Square : public cocos2d::MenuItemImage
 public:
 	void onEnter() override;
 
+	// TODO: make state a typedef of tool or vice versa
 	enum State 
 	{
 		EMPTY,
