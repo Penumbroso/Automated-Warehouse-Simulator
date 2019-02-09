@@ -42,10 +42,10 @@ bool Simulator::init()
 
 	toolbar = Toolbar::create();
 	toolbar->runItem->setCallback(CC_CALLBACK_1(Simulator::menuRunCallback, this));
-	toolbar->packageItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::PACKAGE));
-	toolbar->beginItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::BEGIN));
-	toolbar->endItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::END));
-	toolbar->eraseItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::Tool::ERASE));
+	toolbar->packageItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PACKAGE));
+	toolbar->beginItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::BEGIN));
+	toolbar->endItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::END));
+	toolbar->eraseItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::ERASE));
 	toolbar->resetItem->setCallback(CC_CALLBACK_1(Simulator::menuResetCallback, this));
 
 	this->addChild(toolbar);
@@ -71,11 +71,12 @@ void Simulator::run(float dt)
 			if (next_position == robot->package) 
 			{
 				square->setColor(Color3B::WHITE);
-				// TODO: it should remove from another list that shows only packages without robots searching or carrying them
-				auto it = std::find(packages.begin(), packages.end(), robot->package);
-				if (it != packages.end()) packages.erase(it);
+
+				// Remove package from collidables
+				auto it = std::find(collidables.begin(), collidables.end(), robot->package);
+				if (it != collidables.end()) collidables.erase(it);
 			}
-			// TODO: make conversion from grid position to screen position easier.
+
 			robot->setPosition(square->getPosition());
 			robot->path.pop_back();
 			robot->grid_position = next_position;
@@ -83,9 +84,14 @@ void Simulator::run(float dt)
 		else if (!packages.empty())
 		{
 			auto package = this->getClosestPackageFrom(robot->grid_position);
+
 			auto path = this->createPath(robot->grid_position, package);
 			robot->path = path;
 			robot->package = package;
+
+			// Remove package from available packages
+			auto it = std::find(packages.begin(), packages.end(), robot->package);
+			if (it != packages.end()) packages.erase(it);
 		}
 			
 	}
@@ -96,14 +102,16 @@ vector<Point> Simulator::createPath(Point origin, Point package)
 {
 	generator.clearCollisions();
 
-	for (Point pack : packages)
-		generator.addCollision(pack);
+	for (Point collision : collidables)
+		generator.addCollision(collision);
 	
 	generator.removeCollision(package);
 
 	// Select which path is the shortest from the package to one of the ends
 	int min_length = std::numeric_limits<int>::max();
 	vector<Point> shortest_path;
+
+	// TODO: fix problem where the robots always go for one end and never change
 	for (Point end : ends) 
 	{
 		auto pathToPackage = generator.findPath({ origin.x, origin.y }, { package.x, package.y });
@@ -124,8 +132,7 @@ void Simulator::createRobots() {
 	{
 		auto robot = Robot::create();
 		robot->initWithFile("Robot.png");
-		// TODO: create method to convert grid position to screen position
-		robot->setPosition(g_square_size / 2 + (start.x) * g_square_size, g_square_size / 2 + (start.y) * g_square_size);
+		robot->setPosition(grid->getPositionOf(start));
 		robot->setColor(Color3B(200, 100, 100));
 		robot->setContentSize(Size(g_square_size, g_square_size));
 		robot->grid_position = start;
@@ -154,41 +161,25 @@ Point Simulator::getClosestPackageFrom(Point position)
 void Simulator::load()
 {
 	for (Point start : s_start)
-	{
-		int x = start.x;
-		int y = start.y;
-		grid->squares.at(Point(x, y))->setColor(Color3B::GRAY);
-		grid->squares.at(Point(x, y))->state = Square::State::START;
-	}
+		grid->setState(Square::START, start);
 
 	for (Point end : s_end)
-	{
-		int x = end.x;
-		int y = end.y;
-		grid->squares.at(Point(x, y))->state = Square::State::END;
-		grid->squares.at(Point(x, y))->setColor(Color3B::GRAY);
-	}
+		grid->setState(Square::END, end);
 
 	for (Point package : s_packages)
-	{
-		int x = package.x;
-		int y = package.y;
-		grid->squares.at(Point(x, y))->state = Square::State::FILLED;
-		grid->squares.at(Point(x, y))->setColor(Color3B::GRAY);
-	}
-
+		grid->setState(Square::FILLED, package);
+	
 	starts = s_start;
 	ends = s_end;
 	packages = s_packages;
-
-	s_start = {};
-	s_end = {};
-	s_packages = {};
+	collidables = s_collidables;
 
 	for (Robot* robot : this->robots)
 		robot->removeFromParent();
 	
 	this->robots = {};
+
+	this->saved = false;
 }
 
 void Simulator::save()
@@ -198,6 +189,7 @@ void Simulator::save()
 	s_start = starts;
 	s_end = ends;
 	s_packages = packages;
+	s_collidables = collidables;
 
 	this->saved = true;
 }
@@ -224,12 +216,12 @@ void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 {
 	this->unscheduleAllSelectors();
 	this->load();
-	this->saved = false;
 	this->running = false;
 }
 
 void Simulator::gridSquareCallback(Square* square)
 {
+	// TODO: change the location where plus and minus are added, it should make part of the logic of the simulator, but rather of the GUI.
 	auto plus = Sprite::create("Plus.png");
 	plus->setContentSize(Size(g_square_size - 10, g_square_size- 10));
 
@@ -238,27 +230,33 @@ void Simulator::gridSquareCallback(Square* square)
 
 	switch (this->toolbar->selected)
 	{
-	case Toolbar::Tool::PACKAGE:
-		square->setColor(Color3B::GRAY);
-		square->state = Square::FILLED;
+	case Toolbar::PACKAGE:
+		// TODO: change filled to package
+		grid->setState(Square::FILLED, square->gridLocation);
 		packages.push_back(square->gridLocation);
+		collidables.push_back(square->gridLocation);
 		break;
-	case Toolbar::Tool::BEGIN:
-		square->setColor(Color3B::GRAY);
-		square->state = Square::START;
+
+	case Toolbar::BEGIN:
+		// TODO: change start to begin
+		grid->setState(Square::START, square->gridLocation);
+		// TODO: move plus to the grid function setState
 		grid->addChild(plus);
 		plus->setPosition(square->getPosition());
 		starts.push_back(square->gridLocation);
 		break;
-	case Toolbar::Tool::END:
-		square->setColor(Color3B::GRAY);
-		square->state = Square::END;
+
+	case Toolbar::END:
+		grid->setState(Square::END, square->gridLocation);
 		grid->addChild(minus);
+		// TODO: move the minus sprite to the grid function setState
 		minus->setPosition(square->getPosition());
 		ends.push_back(square->gridLocation);
 		break;
-	case Toolbar::Tool::ERASE:
+
+	case Toolbar::ERASE:
 		vector<Point>* vector;
+
 		switch (square->state)
 		{
 		case Square::FILLED:
@@ -271,6 +269,7 @@ void Simulator::gridSquareCallback(Square* square)
 			vector = &ends;
 			break;
 		}
+
 		auto it = std::find(vector->begin(), vector->end(), square->gridLocation);
 		if (it != vector->end()) vector->erase(it);
 		square->state = Square::EMPTY;

@@ -11,29 +11,35 @@ bool Toolbar::init()
 	rectangle->drawSolidRect(Vec2(0, 0), Vec2(50, visibleSize.height), Color4F(0.3f, 0.3f, 0.3f, 1));
 	this->addChild(rectangle);
 
+	// TODO: create a second callback here that changes the icon when pressed.
 	runItem = MenuItemImage::create(
 		"PlayNormal.png",
 		"PlayPressed.png");
 
+	// TODO: create a package icon
 	packageItem = MenuItemImage::create(
 		"PackageButton.png",
 		"PackageButton.png");
 
 	beginItem = MenuItemImage::create(
-		"BeginningButton.png",
-		"BeginninbButton.png");
+		"Plus.png",
+		"Plus.png");
 
 	endItem = MenuItemImage::create(
-		"EndButton.png",
-		"EndButton.png");
+		"Minus.png",
+		"Minus.png");
 
+	// TODO: create a erase icon
 	eraseItem = MenuItemImage::create(
 		"EraseButton.png",
 		"EraseButton.png");
 
+	// TODO: create a reset icon
 	resetItem = MenuItemImage::create(
 		"EraseButton.png",
 		"EraseButton.png");
+
+	// TODO: add a purely collidable object so that the user can make walls
 
 	runItem->setPosition(Vec2(25, visibleSize.height - 25 * 2));
 	packageItem->setPosition(Vec2(25, visibleSize.height - 25 * 4));

@@ -3,7 +3,10 @@
 
 #include "cocos2d.h"
 #include <vector>
-#include "AStar.hpp"
+
+USING_NS_CC;
+
+using std::vector;
 
 class Robot : public cocos2d::Sprite
 {
@@ -11,10 +14,10 @@ public:
 
 	virtual bool init();
 	
-	std::vector<AStar::Vec2i> path;
-	cocos2d::Point package;
+	vector<Point> path;
+	Point package;
 
-	cocos2d::Point grid_position;
+	Point grid_position;
 
 	CREATE_FUNC(Robot);
 };

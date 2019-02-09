@@ -7,6 +7,7 @@
 #include "Toolbar.h"
 #include "Globals.h"
 #include <vector>
+#include "AStar.hpp"
 
 using std::vector;
 
@@ -37,14 +38,10 @@ protected:
 	void createRobots();
 	Point getClosestPackageFrom(Point position);
 
-
-	// TODO: create a second list of packages that contains only orphan packages (without robots).
-	// I think this new vector should be initially empty and only cloned at the beggining of the simulation as it is only relevant there.
 	vector<Point> starts;
 	vector<Point> ends;
 	vector<Point> packages;
-
-	vector<Point> available_packages;
+	vector<Point> collidables;
 
 private:
 	bool running = false;

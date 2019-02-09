@@ -33,8 +33,26 @@ bool Grid::init()
 		}
 	}
 
+	this->drawLines();
 
-	// Draw lines
+	return true;
+}
+
+Point Grid::getPositionOf(Point point)
+{
+	return squares.at(point)->getPosition();
+}
+
+void Grid::setState(Square::State state, Point point)
+{
+	// TODO: add the icon sprite like plus and minus sign
+	squares.at(point)->setColor(Color3B::GRAY);
+	squares.at(point)->state = state;
+}
+
+void Grid::drawLines()
+{
+	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Color4F lightGray = Color4F(0.9f, 0.9f, 0.9f, 1);
 
 	for (int i = 0; i < number_of_columns; i++) {
@@ -48,6 +66,4 @@ bool Grid::init()
 		drawHorizontalLine->drawLine(Point(0, i * g_square_size), Point(visibleSize.width, i * g_square_size), lightGray);
 		addChild(drawHorizontalLine);
 	}
-
-	return true;
 }
