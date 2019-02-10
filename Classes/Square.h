@@ -9,8 +9,8 @@ public:
 	enum State 
 	{
 		EMPTY,
-		FILLED,
-		START,
+		PACKAGE,
+		BEGIN,
 		END
 	};
 

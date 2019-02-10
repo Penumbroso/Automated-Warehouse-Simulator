@@ -15,6 +15,8 @@ public:
 
 	Menu * menu;
 
+	const int square_size = 30;
+
 	float number_of_columns;
 	float number_of_lines;
 

@@ -15,15 +15,8 @@ Scene* Simulator::createScene()
 bool Simulator::init()
 {
     if ( !Scene::init() )
-    {
         return false;
-    }
-
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-
-
+    
 	auto background = LayerColor::create(Color4B::RED);
 	this->addChild(background);
 
@@ -33,8 +26,6 @@ bool Simulator::init()
 	for (const auto &p : grid->squares)
 	{
 		auto square = p.second;
-		// TODO: put the CC_CALLBACK inside the grid and instead pass the only the function
-		// It might be better not to do this.
 		square->setCallback(CC_CALLBACK_0(Simulator::gridSquareCallback, this, square));
 	}
 		
@@ -70,7 +61,7 @@ void Simulator::run(float dt)
 			auto square = this->grid->squares.at(next_position);
 			if (next_position == robot->package) 
 			{
-				square->setColor(Color3B::WHITE);
+				grid->setState(Square::EMPTY, square->gridLocation);
 
 				// Remove package from collidables
 				auto it = std::find(collidables.begin(), collidables.end(), robot->package);
@@ -108,7 +99,7 @@ vector<Point> Simulator::createPath(Point origin, Point package, Point end)
 
 	auto pathToPackage = generator.findPath({ origin.x, origin.y }, { package.x, package.y });
 	auto pathToDelivery = generator.findPath({ package.x, package.y }, { end.x, end.y });
-	pathToDelivery.pop_back();
+	pathToDelivery.pop_back(); // Removes repeated package point from the path
 	pathToDelivery.insert(pathToDelivery.end(), pathToPackage.begin(), pathToPackage.end());
 	
 	return pathToDelivery;
@@ -123,7 +114,7 @@ void Simulator::createRobots() {
 		robot->initWithFile("Robot.png");
 		robot->setPosition(grid->getPositionOf(start));
 		robot->setColor(Color3B(200, 100, 100));
-		robot->setContentSize(Size(g_square_size, g_square_size));
+		robot->setContentSize(Size(grid->square_size, grid->square_size));
 		robot->grid_position = start;
 		grid->addChild(robot);
 
@@ -154,19 +145,21 @@ Point Simulator::getClosestFrom(Point origin, vector<Point> destinations) {
 
 void Simulator::load()
 {
-	for (Point start : s_start)
-		grid->setState(Square::START, start);
+	// TODO: perhaps intead of calling this function, I should create an update function in the grid that constantly enquires these vectors, and when one of them is changed it would automaticly change the grid visual
+	// Maybe calling and update function only when one of those vectors are changed
+	for (Point start : saved_starts)
+		grid->setState(Square::BEGIN, start);
 
-	for (Point end : s_end)
+	for (Point end : saved_ends)
 		grid->setState(Square::END, end);
 
-	for (Point package : s_packages)
-		grid->setState(Square::FILLED, package);
+	for (Point package : saved_packages)
+		grid->setState(Square::PACKAGE, package);
 	
-	starts = s_start;
-	ends = s_end;
-	packages = s_packages;
-	collidables = s_collidables;
+	starts = saved_starts;
+	ends = saved_ends;
+	packages = saved_packages;
+	collidables = saved_collidables;
 
 	for (Robot* robot : this->robots)
 		robot->removeFromParent();
@@ -180,10 +173,10 @@ void Simulator::save()
 {
 	if (this->saved) return;
 
-	s_start = starts;
-	s_end = ends;
-	s_packages = packages;
-	s_collidables = collidables;
+	saved_starts = starts;
+	saved_ends = ends;
+	saved_packages = packages;
+	saved_collidables = collidables;
 
 	this->saved = true;
 }
@@ -215,38 +208,28 @@ void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 
 void Simulator::gridSquareCallback(Square* square)
 {
-	// TODO: change the location where plus and minus are added, it should make part of the logic of the simulator, but rather of the GUI.
-	auto plus = Sprite::create("Plus.png");
-	plus->setContentSize(Size(g_square_size - 10, g_square_size- 10));
-
-	auto minus = Sprite::create("Minus.png");
-	minus->setContentSize(Size(g_square_size - 10, g_square_size - 10));
-
 	switch (this->toolbar->selected)
 	{
 	case Toolbar::PACKAGE:
 		// TODO: change filled to package
-		grid->setState(Square::FILLED, square->gridLocation);
-		packages.push_back(square->gridLocation);
+		grid->setState(Square::PACKAGE, square->gridLocation);
 
 		// TODO: its allowing to add duplicates, it shouldnt
+		packages.push_back(square->gridLocation);
 		collidables.push_back(square->gridLocation);
 		break;
 
 	case Toolbar::BEGIN:
-		// TODO: change start to begin
-		grid->setState(Square::START, square->gridLocation);
-		// TODO: move plus to the grid function setState
-		grid->addChild(plus);
-		plus->setPosition(square->getPosition());
+		grid->setState(Square::BEGIN, square->gridLocation);
+
+		// TODO: its allowing to add duplicates, it shouldnt
 		starts.push_back(square->gridLocation);
 		break;
 
 	case Toolbar::END:
 		grid->setState(Square::END, square->gridLocation);
-		grid->addChild(minus);
-		// TODO: move the minus sprite to the grid function setState
-		minus->setPosition(square->getPosition());
+
+		// TODO: its allowing to add duplicates, it shouldnt
 		ends.push_back(square->gridLocation);
 		break;
 
@@ -255,10 +238,10 @@ void Simulator::gridSquareCallback(Square* square)
 
 		switch (square->state)
 		{
-		case Square::FILLED:
+		case Square::PACKAGE:
 			vector = &packages;
 			break;
-		case Square::START:
+		case Square::BEGIN:
 			vector = &starts;
 			break;
 		case Square::END:
@@ -268,7 +251,7 @@ void Simulator::gridSquareCallback(Square* square)
 
 		auto it = std::find(vector->begin(), vector->end(), square->gridLocation);
 		if (it != vector->end()) vector->erase(it);
-		square->state = Square::EMPTY;
-		square->setColor(Color3B::WHITE);
+
+		grid->setState(Square::EMPTY, square->gridLocation);
 	}
 }

@@ -43,6 +43,11 @@ protected:
 	vector<Point> packages;
 	vector<Point> collidables;
 
+	vector<Point> saved_starts;
+	vector<Point> saved_ends;
+	vector<Point> saved_packages;
+	vector<Point> saved_collidables;
+
 private:
 	bool running = false;
 	bool saved = false;

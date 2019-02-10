@@ -6,7 +6,6 @@ bool Toolbar::init()
 {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
-
 	auto rectangle = DrawNode::create();
 	rectangle->drawSolidRect(Vec2(0, 0), Vec2(50, visibleSize.height), Color4F(0.3f, 0.3f, 0.3f, 1));
 	this->addChild(rectangle);
