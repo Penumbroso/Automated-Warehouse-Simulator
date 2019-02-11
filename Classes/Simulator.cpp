@@ -247,10 +247,17 @@ void Simulator::gridSquareCallback(Square* square)
 		case Square::END:
 			vector = &ends;
 			break;
+		default:
+			vector = NULL;
+			break;
 		}
 
-		auto it = std::find(vector->begin(), vector->end(), square->gridLocation);
-		if (it != vector->end()) vector->erase(it);
+		// TODO: create and util tool for vectors to add only unique and remove things from vectors.
+		if (vector) 
+		{
+			auto it = std::find(vector->begin(), vector->end(), square->gridLocation);
+			if (it != vector->end()) vector->erase(it);
+		}
 
 		grid->setState(Square::EMPTY, square->gridLocation);
 	}

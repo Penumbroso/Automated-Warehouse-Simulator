@@ -12,6 +12,7 @@ public:
 	virtual bool init();
 
 	std::map<Point, Square*> squares;
+	std::map<Point, Sprite*> symbols;
 
 	Menu * menu;
 
@@ -22,11 +23,14 @@ public:
 
 	Point getPositionOf(Point point);
 	void setState(Square::State state, Point point);
+
 	
 	CREATE_FUNC(Grid);
 
 protected:
 	void drawLines();
+	void addSymbol(const std::string &filename, Point point);
+	void removeSymbol(Point point);
 };
 
 #endif

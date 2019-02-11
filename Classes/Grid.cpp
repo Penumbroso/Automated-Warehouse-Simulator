@@ -45,35 +45,32 @@ Point Grid::getPositionOf(Point point)
 
 void Grid::setState(Square::State state, Point point)
 {
-	squares.at(point)->setColor(Color3B::GRAY);
-	squares.at(point)->state = state;
+	auto square = squares.at(point);
+	square->setColor(Color3B::GRAY);
+	square->state = state;
 
-	Sprite* icon;
 	switch (state)
 	{
 	case Square::BEGIN:
-		icon = Sprite::create("Plus.png");
-		squares.at(point)->setColor(Color3B::GRAY);
+		this->addSymbol("Plus.png", point);
 		break;
 	case Square::END:
-		icon = Sprite::create("Minus.png");
-		squares.at(point)->setColor(Color3B::GRAY);
+		this->addSymbol("Minus.png", point);
 		break;
 	case Square::PACKAGE:
-		icon = Sprite::create();
-		squares.at(point)->setColor(Color3B::GRAY);
+		break;
+	case Square::EMPTY:
+		this->removeSymbol(point);
+		square->setColor(Color3B::WHITE);
 		break;
 	default:
-		icon = Sprite::create();
-		squares.at(point)->setColor(Color3B::WHITE);
+		
 		break;
 	}
 
-	icon->setContentSize(Size(square_size - 10, square_size - 10));
-	icon->setPosition(squares.at(point)->getPosition());
-	this->addChild(icon);
-
 }
+
+
 
 void Grid::drawLines()
 {
@@ -90,5 +87,25 @@ void Grid::drawLines()
 		auto drawHorizontalLine = DrawNode::create();
 		drawHorizontalLine->drawLine(Point(0, i * square_size), Point(visibleSize.width, i * square_size), lightGray);
 		addChild(drawHorizontalLine);
+	}
+}
+
+void Grid::addSymbol(const std::string &filename, Point point)
+{
+	Sprite* symbol = Sprite::create(filename);
+	symbol->setContentSize(Size(square_size - 10, square_size - 10));
+	symbol->setPosition(squares.at(point)->getPosition());
+	this->symbols[point] = symbol;
+	this->addChild(symbol);
+}
+
+void Grid::removeSymbol(Point point)
+{
+	if (this->symbols.count(point) > 0) {
+		auto symbol = this->symbols.at(point);
+		if(symbol)
+			symbol->removeFromParentAndCleanup(true);
+
+		this->symbols[point] = NULL;
 	}
 }

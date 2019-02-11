@@ -7,45 +7,48 @@ bool Toolbar::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
 	auto rectangle = DrawNode::create();
-	rectangle->drawSolidRect(Vec2(0, 0), Vec2(50, visibleSize.height), Color4F(0.3f, 0.3f, 0.3f, 1));
+
+	rectangle->drawSolidRect(
+		Vec2(0, 0), 
+		Vec2(30, visibleSize.height), 
+		Color4F(0.3f, 0.3f, 0.3f, 1));
+
 	this->addChild(rectangle);
 
-	// TODO: create a second callback here that changes the icon when pressed.
-	runItem = MenuItemImage::create(
-		"PlayNormal.png",
-		"PlayPressed.png");
+	// TODO: create a second callback here that changes the icon after pressed the run button to the pause button.
 
-	// TODO: create a package icon
+	runItem = MenuItemImage::create(
+		"RunBtn.png",
+		"RunBtn_pressed.png");
+
 	packageItem = MenuItemImage::create(
-		"PackageButton.png",
-		"PackageButton.png");
+		"PackageBtn.png",
+		"PackageBtn_pressed.png");
 
 	beginItem = MenuItemImage::create(
-		"Plus.png",
-		"Plus.png");
+		"PlusBtn.png",
+		"PlusBtn_pressed.png");
 
 	endItem = MenuItemImage::create(
-		"Minus.png",
-		"Minus.png");
+		"MinusBtn.png",
+		"MinusBtn_pressed.png");
 
-	// TODO: create a erase icon
 	eraseItem = MenuItemImage::create(
-		"EraseButton.png",
-		"EraseButton.png");
+		"EraseBtn.png",
+		"EraseBtn_pressed.png");
 
-	// TODO: create a reset icon
 	resetItem = MenuItemImage::create(
-		"EraseButton.png",
-		"EraseButton.png");
+		"resetBtn.png",
+		"resetBtn_pressed.png");
 
 	// TODO: add a purely collidable object so that the user can make walls
 
-	runItem->setPosition(Vec2(25, visibleSize.height - 25 * 2));
-	packageItem->setPosition(Vec2(25, visibleSize.height - 25 * 4));
-	beginItem->setPosition(Vec2(25, visibleSize.height - 25 * 6));
-	endItem->setPosition(Vec2(25, visibleSize.height - 25 * 8));
-	eraseItem->setPosition(Vec2(25, visibleSize.height - 25 * 10));
-	resetItem->setPosition(Vec2(25, visibleSize.height - 25 * 12));
+	runItem->setPosition(Vec2(15, visibleSize.height - 15 * 2));
+	packageItem->setPosition(Vec2(15, visibleSize.height - 15 * 4));
+	beginItem->setPosition(Vec2(15, visibleSize.height - 15 * 6));
+	endItem->setPosition(Vec2(15, visibleSize.height - 15 * 8));
+	eraseItem->setPosition(Vec2(15, visibleSize.height - 15 * 10));
+	resetItem->setPosition(Vec2(15, visibleSize.height - 15 * 12));
 	  
 	auto menu = Menu::create(runItem, packageItem, beginItem, endItem, eraseItem, resetItem,  NULL);
 	menu->setPosition(Vec2::ZERO);
