@@ -18,6 +18,7 @@ public:
 	Point package;
 
 	Point grid_position;
+	Point end;
 
 	CREATE_FUNC(Robot);
 };

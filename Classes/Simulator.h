@@ -52,6 +52,10 @@ private:
 	bool running = false;
 	bool saved = false;
 	AStar::Generator generator;
+
+	// TODO: move this to its own file as it can be used by other if added a template.
+	void addUniqueElementToVector(vector<Point>* v, Point p);
+	void removeElementFromVector(vector<Point>* v, Point p);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

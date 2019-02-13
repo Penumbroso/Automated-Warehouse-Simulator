@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <vector>
 #include <limits>
+#include "Vector.h"
 
 USING_NS_CC;
 
@@ -50,9 +51,6 @@ bool Simulator::init()
 
 void Simulator::run(float dt) 
 {
-	// TODO: change state of simulator when all packages have been delivered.
-	// It ends when the list of packages to be delivered is empty. ( the clone one )
-
 	for (Robot* robot : this->robots) {
 		if (!robot->path.empty())
 		{	
@@ -63,9 +61,7 @@ void Simulator::run(float dt)
 			{
 				grid->setState(Square::EMPTY, square->gridLocation);
 
-				// Remove package from collidables
-				auto it = std::find(collidables.begin(), collidables.end(), robot->package);
-				if (it != collidables.end()) collidables.erase(it);
+				this->removeElementFromVector(&collidables, robot->package);
 			}
 
 			robot->setPosition(square->getPosition());
@@ -74,17 +70,20 @@ void Simulator::run(float dt)
 		}
 		else if (!packages.empty())
 		{
-			// TODO: substitute this function for the getClosestFrom, the problem is: I believe collision is not allowing a correct assesment of which is the closest.
 			auto package = this->getClosestFrom(robot->grid_position, packages);
 			auto end = this->getClosestFrom(package, ends);
 			auto path = this->createPath(robot->grid_position, package, end);
 
 			robot->path = path;
+			robot->end = end;
 			robot->package = package;
 
-			// Remove package from available packages
-			auto it = std::find(packages.begin(), packages.end(), robot->package);
-			if (it != packages.end()) packages.erase(it);
+			this->removeElementFromVector(&packages, robot->package);
+		}
+		else
+		{
+			this->unscheduleAllSelectors();
+			this->running = false;
 		}
 			
 	}
@@ -113,7 +112,7 @@ void Simulator::createRobots() {
 		auto robot = Robot::create();
 		robot->initWithFile("Robot.png");
 		robot->setPosition(grid->getPositionOf(start));
-		robot->setColor(Color3B(200, 100, 100));
+		robot->setColor(Color3B(150, 150, 150));
 		robot->setContentSize(Size(grid->square_size, grid->square_size));
 		robot->grid_position = start;
 		grid->addChild(robot);
@@ -141,6 +140,28 @@ Point Simulator::getClosestFrom(Point origin, vector<Point> destinations) {
 	}
 
 	return closest;
+}
+
+void Simulator::addUniqueElementToVector(vector<Point>* v, Point p)
+{
+	if (v) 
+	{
+		auto it = std::find(v->begin(), v->end(), p);
+		if (it == v->end()) v->push_back(p);
+	}
+
+	
+}
+
+void Simulator::removeElementFromVector(vector<Point>* v, Point p)
+{
+	if (v)
+	{
+		auto it = std::find(v->begin(), v->end(), p);
+		if (it != v->end()) v->erase(it);
+	}
+
+	
 }
 
 void Simulator::load()
@@ -211,30 +232,26 @@ void Simulator::gridSquareCallback(Square* square)
 	switch (this->toolbar->selected)
 	{
 	case Toolbar::PACKAGE:
-		// TODO: change filled to package
 		grid->setState(Square::PACKAGE, square->gridLocation);
 
-		// TODO: its allowing to add duplicates, it shouldnt
-		packages.push_back(square->gridLocation);
-		collidables.push_back(square->gridLocation);
+		this->addUniqueElementToVector(&packages, square->gridLocation);
+		this->addUniqueElementToVector(&collidables, square->gridLocation);
 		break;
 
 	case Toolbar::BEGIN:
 		grid->setState(Square::BEGIN, square->gridLocation);
 
-		// TODO: its allowing to add duplicates, it shouldnt
-		starts.push_back(square->gridLocation);
+		this->addUniqueElementToVector(&starts, square->gridLocation);
 		break;
 
 	case Toolbar::END:
 		grid->setState(Square::END, square->gridLocation);
 
-		// TODO: its allowing to add duplicates, it shouldnt
-		ends.push_back(square->gridLocation);
+		this->addUniqueElementToVector(&ends, square->gridLocation);
 		break;
 
 	case Toolbar::ERASE:
-		vector<Point>* vector;
+		vector<Point>* vector = NULL;
 
 		switch (square->state)
 		{
@@ -247,18 +264,10 @@ void Simulator::gridSquareCallback(Square* square)
 		case Square::END:
 			vector = &ends;
 			break;
-		default:
-			vector = NULL;
-			break;
 		}
 
-		// TODO: create and util tool for vectors to add only unique and remove things from vectors.
-		if (vector) 
-		{
-			auto it = std::find(vector->begin(), vector->end(), square->gridLocation);
-			if (it != vector->end()) vector->erase(it);
-		}
-
+		this->removeElementFromVector(vector, square->gridLocation);
+		
 		grid->setState(Square::EMPTY, square->gridLocation);
 	}
 }
