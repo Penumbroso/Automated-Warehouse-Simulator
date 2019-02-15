@@ -1,5 +1,4 @@
 #include "Grid.h"
-#include "Globals.h"
 
 USING_NS_CC;
 

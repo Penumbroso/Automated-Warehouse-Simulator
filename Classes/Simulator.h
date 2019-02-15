@@ -5,7 +5,6 @@
 #include "Grid.h"
 #include "Robot.h"
 #include "Toolbar.h"
-#include "Globals.h"
 #include <vector>
 #include "AStar.hpp"
 

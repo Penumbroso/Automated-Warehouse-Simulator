@@ -24,9 +24,6 @@
     <ClCompile Include="..\Classes\AppDelegate.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Globals.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Simulator.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -54,9 +51,6 @@
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\AppDelegate.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Globals.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Simulator.h">

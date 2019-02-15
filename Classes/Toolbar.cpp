@@ -1,6 +1,4 @@
 #include "Toolbar.h"
-#include "Globals.h"
-
 
 bool Toolbar::init() 
 {

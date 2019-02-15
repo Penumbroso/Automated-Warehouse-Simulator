@@ -60,13 +60,30 @@ void Simulator::run(float dt)
 			if (next_position == robot->package) 
 			{
 				grid->setState(Square::EMPTY, square->gridLocation);
-
 				this->removeElementFromVector(&collidables, robot->package);
 			}
 
-			robot->setPosition(square->getPosition());
-			robot->path.pop_back();
-			robot->grid_position = next_position;
+			// Detect if there is collision
+			bool nextPositionIsOccupied = false;
+			for (auto robot : robots) {
+				if (robot->grid_position == next_position)
+					nextPositionIsOccupied = true;
+			}
+
+			// Move if the path is clear of robots
+			if (!nextPositionIsOccupied)
+			{
+				robot->setPosition(square->getPosition());
+				robot->path.pop_back();
+				robot->grid_position = next_position;
+			}
+
+			// TODO: otherwise what to do?
+			// Wait?
+			// Analyse the path of the collision robot and move away? ( check to see if current position is on the path of the robot.
+			// Redo the path 
+
+			
 		}
 		else if (!packages.empty())
 		{
@@ -82,8 +99,9 @@ void Simulator::run(float dt)
 		}
 		else
 		{
-			this->unscheduleAllSelectors();
-			this->running = false;
+			// TODO: remove robots as the reach destination? probrably not
+			/*this->unscheduleAllSelectors();
+			this->running = false;*/
 		}
 			
 	}
@@ -100,6 +118,7 @@ vector<Point> Simulator::createPath(Point origin, Point package, Point end)
 	auto pathToDelivery = generator.findPath({ package.x, package.y }, { end.x, end.y });
 	pathToDelivery.pop_back(); // Removes repeated package point from the path
 	pathToDelivery.insert(pathToDelivery.end(), pathToPackage.begin(), pathToPackage.end());
+	pathToDelivery.pop_back(); // Remove the first coordinate since we are already in it
 	
 	return pathToDelivery;
 }
@@ -121,7 +140,7 @@ void Simulator::createRobots() {
 	}
 }
 
-// TODO: rename this or change it so it returns the path instead of the point, this would optmize.
+// TODO: Maybe change this so it return a path instead of a point for sake of optimization
 Point Simulator::getClosestFrom(Point origin, vector<Point> destinations) {
 	Point closest;
 	int min_length = std::numeric_limits<int>::max();
@@ -233,20 +252,17 @@ void Simulator::gridSquareCallback(Square* square)
 	{
 	case Toolbar::PACKAGE:
 		grid->setState(Square::PACKAGE, square->gridLocation);
-
 		this->addUniqueElementToVector(&packages, square->gridLocation);
 		this->addUniqueElementToVector(&collidables, square->gridLocation);
 		break;
 
 	case Toolbar::BEGIN:
 		grid->setState(Square::BEGIN, square->gridLocation);
-
 		this->addUniqueElementToVector(&starts, square->gridLocation);
 		break;
 
 	case Toolbar::END:
 		grid->setState(Square::END, square->gridLocation);
-
 		this->addUniqueElementToVector(&ends, square->gridLocation);
 		break;
 
@@ -266,8 +282,10 @@ void Simulator::gridSquareCallback(Square* square)
 			break;
 		}
 
+		// TODO: those two function are always together, maybe move setState of grid inside the remove element?
+		grid->setState(Square::EMPTY, square->gridLocation);
 		this->removeElementFromVector(vector, square->gridLocation);
 		
-		grid->setState(Square::EMPTY, square->gridLocation);
+
 	}
 }
