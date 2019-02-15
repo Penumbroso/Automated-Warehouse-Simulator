@@ -69,8 +69,6 @@ void Grid::setState(Square::State state, Point point)
 
 }
 
-
-
 void Grid::drawLines()
 {
 	auto visibleSize = Director::getInstance()->getVisibleSize();

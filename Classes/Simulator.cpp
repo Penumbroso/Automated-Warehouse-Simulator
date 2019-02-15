@@ -51,49 +51,37 @@ bool Simulator::init()
 
 void Simulator::run(float dt) 
 {
-	for (Robot* robot : this->robots) {
+	for (auto robot : this->robots) {
 		if (!robot->path.empty())
 		{	
-			// TODO: check for collision. If so, recreate path with obstacle.
 			auto next_position = robot->path.back();
-			auto square = this->grid->squares.at(next_position);
-			if (next_position == robot->package) 
-			{
-				grid->setState(Square::EMPTY, square->gridLocation);
-				this->removeElementFromVector(&collidables, robot->package);
-			}
-
-			// Detect if there is collision
-			bool nextPositionIsOccupied = false;
-			for (auto robot : robots) {
-				if (robot->grid_position == next_position)
-					nextPositionIsOccupied = true;
-			}
+			auto next_square = this->grid->squares.at(next_position);
 
 			// Move if the path is clear of robots
-			if (!nextPositionIsOccupied)
+			if (!isCollisionImminent(next_position))
 			{
-				robot->setPosition(square->getPosition());
+				robot->setPosition(next_square->getPosition());
 				robot->path.pop_back();
 				robot->grid_position = next_position;
 			}
-
-			// TODO: otherwise what to do?
-			// Wait?
-			// Analyse the path of the collision robot and move away? ( check to see if current position is on the path of the robot.
-			// Redo the path 
-
+			//else
+			//{
+			//	// Case 1: if the current position is NOT on the path of the collidable robot just wait
+			//	// Case 2: if the current position IS on the path of the collidable robot move away (Redo pathing?)
+			//}
 			
+			// Remove package when it gets picked up
+			if (robot->grid_position == robot->package)
+			{
+				grid->setState(Square::EMPTY, robot->package);
+				this->removeElementFromVector(&collidables, robot->package);
+			}
 		}
 		else if (!packages.empty())
 		{
-			auto package = this->getClosestFrom(robot->grid_position, packages);
-			auto end = this->getClosestFrom(package, ends);
-			auto path = this->createPath(robot->grid_position, package, end);
-
-			robot->path = path;
-			robot->end = end;
-			robot->package = package;
+			robot->package = this->getClosestFrom(robot->grid_position, packages);
+			robot->end = this->getClosestFrom(robot->package, ends);
+			robot->path = this->createPath(robot->grid_position, robot->package, robot->end);
 
 			this->removeElementFromVector(&packages, robot->package);
 		}
@@ -140,10 +128,10 @@ void Simulator::createRobots() {
 	}
 }
 
-// TODO: Maybe change this so it return a path instead of a point for sake of optimization
+// TODO: (Optimization) Maybe change this so it return a path instead of a point for sake of optimization
 Point Simulator::getClosestFrom(Point origin, vector<Point> destinations) {
 	Point closest;
-	int min_length = std::numeric_limits<int>::max();
+	int min_size = std::numeric_limits<int>::max();
 
 	for (Point destination : destinations)
 	{
@@ -152,40 +140,45 @@ Point Simulator::getClosestFrom(Point origin, vector<Point> destinations) {
 		generator.removeCollision(destination);
 
 		auto path = generator.findPath({ origin.x, origin.y }, { destination.x, destination.y });
-		if (path.size() < min_length) {
+		if (path.size() < min_size) {
 			closest = destination;
-			min_length = path.size();
+			min_size = path.size();
 		}
 	}
 
 	return closest;
 }
 
-void Simulator::addUniqueElementToVector(vector<Point>* v, Point p)
+void Simulator::addUniqueElementToVector(vector<Point>* vector, Point point)
 {
-	if (v) 
+	if (vector) 
 	{
-		auto it = std::find(v->begin(), v->end(), p);
-		if (it == v->end()) v->push_back(p);
+		auto it = std::find(vector->begin(), vector->end(), point);
+		if (it == vector->end()) vector->push_back(point);
 	}
-
-	
 }
 
-void Simulator::removeElementFromVector(vector<Point>* v, Point p)
+void Simulator::removeElementFromVector(vector<Point>* vector, Point point)
 {
-	if (v)
+	if (vector)
 	{
-		auto it = std::find(v->begin(), v->end(), p);
-		if (it != v->end()) v->erase(it);
+		auto it = std::find(vector->begin(), vector->end(), point);
+		if (it != vector->end()) vector->erase(it);
 	}
+}
 
-	
+bool Simulator::isCollisionImminent(Point next_position)
+{
+	for (auto robot : robots) {
+		if (robot->grid_position == next_position)
+			return true;
+	}
+	return false;
 }
 
 void Simulator::load()
 {
-	// TODO: perhaps intead of calling this function, I should create an update function in the grid that constantly enquires these vectors, and when one of them is changed it would automaticly change the grid visual
+	// TODO: (refactoring) create an update function in the grid that constantly enquires these vectors, and when one of them is changed it would automaticly change the grid visual
 	// Maybe calling and update function only when one of those vectors are changed
 	for (Point start : saved_starts)
 		grid->setState(Square::BEGIN, start);
