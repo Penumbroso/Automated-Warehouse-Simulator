@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <vector>
 #include <limits>
-#include "Vector.h"
+#include "Util.h"
 
 USING_NS_CC;
 
@@ -67,14 +67,20 @@ void Simulator::run(float dt)
 			//else
 			//{
 			//	// Case 1: if the current position is NOT on the path of the collidable robot just wait
-			//	// Case 2: if the current position IS on the path of the collidable robot move away (Redo pathing?)
+				// colliding_robot = getCollidingRobot(next_position);
+				// if(colliding_robot.path.contains(robot.grid_position))
+				//		DO NOTHING
+				// Case 2: if the current position IS on the path of the collidable robot move away(Redo pathing ? )
+				// else
+				//		MOVEAWAY
+			//	// 
 			//}
 			
 			// Remove package when it gets picked up
 			if (robot->grid_position == robot->package)
 			{
 				grid->setState(Square::EMPTY, robot->package);
-				this->removeElementFromVector(&collidables, robot->package);
+				Util::removeIfContains(&collidables, robot->package);
 			}
 		}
 		else if (!packages.empty())
@@ -83,7 +89,7 @@ void Simulator::run(float dt)
 			robot->end = this->getClosestFrom(robot->package, ends);
 			robot->path = this->createPath(robot->grid_position, robot->package, robot->end);
 
-			this->removeElementFromVector(&packages, robot->package);
+			Util::removeIfContains(&packages, robot->package);
 		}
 		else
 		{
@@ -149,31 +155,22 @@ Point Simulator::getClosestFrom(Point origin, vector<Point> destinations) {
 	return closest;
 }
 
-void Simulator::addUniqueElementToVector(vector<Point>* vector, Point point)
-{
-	if (vector) 
-	{
-		auto it = std::find(vector->begin(), vector->end(), point);
-		if (it == vector->end()) vector->push_back(point);
-	}
-}
-
-void Simulator::removeElementFromVector(vector<Point>* vector, Point point)
-{
-	if (vector)
-	{
-		auto it = std::find(vector->begin(), vector->end(), point);
-		if (it != vector->end()) vector->erase(it);
-	}
-}
-
 bool Simulator::isCollisionImminent(Point next_position)
 {
-	for (auto robot : robots) {
-		if (robot->grid_position == next_position)
-			return true;
+	if (this->getRobotAt(next_position))
+		return true;
+	else
+		return false;
+}
+
+Robot * Simulator::getRobotAt(Point grid_position)
+{
+	for (auto robot : robots)
+	{
+		if (robot->grid_position == grid_position)
+			return robot;
 	}
-	return false;
+	return nullptr;
 }
 
 void Simulator::load()
@@ -241,22 +238,24 @@ void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 
 void Simulator::gridSquareCallback(Square* square)
 {
+	auto grid_position = square->gridLocation;
+
 	switch (this->toolbar->selected)
 	{
 	case Toolbar::PACKAGE:
 		grid->setState(Square::PACKAGE, square->gridLocation);
-		this->addUniqueElementToVector(&packages, square->gridLocation);
-		this->addUniqueElementToVector(&collidables, square->gridLocation);
+		Util::addIfUnique<Point>(&packages, grid_position);
+		Util::addIfUnique<Point>(&collidables, grid_position);
 		break;
 
 	case Toolbar::BEGIN:
 		grid->setState(Square::BEGIN, square->gridLocation);
-		this->addUniqueElementToVector(&starts, square->gridLocation);
+		Util::addIfUnique<Point>(&starts, grid_position);
 		break;
 
 	case Toolbar::END:
 		grid->setState(Square::END, square->gridLocation);
-		this->addUniqueElementToVector(&ends, square->gridLocation);
+		Util::addIfUnique<Point>(&ends, grid_position);
 		break;
 
 	case Toolbar::ERASE:
@@ -277,7 +276,7 @@ void Simulator::gridSquareCallback(Square* square)
 
 		// TODO: those two function are always together, maybe move setState of grid inside the remove element?
 		grid->setState(Square::EMPTY, square->gridLocation);
-		this->removeElementFromVector(vector, square->gridLocation);
+		Util::removeIfContains(vector, grid_position);
 		
 
 	}

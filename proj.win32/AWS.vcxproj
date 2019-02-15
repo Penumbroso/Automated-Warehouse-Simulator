@@ -156,7 +156,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\Robot.cpp" />
     <ClCompile Include="..\Classes\Simulator.cpp" />
     <ClCompile Include="..\Classes\Toolbar.cpp" />
-    <ClCompile Include="..\Classes\Vector.cpp" />
+    <ClCompile Include="..\Classes\Util.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -167,7 +167,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Robot.h" />
     <ClInclude Include="..\Classes\Simulator.h" />
     <ClInclude Include="..\Classes\Toolbar.h" />
-    <ClInclude Include="..\Classes\Vector.h" />
+    <ClInclude Include="..\Classes\Util.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>

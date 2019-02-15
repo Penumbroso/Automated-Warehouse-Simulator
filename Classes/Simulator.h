@@ -53,9 +53,8 @@ private:
 	AStar::Generator generator;
 
 	// TODO: move this to its own file as it can be used by other if added a template.
-	void addUniqueElementToVector(vector<Point>* v, Point p);
-	void removeElementFromVector(vector<Point>* v, Point p);
 	bool isCollisionImminent(Point next_position);
+	Robot* getRobotAt(Point grid_position);
 };
 
 #endif // __HELLOWORLD_SCENE_H__
