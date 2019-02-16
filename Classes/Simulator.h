@@ -23,6 +23,7 @@ public:
 	Toolbar* toolbar;
     
 	void run(float dt);
+	void updateUI(float dt);
 
     CREATE_FUNC(Simulator);
 

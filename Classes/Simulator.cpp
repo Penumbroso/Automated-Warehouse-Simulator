@@ -55,33 +55,15 @@ void Simulator::run(float dt)
 		if (!robot->path.empty())
 		{	
 			auto next_position = robot->path.back();
-			auto next_square = this->grid->squares.at(next_position);
 
-			// Move if the path is clear of robots
-			if (!isCollisionImminent(next_position))
+			if (isCollisionImminent(next_position))
 			{
-				robot->setPosition(next_square->getPosition());
-				robot->path.pop_back();
-				robot->grid_position = next_position;
+				// Case 1: robot.grid_position is NOT in collision_robot.path
+				// add the same position to the back of the path so that the robot stay where he is
+				// Case 2: robot.grid_position IS in the collision_robot.path
+				// move out of the way
 			}
-			//else
-			//{
-			//	// Case 1: if the current position is NOT on the path of the collidable robot just wait
-				// colliding_robot = getCollidingRobot(next_position);
-				// if(colliding_robot.path.contains(robot.grid_position))
-				//		DO NOTHING
-				// Case 2: if the current position IS on the path of the collidable robot move away(Redo pathing ? )
-				// else
-				//		MOVEAWAY
-			//	// 
-			//}
 			
-			// Remove package when it gets picked up
-			if (robot->grid_position == robot->package)
-			{
-				grid->setState(Square::EMPTY, robot->package);
-				Util::removeIfContains(&collidables, robot->package);
-			}
 		}
 		else if (!packages.empty())
 		{
@@ -100,6 +82,25 @@ void Simulator::run(float dt)
 			
 	}
 
+}
+
+void Simulator::updateUI(float dt)
+{
+	for (auto robot : robots)
+	{
+		// Remove packages that are already picked up
+		if (robot->grid_position == robot->package)
+		{
+			grid->setState(Square::EMPTY, robot->package);
+			Util::removeIfContains(&collidables, robot->package);
+		}
+
+		// Update screen position of a robot
+		auto current_grid_position = robot->grid_position;
+		auto current_screen_position = grid->getPositionOf(current_grid_position);
+		robot->setPosition(current_screen_position);
+
+	}
 }
 
 vector<Point> Simulator::createPath(Point origin, Point package, Point end)
@@ -222,7 +223,12 @@ void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 	this->createRobots();
 
 	if (!this->running)
+	{
 		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.15f);
+		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::updateUI), 0.15f);
+		for (auto robot : robots) robot->run();
+	}
+		
 	else
 		this->unscheduleAllSelectors();
 

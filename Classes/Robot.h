@@ -17,8 +17,13 @@ public:
 	vector<Point> path;
 	Point package;
 
+	double speed;
+
 	Point grid_position;
 	Point end;
+
+	void move(float dt);
+	void run();
 
 	CREATE_FUNC(Robot);
 };
