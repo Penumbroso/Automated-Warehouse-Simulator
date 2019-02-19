@@ -92,6 +92,7 @@ void Simulator::updateUI(float dt)
 		if (robot->grid_position == robot->package)
 		{
 			grid->setState(Square::EMPTY, robot->package);
+			// This is not UI related
 			Util::removeIfContains(&collidables, robot->package);
 		}
 
@@ -228,9 +229,12 @@ void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::updateUI), 0.15f);
 		for (auto robot : robots) robot->run();
 	}
-		
 	else
+	{
 		this->unscheduleAllSelectors();
+		for (auto robot : robots) robot->unscheduleAllSelectors();
+	}
+		
 
 	this->running = !this->running;
 }
