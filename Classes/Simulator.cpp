@@ -58,10 +58,18 @@ void Simulator::run(float dt)
 
 			if (isCollisionImminent(next_position))
 			{
-				// Case 1: robot.grid_position is NOT in collision_robot.path
-				// add the same position to the back of the path so that the robot stay where he is
-				// Case 2: robot.grid_position IS in the collision_robot.path
-				// move out of the way
+				auto collision_robot = this->getRobotAt(next_position);
+				auto path = collision_robot->path;
+				if (!Util::contains<Point>(&path, robot->grid_position))
+				{
+					robot->path.push_back(robot->grid_position);
+				}
+				else
+				{
+					// Case 2: robot.grid_position IS in the collision_robot.path
+					// move out of the way
+				}
+
 			}
 			
 		}

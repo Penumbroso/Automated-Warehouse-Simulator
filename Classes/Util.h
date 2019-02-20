@@ -9,8 +9,16 @@ public:
 	Util();
 	~Util();
 
-	//template <typename type>
-	//static bool contains(vector<type> vector, type element);
+	template <typename T>
+	static bool contains(vector<T>* vector, T element)
+	{
+		if (vector)
+		{
+			auto it = std::find(vector->begin(), vector->end(), element);
+			if (it != vector->end()) return true;
+		}
+		return false;
+	}
 
 	template <typename T>
 	static void addIfUnique(vector<T>* vector, T element) 
@@ -31,9 +39,5 @@ public:
 			if (it != vector->end()) vector->erase(it);
 		}
 	}
-	
-
-	//template <typename type>
-	//static void remove(vector<type>* vector, type element);
 };
 
