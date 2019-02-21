@@ -22,5 +22,11 @@ void Robot::move(float dt)
 
 void Robot::run()
 {
-	this->schedule(CC_SCHEDULE_SELECTOR(Robot::move), 0.15f);
+	this->schedule(CC_SCHEDULE_SELECTOR(Robot::move), 0.2f);
+}
+
+bool Robot::isDelivering()
+{
+	if (this->package != NULL) return true;
+	return false;
 }

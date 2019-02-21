@@ -34,14 +34,14 @@ protected:
 	void menuRunCallback(cocos2d::Ref * pSender);
 	void menuResetCallback(cocos2d::Ref * pSender);
 	void gridSquareCallback(Square* square);
-	vector<Point> createPath(Point origin, Point package, Point end);
 	void createRobots();
-	Point getClosestFrom(Point origin, vector<Point> destinations);
+	vector<Point> getShortestPath(Point origin, vector<Point> destinations);
 
 	vector<Point> starts;
 	vector<Point> ends;
 	vector<Point> packages;
 	vector<Point> collidables;
+	// TOOD: add dynamic collidables and static collidables
 
 	vector<Point> saved_starts;
 	vector<Point> saved_ends;

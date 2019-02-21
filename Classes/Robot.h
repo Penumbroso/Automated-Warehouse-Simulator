@@ -13,8 +13,20 @@ class Robot : public cocos2d::Sprite
 public:
 
 	virtual bool init();
+
+	enum State
+	{
+		FULL,
+		EMPTY
+	};
+
+	State state = EMPTY;
 	
 	vector<Point> path;
+
+	// TODO: add a point to this vector every time the robot moves.
+	vector<Point> complete_path;
+
 	Point package;
 
 	double speed;
@@ -22,8 +34,12 @@ public:
 	Point grid_position;
 	Point end;
 
+	// TODO: change destination everytime an objective is complete.
+	Point destination;
+
 	void move(float dt);
 	void run();
+	bool isDelivering();
 
 	CREATE_FUNC(Robot);
 };

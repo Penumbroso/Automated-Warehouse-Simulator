@@ -67,29 +67,30 @@ void Simulator::run(float dt)
 				else
 				{
 					// Case 2: robot.grid_position IS in the collision_robot.path
-					// move out of the way
+					// IF the robot is carrying a package make a path to the closest end
+					// IF the robot is not carrying a package just empty his path so he can recalculate a new one.
 				}
-
 			}
-			
 		}
-		else if (!packages.empty())
-		{
-			robot->package = this->getClosestFrom(robot->grid_position, packages);
-			robot->end = this->getClosestFrom(robot->package, ends);
-			robot->path = this->createPath(robot->grid_position, robot->package, robot->end);
 
-			Util::removeIfContains(&packages, robot->package);
-		}
-		else
+		// TODO: change condition to areAllPackagesDelivered?
+		if (robot->path.empty())
 		{
-			// TODO: remove robots as the reach destination? probrably not
-			/*this->unscheduleAllSelectors();
-			this->running = false;*/
+			if (robot->state == Robot::EMPTY && !packages.empty()) {
+				robot->path = this->getShortestPath(robot->grid_position, packages);
+				robot->destination = robot->path[0];
+				robot->package = robot->destination;
+				Util::removeIfContains(&packages, robot->package);
+			}
+			else 
+			{
+				robot->path = this->getShortestPath(robot->grid_position, ends);
+				robot->destination = robot->path[0];
+				robot->end = robot->destination;
+			}
 		}
 			
 	}
-
 }
 
 void Simulator::updateUI(float dt)
@@ -102,6 +103,13 @@ void Simulator::updateUI(float dt)
 			grid->setState(Square::EMPTY, robot->package);
 			// This is not UI related
 			Util::removeIfContains(&collidables, robot->package);
+			robot->state = Robot::FULL;
+		}
+
+		if (robot->grid_position == robot->end)
+		{
+			// Not UI related
+			robot->state = Robot::EMPTY;
 		}
 
 		// Update screen position of a robot
@@ -110,21 +118,6 @@ void Simulator::updateUI(float dt)
 		robot->setPosition(current_screen_position);
 
 	}
-}
-
-vector<Point> Simulator::createPath(Point origin, Point package, Point end)
-{
-	generator.clearCollisions();
-	generator.addCollisions(collidables);
-	generator.removeCollision(package);
-
-	auto pathToPackage = generator.findPath({ origin.x, origin.y }, { package.x, package.y });
-	auto pathToDelivery = generator.findPath({ package.x, package.y }, { end.x, end.y });
-	pathToDelivery.pop_back(); // Removes repeated package point from the path
-	pathToDelivery.insert(pathToDelivery.end(), pathToPackage.begin(), pathToPackage.end());
-	pathToDelivery.pop_back(); // Remove the first coordinate since we are already in it
-	
-	return pathToDelivery;
 }
 
 void Simulator::createRobots() {
@@ -144,9 +137,8 @@ void Simulator::createRobots() {
 	}
 }
 
-// TODO: (Optimization) Maybe change this so it return a path instead of a point for sake of optimization
-Point Simulator::getClosestFrom(Point origin, vector<Point> destinations) {
-	Point closest;
+vector<Point> Simulator::getShortestPath(Point origin, vector<Point> destinations) {
+	vector<Point> shortest_path;
 	int min_size = std::numeric_limits<int>::max();
 
 	for (Point destination : destinations)
@@ -157,12 +149,12 @@ Point Simulator::getClosestFrom(Point origin, vector<Point> destinations) {
 
 		auto path = generator.findPath({ origin.x, origin.y }, { destination.x, destination.y });
 		if (path.size() < min_size) {
-			closest = destination;
+			shortest_path = path;
 			min_size = path.size();
 		}
 	}
 
-	return closest;
+	return shortest_path;
 }
 
 bool Simulator::isCollisionImminent(Point next_position)
@@ -233,8 +225,8 @@ void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 
 	if (!this->running)
 	{
-		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.15f);
-		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::updateUI), 0.15f);
+		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.2f);
+		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::updateUI), 0.1f);
 		for (auto robot : robots) robot->run();
 	}
 	else
