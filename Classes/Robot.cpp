@@ -20,9 +20,19 @@ void Robot::move(float dt)
 	}
 }
 
+void Robot::updateState(float dt)
+{
+	if (grid_position == destination)
+	{
+		state = (state == FULL) ? EMPTY : FULL;
+	}
+}
+
+
 void Robot::run()
 {
 	this->schedule(CC_SCHEDULE_SELECTOR(Robot::move), 0.2f);
+	this->schedule(CC_SCHEDULE_SELECTOR(Robot::updateState), 0.2f);
 }
 
 bool Robot::isDelivering()
@@ -30,3 +40,4 @@ bool Robot::isDelivering()
 	if (this->package != NULL) return true;
 	return false;
 }
+

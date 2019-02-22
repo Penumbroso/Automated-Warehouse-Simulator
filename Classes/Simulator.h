@@ -35,12 +35,16 @@ protected:
 	void menuResetCallback(cocos2d::Ref * pSender);
 	void gridSquareCallback(Square* square);
 	void createRobots();
+	void definePathOf(Robot * robot);
+	void preventCollisionOf(Robot * robot);
 	vector<Point> getShortestPath(Point origin, vector<Point> destinations);
 
 	vector<Point> starts;
 	vector<Point> ends;
-	vector<Point> packages;
-	vector<Point> collidables;
+	vector<Point> available_packages;
+
+	vector<Point> static_collidables;
+	vector<Point> dynamic_collidables;
 	// TOOD: add dynamic collidables and static collidables
 
 	vector<Point> saved_starts;

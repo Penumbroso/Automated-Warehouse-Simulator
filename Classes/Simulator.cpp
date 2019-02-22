@@ -54,40 +54,13 @@ void Simulator::run(float dt)
 	for (auto robot : this->robots) {
 		if (!robot->path.empty())
 		{	
-			auto next_position = robot->path.back();
-
-			if (isCollisionImminent(next_position))
-			{
-				auto collision_robot = this->getRobotAt(next_position);
-				auto path = collision_robot->path;
-				if (!Util::contains<Point>(&path, robot->grid_position))
-				{
-					robot->path.push_back(robot->grid_position);
-				}
-				else
-				{
-					// Case 2: robot.grid_position IS in the collision_robot.path
-					// IF the robot is carrying a package make a path to the closest end
-					// IF the robot is not carrying a package just empty his path so he can recalculate a new one.
-				}
-			}
+			this->preventCollisionOf(robot);
 		}
 
 		// TODO: change condition to areAllPackagesDelivered?
 		if (robot->path.empty())
 		{
-			if (robot->state == Robot::EMPTY && !packages.empty()) {
-				robot->path = this->getShortestPath(robot->grid_position, packages);
-				robot->destination = robot->path[0];
-				robot->package = robot->destination;
-				Util::removeIfContains(&packages, robot->package);
-			}
-			else 
-			{
-				robot->path = this->getShortestPath(robot->grid_position, ends);
-				robot->destination = robot->path[0];
-				robot->end = robot->destination;
-			}
+			this->definePathOf(robot);
 		}
 			
 	}
@@ -102,14 +75,7 @@ void Simulator::updateUI(float dt)
 		{
 			grid->setState(Square::EMPTY, robot->package);
 			// This is not UI related
-			Util::removeIfContains(&collidables, robot->package);
-			robot->state = Robot::FULL;
-		}
-
-		if (robot->grid_position == robot->end)
-		{
-			// Not UI related
-			robot->state = Robot::EMPTY;
+			Util::removeIfContains(&static_collidables, robot->package);
 		}
 
 		// Update screen position of a robot
@@ -137,6 +103,45 @@ void Simulator::createRobots() {
 	}
 }
 
+void Simulator::definePathOf(Robot * robot)
+{
+	if (robot->state == Robot::EMPTY && !available_packages.empty()) {
+		robot->path = this->getShortestPath(robot->grid_position, available_packages);
+		robot->destination = robot->path[0];
+		robot->package = robot->destination;
+		Util::removeIfContains(&available_packages, robot->package);
+	}
+	else
+	{
+		robot->path = this->getShortestPath(robot->grid_position, ends);
+		robot->destination = robot->path[0];
+		robot->end = robot->destination;
+	}
+}
+
+void Simulator::preventCollisionOf(Robot * robot)
+{
+	auto next_position = robot->path.back();
+
+	if (isCollisionImminent(next_position))
+	{
+		auto collision_robot = this->getRobotAt(next_position);
+		auto path = collision_robot->path;
+		if (!Util::contains<Point>(&path, robot->grid_position))
+		{
+			robot->path.push_back(robot->grid_position);
+		}
+		else
+		{
+			// TODO: fix problem of delayed contourn or completly stopping, it has to do with the timing I think.
+			static_collidables.push_back(next_position);
+			robot->path = this->getShortestPath(robot->grid_position, { robot->destination });
+			static_collidables.pop_back();
+
+		}
+	}
+}
+
 vector<Point> Simulator::getShortestPath(Point origin, vector<Point> destinations) {
 	vector<Point> shortest_path;
 	int min_size = std::numeric_limits<int>::max();
@@ -144,7 +149,7 @@ vector<Point> Simulator::getShortestPath(Point origin, vector<Point> destination
 	for (Point destination : destinations)
 	{
 		generator.clearCollisions();
-		generator.addCollisions(collidables);
+		generator.addCollisions(static_collidables);
 		generator.removeCollision(destination);
 
 		auto path = generator.findPath({ origin.x, origin.y }, { destination.x, destination.y });
@@ -190,8 +195,8 @@ void Simulator::load()
 	
 	starts = saved_starts;
 	ends = saved_ends;
-	packages = saved_packages;
-	collidables = saved_collidables;
+	available_packages = saved_packages;
+	static_collidables = saved_collidables;
 
 	for (Robot* robot : this->robots)
 		robot->removeFromParent();
@@ -207,8 +212,8 @@ void Simulator::save()
 
 	saved_starts = starts;
 	saved_ends = ends;
-	saved_packages = packages;
-	saved_collidables = collidables;
+	saved_packages = available_packages;
+	saved_collidables = static_collidables;
 
 	this->saved = true;
 }
@@ -254,8 +259,8 @@ void Simulator::gridSquareCallback(Square* square)
 	{
 	case Toolbar::PACKAGE:
 		grid->setState(Square::PACKAGE, square->gridLocation);
-		Util::addIfUnique<Point>(&packages, grid_position);
-		Util::addIfUnique<Point>(&collidables, grid_position);
+		Util::addIfUnique<Point>(&available_packages, grid_position);
+		Util::addIfUnique<Point>(&static_collidables, grid_position);
 		break;
 
 	case Toolbar::BEGIN:
@@ -274,7 +279,7 @@ void Simulator::gridSquareCallback(Square* square)
 		switch (square->state)
 		{
 		case Square::PACKAGE:
-			vector = &packages;
+			vector = &available_packages;
 			break;
 		case Square::BEGIN:
 			vector = &starts;

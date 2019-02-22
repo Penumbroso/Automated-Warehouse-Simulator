@@ -40,6 +40,7 @@ public:
 	void move(float dt);
 	void run();
 	bool isDelivering();
+	void updateState(float dt);
 
 	CREATE_FUNC(Robot);
 };
