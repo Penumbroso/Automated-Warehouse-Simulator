@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <vector>
 #include <limits>
-#include "Util.h"
 
 USING_NS_CC;
 
@@ -27,7 +26,7 @@ bool Simulator::init()
 	for (const auto &p : grid->squares)
 	{
 		auto square = p.second;
-		square->setCallback(CC_CALLBACK_0(Simulator::gridSquareCallback, this, square));
+		square->setCallback(CC_CALLBACK_0(Simulator::gridSquareCallback, this, square->grid_coord));
 	}
 		
 	this->addChild(grid);
@@ -51,18 +50,14 @@ bool Simulator::init()
 
 void Simulator::run(float dt) 
 {
-	for (auto robot : this->robots) {
+	for (auto robot : this->robots) 
+	{
 		if (!robot->path.empty())
-		{	
 			this->preventCollisionOf(robot);
-		}
 
 		// TODO: change condition to areAllPackagesDelivered?
 		if (robot->path.empty())
-		{
 			this->definePathOf(robot);
-		}
-			
 	}
 }
 
@@ -72,24 +67,20 @@ void Simulator::updateUI(float dt)
 	{
 		// Remove packages that are already picked up
 		if (robot->grid_position == robot->package)
-		{
 			grid->setState(Square::EMPTY, robot->package);
-			// This is not UI related
-			Util::removeIfContains(&static_collidables, robot->package);
-		}
+		
 
 		// Update screen position of a robot
 		auto current_grid_position = robot->grid_position;
 		auto current_screen_position = grid->getPositionOf(current_grid_position);
 		robot->setPosition(current_screen_position);
-
 	}
 }
 
 void Simulator::createRobots() {
 	if (!robots.empty()) return;
 
-	for (Point start : starts) 
+	for (Point start : grid->starts) 
 	{
 		auto robot = Robot::create();
 		robot->initWithFile("Robot.png");
@@ -105,17 +96,18 @@ void Simulator::createRobots() {
 
 void Simulator::definePathOf(Robot * robot)
 {
-	if (robot->state == Robot::EMPTY && !available_packages.empty()) {
-		robot->path = this->getShortestPath(robot->grid_position, available_packages);
-		robot->destination = robot->path[0];
-		robot->package = robot->destination;
-		Util::removeIfContains(&available_packages, robot->package);
+	if (robot->state == Robot::EMPTY && !grid->available_packages.empty()) 
+	{
+		robot->path = this->findShortestPath(robot->grid_position, grid->available_packages);
+		robot->package = robot->path[0];
+		robot->destination = robot->package;
+		Util::removeIfContains(&grid->available_packages, robot->package);
 	}
 	else
 	{
-		robot->path = this->getShortestPath(robot->grid_position, ends);
-		robot->destination = robot->path[0];
-		robot->end = robot->destination;
+		robot->path = this->findShortestPath(robot->grid_position, grid->ends);
+		robot->end = robot->path[0];
+		robot->destination = robot->end;
 	}
 }
 
@@ -134,22 +126,22 @@ void Simulator::preventCollisionOf(Robot * robot)
 		else
 		{
 			// TODO: fix problem of delayed contourn or completly stopping, it has to do with the timing I think.
-			static_collidables.push_back(next_position);
-			robot->path = this->getShortestPath(robot->grid_position, { robot->destination });
-			static_collidables.pop_back();
+			grid->static_collidables.push_back(next_position);
+			robot->path = this->findShortestPath(robot->grid_position, { robot->destination });
+			grid->static_collidables.pop_back();
 
 		}
 	}
 }
 
-vector<Point> Simulator::getShortestPath(Point origin, vector<Point> destinations) {
+vector<Point> Simulator::findShortestPath(Point origin, vector<Point> destinations) {
 	vector<Point> shortest_path;
 	int min_size = std::numeric_limits<int>::max();
 
 	for (Point destination : destinations)
 	{
 		generator.clearCollisions();
-		generator.addCollisions(static_collidables);
+		generator.addCollisions(grid->static_collidables);
 		generator.removeCollision(destination);
 
 		auto path = generator.findPath({ origin.x, origin.y }, { destination.x, destination.y });
@@ -182,7 +174,8 @@ Robot * Simulator::getRobotAt(Point grid_position)
 
 void Simulator::load()
 {
-	// TODO: (refactoring) create an update function in the grid that constantly enquires these vectors, and when one of them is changed it would automaticly change the grid visual
+	// TODO: (refactoring) create an update function in the grid that constantly enquires these vectors, 
+	// and when one of them is changed it would automaticly change the grid visual
 	// Maybe calling and update function only when one of those vectors are changed
 	for (Point start : saved_starts)
 		grid->setState(Square::BEGIN, start);
@@ -193,10 +186,10 @@ void Simulator::load()
 	for (Point package : saved_packages)
 		grid->setState(Square::PACKAGE, package);
 	
-	starts = saved_starts;
-	ends = saved_ends;
-	available_packages = saved_packages;
-	static_collidables = saved_collidables;
+	grid->starts = saved_starts;
+	grid->ends = saved_ends;
+	grid->available_packages = saved_packages;
+	grid->static_collidables = saved_collidables;
 
 	for (Robot* robot : this->robots)
 		robot->removeFromParent();
@@ -210,10 +203,10 @@ void Simulator::save()
 {
 	if (this->saved) return;
 
-	saved_starts = starts;
-	saved_ends = ends;
-	saved_packages = available_packages;
-	saved_collidables = static_collidables;
+	saved_starts = grid->starts;
+	saved_ends = grid->ends;
+	saved_packages = grid->available_packages;
+	saved_collidables = grid->static_collidables;
 
 	this->saved = true;
 }
@@ -251,48 +244,24 @@ void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 	this->running = false;
 }
 
-void Simulator::gridSquareCallback(Square* square)
+void Simulator::gridSquareCallback(Point coord)
 {
-	auto grid_position = square->gridLocation;
-
 	switch (this->toolbar->selected)
 	{
 	case Toolbar::PACKAGE:
-		grid->setState(Square::PACKAGE, square->gridLocation);
-		Util::addIfUnique<Point>(&available_packages, grid_position);
-		Util::addIfUnique<Point>(&static_collidables, grid_position);
+		grid->setState(Square::PACKAGE, coord);
 		break;
 
 	case Toolbar::BEGIN:
-		grid->setState(Square::BEGIN, square->gridLocation);
-		Util::addIfUnique<Point>(&starts, grid_position);
+		grid->setState(Square::BEGIN, coord);
 		break;
 
 	case Toolbar::END:
-		grid->setState(Square::END, square->gridLocation);
-		Util::addIfUnique<Point>(&ends, grid_position);
+		grid->setState(Square::END, coord);
 		break;
 
 	case Toolbar::ERASE:
-		vector<Point>* vector = NULL;
-
-		switch (square->state)
-		{
-		case Square::PACKAGE:
-			vector = &available_packages;
-			break;
-		case Square::BEGIN:
-			vector = &starts;
-			break;
-		case Square::END:
-			vector = &ends;
-			break;
-		}
-
-		// TODO: those two function are always together, maybe move setState of grid inside the remove element?
-		grid->setState(Square::EMPTY, square->gridLocation);
-		Util::removeIfContains(vector, grid_position);
-		
-
+		grid->setState(Square::EMPTY, coord);
+		break;
 	}
 }

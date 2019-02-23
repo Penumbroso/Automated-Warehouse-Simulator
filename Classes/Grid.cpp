@@ -52,18 +52,23 @@ void Grid::setState(Square::State state, Point point)
 	{
 	case Square::BEGIN:
 		this->addSymbol("Plus.png", point);
+		Util::addIfUnique<Point>(&starts, point);
 		break;
 	case Square::END:
 		this->addSymbol("Minus.png", point);
+		Util::addIfUnique<Point>(&ends, point);
 		break;
 	case Square::PACKAGE:
+		Util::addIfUnique<Point>(&available_packages, point);
+		Util::addIfUnique<Point>(&static_collidables, point);
 		break;
 	case Square::EMPTY:
 		this->removeSymbol(point);
 		square->setColor(Color3B::WHITE);
-		break;
-	default:
-		
+		Util::removeIfContains(&starts, point);
+		Util::removeIfContains(&ends, point);
+		Util::removeIfContains(&available_packages, point);
+		Util::removeIfContains(&static_collidables, point);
 		break;
 	}
 

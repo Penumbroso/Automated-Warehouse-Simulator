@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "Square.h"
+#include "Util.h"
 
 USING_NS_CC;
 
@@ -24,6 +25,12 @@ public:
 	Point getPositionOf(Point point);
 	void setState(Square::State state, Point point);
 
+	vector<Point> starts;
+	vector<Point> ends;
+	vector<Point> packages;
+	// TODO: available_packages shoulndt be here since it only concerns the simulation
+	vector<Point> available_packages;
+	vector<Point> static_collidables;
 	
 	CREATE_FUNC(Grid);
 

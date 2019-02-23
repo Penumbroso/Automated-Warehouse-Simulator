@@ -15,7 +15,7 @@ public:
 
 	State state = EMPTY;
 
-	cocos2d::Point gridLocation;
+	cocos2d::Point grid_coord;
 
 	CREATE_FUNC(Square);
 
