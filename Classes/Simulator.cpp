@@ -45,6 +45,9 @@ bool Simulator::init()
 	generator.setHeuristic(AStar::Heuristic::manhattan);
 	generator.setDiagonalMovement(false);
 
+	auto _listener = EventListenerCustom::create("prevent_collision", CC_CALLBACK_1(Simulator::preventCollision, this));
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_listener, this);
+
     return true;
 }
 
@@ -52,28 +55,21 @@ void Simulator::run(float dt)
 {
 	for (auto robot : this->robots) 
 	{
-		if (!robot->path.empty())
-			this->preventCollisionOf(robot);
 
-		// TODO: change condition to areAllPackagesDelivered?
-		if (robot->path.empty())
-			this->definePathOf(robot);
-	}
-}
-
-void Simulator::updateUI(float dt)
-{
-	for (auto robot : robots)
-	{
-		// Remove packages that are already picked up
+		// Remove package from grid if there is a robot on top of it.
 		if (robot->grid_position == robot->package)
 			grid->setState(Square::EMPTY, robot->package);
-		
 
 		// Update screen position of a robot
 		auto current_grid_position = robot->grid_position;
 		auto current_screen_position = grid->getPositionOf(current_grid_position);
 		robot->setPosition(current_screen_position);
+
+		if (robot->path.empty())
+			this->definePathOf(robot);
+
+		if (grid->packages.size() == this->delivered)
+			this->unscheduleAllSelectors();
 	}
 }
 
@@ -99,20 +95,20 @@ void Simulator::definePathOf(Robot * robot)
 	if (robot->state == Robot::EMPTY && !grid->available_packages.empty()) 
 	{
 		robot->path = this->findShortestPath(robot->grid_position, grid->available_packages);
-		robot->package = robot->path[0];
-		robot->destination = robot->package;
-		Util::removeIfContains(&grid->available_packages, robot->package);
+		robot->destination = robot->path[0];
+		robot->package = robot->destination;
+		Util::removeIfContains(&grid->available_packages, robot->destination);
 	}
 	else
 	{
 		robot->path = this->findShortestPath(robot->grid_position, grid->ends);
-		robot->end = robot->path[0];
-		robot->destination = robot->end;
+		robot->destination = robot->path[0];
 	}
 }
 
-void Simulator::preventCollisionOf(Robot * robot)
+void Simulator::preventCollision(EventCustom * event)
 {
+	Robot* robot = static_cast<Robot*>(event->getUserData());
 	auto next_position = robot->path.back();
 
 	if (isCollisionImminent(next_position))
@@ -125,7 +121,6 @@ void Simulator::preventCollisionOf(Robot * robot)
 		}
 		else
 		{
-			// TODO: fix problem of delayed contourn or completly stopping, it has to do with the timing I think.
 			grid->static_collidables.push_back(next_position);
 			robot->path = this->findShortestPath(robot->grid_position, { robot->destination });
 			grid->static_collidables.pop_back();
@@ -177,19 +172,10 @@ void Simulator::load()
 	// TODO: (refactoring) create an update function in the grid that constantly enquires these vectors, 
 	// and when one of them is changed it would automaticly change the grid visual
 	// Maybe calling and update function only when one of those vectors are changed
-	for (Point start : saved_starts)
-		grid->setState(Square::BEGIN, start);
-
-	for (Point end : saved_ends)
-		grid->setState(Square::END, end);
-
 	for (Point package : saved_packages)
 		grid->setState(Square::PACKAGE, package);
 	
-	grid->starts = saved_starts;
-	grid->ends = saved_ends;
 	grid->available_packages = saved_packages;
-	grid->static_collidables = saved_collidables;
 
 	for (Robot* robot : this->robots)
 		robot->removeFromParent();
@@ -203,10 +189,7 @@ void Simulator::save()
 {
 	if (this->saved) return;
 
-	saved_starts = grid->starts;
-	saved_ends = grid->ends;
 	saved_packages = grid->available_packages;
-	saved_collidables = grid->static_collidables;
 
 	this->saved = true;
 }
@@ -223,8 +206,7 @@ void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 
 	if (!this->running)
 	{
-		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.2f);
-		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::updateUI), 0.1f);
+		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.1f);
 		for (auto robot : robots) robot->run();
 	}
 	else

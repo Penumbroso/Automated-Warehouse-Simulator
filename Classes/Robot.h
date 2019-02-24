@@ -24,23 +24,13 @@ public:
 	
 	vector<Point> path;
 
-	// TODO: add a point to this vector every time the robot moves.
-	vector<Point> complete_path;
-
-	Point package;
-
-	double speed;
-
 	Point grid_position;
-	Point end;
-
-	// TODO: change destination everytime an objective is complete.
 	Point destination;
+	Point package;
 
 	void move(float dt);
 	void run();
-	bool isDelivering();
-	void updateState(float dt);
+	void updateState();
 
 	CREATE_FUNC(Robot);
 };

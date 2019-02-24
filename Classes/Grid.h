@@ -38,6 +38,9 @@ protected:
 	void drawLines();
 	void addSymbol(const std::string &filename, Point point);
 	void removeSymbol(Point point);
+
+private:
+	void createSquares();
 };
 
 #endif

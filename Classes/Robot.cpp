@@ -12,15 +12,22 @@ bool Robot::init()
 
 void Robot::move(float dt)
 {
+
+	EventCustom event("prevent_collision");
+	event.setUserData(this);
+	_eventDispatcher->dispatchEvent(&event);
+
 	if (!this->path.empty())
 	{
 		auto next_position = this->path.back();
 		this->path.pop_back();
 		this->grid_position = next_position;
 	}
+
+	this->updateState();
 }
 
-void Robot::updateState(float dt)
+void Robot::updateState()
 {
 	if (grid_position == destination)
 	{
@@ -28,16 +35,8 @@ void Robot::updateState(float dt)
 	}
 }
 
-
 void Robot::run()
 {
-	this->schedule(CC_SCHEDULE_SELECTOR(Robot::move), 0.2f);
-	this->schedule(CC_SCHEDULE_SELECTOR(Robot::updateState), 0.2f);
-}
-
-bool Robot::isDelivering()
-{
-	if (this->package != NULL) return true;
-	return false;
+	this->schedule(CC_SCHEDULE_SELECTOR(Robot::move), 0.5f);
 }
 

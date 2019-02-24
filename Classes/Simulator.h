@@ -36,17 +36,15 @@ protected:
 	void gridSquareCallback(Point coord);
 	void createRobots();
 	void definePathOf(Robot * robot);
-	void preventCollisionOf(Robot * robot);
+	void preventCollision(EventCustom* event);
 	vector<Point> findShortestPath(Point origin, vector<Point> destinations);
 
-	vector<Point> saved_starts;
-	vector<Point> saved_ends;
 	vector<Point> saved_packages;
-	vector<Point> saved_collidables;
 
 private:
 	bool running = false;
 	bool saved = false;
+	int delivered = 0;
 	AStar::Generator generator;
 
 	// TODO: move this to its own file as it can be used by other if added a template.

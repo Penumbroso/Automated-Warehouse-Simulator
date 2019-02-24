@@ -12,26 +12,11 @@ bool Grid::init()
 	this->addChild(menu);
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	number_of_lines = visibleSize.height / square_size + 1;
 	number_of_columns = visibleSize.width / square_size + 1;
 
-	for (int j = 0; j < number_of_columns; j++) {
-		for (int i = 0; i < number_of_lines; i++) {
-			auto square = Square::create();
-			square->setNormalImage(Sprite::create("square.png"));
-			square->setContentSize(Size(square_size, square_size));
-
-			squares[Point(j, i)] = square;
-			square->gridLocation = Point(j, i);
-
-			square->setPosition(Vec2(j * square_size + square_size / 2,  i * square_size + square_size / 2));
-
-			menu->addChild(square);
-		}
-	}
-
+	this->createSquares();
 	this->drawLines();
 
 	return true;
@@ -54,14 +39,18 @@ void Grid::setState(Square::State state, Point point)
 		this->addSymbol("Plus.png", point);
 		Util::addIfUnique<Point>(&starts, point);
 		break;
+
 	case Square::END:
 		this->addSymbol("Minus.png", point);
 		Util::addIfUnique<Point>(&ends, point);
 		break;
+
 	case Square::PACKAGE:
 		Util::addIfUnique<Point>(&available_packages, point);
+		Util::addIfUnique<Point>(&packages, point);
 		Util::addIfUnique<Point>(&static_collidables, point);
 		break;
+
 	case Square::EMPTY:
 		this->removeSymbol(point);
 		square->setColor(Color3B::WHITE);
@@ -109,5 +98,23 @@ void Grid::removeSymbol(Point point)
 			symbol->removeFromParentAndCleanup(true);
 
 		this->symbols[point] = NULL;
+	}
+}
+
+void Grid::createSquares()
+{
+	for (int j = 0; j < number_of_columns; j++) {
+		for (int i = 0; i < number_of_lines; i++) {
+			auto square = Square::create();
+			square->setNormalImage(Sprite::create("square.png"));
+			square->setContentSize(Size(square_size, square_size));
+
+			squares[Point(j, i)] = square;
+			square->grid_coord = Point(j, i);
+
+			square->setPosition(Vec2(j * square_size + square_size / 2, i * square_size + square_size / 2));
+
+			menu->addChild(square);
+		}
 	}
 }
