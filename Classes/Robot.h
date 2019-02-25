@@ -24,12 +24,11 @@ public:
 	
 	vector<Point> path;
 
-	Point grid_position;
+	Point grid_coord;
 	Point destination;
 	Point package;
 
 	void move(float dt);
-	void run();
 	void updateState();
 
 	CREATE_FUNC(Robot);

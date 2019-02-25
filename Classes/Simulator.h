@@ -23,29 +23,24 @@ public:
 	Toolbar* toolbar;
     
 	void run(float dt);
-	void updateUI(float dt);
 
     CREATE_FUNC(Simulator);
 
 protected:
 	void load();
-	void save();
 	void menuToolCallback(Toolbar::Tool tool);
 	void menuRunCallback(cocos2d::Ref * pSender);
 	void menuResetCallback(cocos2d::Ref * pSender);
 	void gridSquareCallback(Point coord);
 	void createRobots();
 	void definePathOf(Robot * robot);
-	void preventCollision(EventCustom* event);
+	void preventCollisionOf(Robot* robot);
 	vector<Point> findShortestPath(Point origin, vector<Point> destinations);
 
-	vector<Point> saved_packages;
-
 private:
-	bool running = false;
-	bool saved = false;
-	int delivered = 0;
-	AStar::Generator generator;
+	bool isRunning = false;
+	int packages_delivered = 0;
+	AStar::Generator path_generator;
 
 	// TODO: move this to its own file as it can be used by other if added a template.
 	bool isCollisionImminent(Point next_position);

@@ -28,7 +28,7 @@ bool Simulator::init()
 		auto square = p.second;
 		square->setCallback(CC_CALLBACK_0(Simulator::gridSquareCallback, this, square->grid_coord));
 	}
-		
+	grid->setPosition(30, 0);
 	this->addChild(grid);
 
 	toolbar = Toolbar::create();
@@ -41,12 +41,9 @@ bool Simulator::init()
 
 	this->addChild(toolbar);
 
-	generator.setWorldSize({ grid->number_of_columns, grid->number_of_lines });
-	generator.setHeuristic(AStar::Heuristic::manhattan);
-	generator.setDiagonalMovement(false);
-
-	auto _listener = EventListenerCustom::create("prevent_collision", CC_CALLBACK_1(Simulator::preventCollision, this));
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(_listener, this);
+	path_generator.setWorldSize({ grid->number_of_columns, grid->number_of_lines });
+	path_generator.setHeuristic(AStar::Heuristic::manhattan);
+	path_generator.setDiagonalMovement(false);
 
     return true;
 }
@@ -55,20 +52,27 @@ void Simulator::run(float dt)
 {
 	for (auto robot : this->robots) 
 	{
+		if (!robot->path.empty())
+		{
+			this->preventCollisionOf(robot);
+			robot->move(dt);
+		}
 
 		// Remove package from grid if there is a robot on top of it.
-		if (robot->grid_position == robot->package)
+		if (robot->grid_coord == robot->package) {
 			grid->setState(Square::EMPTY, robot->package);
-
+			this->packages_delivered++;
+		}
+			
 		// Update screen position of a robot
-		auto current_grid_position = robot->grid_position;
+		auto current_grid_position = robot->grid_coord;
 		auto current_screen_position = grid->getPositionOf(current_grid_position);
 		robot->setPosition(current_screen_position);
 
 		if (robot->path.empty())
 			this->definePathOf(robot);
 
-		if (grid->packages.size() == this->delivered)
+		if (grid->packages.size() == this->packages_delivered)
 			this->unscheduleAllSelectors();
 	}
 }
@@ -83,7 +87,7 @@ void Simulator::createRobots() {
 		robot->setPosition(grid->getPositionOf(start));
 		robot->setColor(Color3B(150, 150, 150));
 		robot->setContentSize(Size(grid->square_size, grid->square_size));
-		robot->grid_position = start;
+		robot->grid_coord = start;
 		grid->addChild(robot);
 
 		this->robots.push_back(robot);
@@ -94,35 +98,34 @@ void Simulator::definePathOf(Robot * robot)
 {
 	if (robot->state == Robot::EMPTY && !grid->available_packages.empty()) 
 	{
-		robot->path = this->findShortestPath(robot->grid_position, grid->available_packages);
+		robot->path = this->findShortestPath(robot->grid_coord, grid->available_packages);
 		robot->destination = robot->path[0];
 		robot->package = robot->destination;
 		Util::removeIfContains(&grid->available_packages, robot->destination);
 	}
 	else
 	{
-		robot->path = this->findShortestPath(robot->grid_position, grid->ends);
+		robot->path = this->findShortestPath(robot->grid_coord, grid->ends);
 		robot->destination = robot->path[0];
 	}
 }
 
-void Simulator::preventCollision(EventCustom * event)
+void Simulator::preventCollisionOf(Robot * robot)
 {
-	Robot* robot = static_cast<Robot*>(event->getUserData());
 	auto next_position = robot->path.back();
 
 	if (isCollisionImminent(next_position))
 	{
 		auto collision_robot = this->getRobotAt(next_position);
 		auto path = collision_robot->path;
-		if (!Util::contains<Point>(&path, robot->grid_position))
+		if (!Util::contains<Point>(&path, robot->grid_coord))
 		{
-			robot->path.push_back(robot->grid_position);
+			robot->path.push_back(robot->grid_coord);
 		}
 		else
 		{
 			grid->static_collidables.push_back(next_position);
-			robot->path = this->findShortestPath(robot->grid_position, { robot->destination });
+			robot->path = this->findShortestPath(robot->grid_coord, { robot->destination });
 			grid->static_collidables.pop_back();
 
 		}
@@ -135,11 +138,11 @@ vector<Point> Simulator::findShortestPath(Point origin, vector<Point> destinatio
 
 	for (Point destination : destinations)
 	{
-		generator.clearCollisions();
-		generator.addCollisions(grid->static_collidables);
-		generator.removeCollision(destination);
+		path_generator.clearCollisions();
+		path_generator.addCollisions(grid->static_collidables);
+		path_generator.removeCollision(destination);
 
-		auto path = generator.findPath({ origin.x, origin.y }, { destination.x, destination.y });
+		auto path = path_generator.findPath({ origin.x, origin.y }, { destination.x, destination.y });
 		if (path.size() < min_size) {
 			shortest_path = path;
 			min_size = path.size();
@@ -161,7 +164,7 @@ Robot * Simulator::getRobotAt(Point grid_position)
 {
 	for (auto robot : robots)
 	{
-		if (robot->grid_position == grid_position)
+		if (robot->grid_coord == grid_position)
 			return robot;
 	}
 	return nullptr;
@@ -172,26 +175,15 @@ void Simulator::load()
 	// TODO: (refactoring) create an update function in the grid that constantly enquires these vectors, 
 	// and when one of them is changed it would automaticly change the grid visual
 	// Maybe calling and update function only when one of those vectors are changed
-	for (Point package : saved_packages)
+	for (Point package : grid->packages)
 		grid->setState(Square::PACKAGE, package);
 	
-	grid->available_packages = saved_packages;
+	grid->available_packages = grid->packages;
 
 	for (Robot* robot : this->robots)
 		robot->removeFromParent();
 	
 	this->robots = {};
-
-	this->saved = false;
-}
-
-void Simulator::save()
-{
-	if (this->saved) return;
-
-	saved_packages = grid->available_packages;
-
-	this->saved = true;
 }
 
 void Simulator::menuToolCallback(Toolbar::Tool tool)
@@ -201,29 +193,26 @@ void Simulator::menuToolCallback(Toolbar::Tool tool)
 
 void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 {
-	this->save();
 	this->createRobots();
 
-	if (!this->running)
+	if (!this->isRunning)
 	{
-		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.1f);
-		for (auto robot : robots) robot->run();
+		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.2f);
 	}
 	else
 	{
 		this->unscheduleAllSelectors();
-		for (auto robot : robots) robot->unscheduleAllSelectors();
 	}
 		
 
-	this->running = !this->running;
+	this->isRunning = !this->isRunning;
 }
 
 void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 {
 	this->unscheduleAllSelectors();
 	this->load();
-	this->running = false;
+	this->isRunning = false;
 }
 
 void Simulator::gridSquareCallback(Point coord)
