@@ -42,6 +42,9 @@
     <ClCompile Include="..\Classes\Util.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Stopwatch.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -69,6 +72,9 @@
       <Filter>src\GUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Util.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Stopwatch.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

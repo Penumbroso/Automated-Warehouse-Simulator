@@ -7,6 +7,7 @@
 #include "Toolbar.h"
 #include <vector>
 #include "AStar.hpp"
+#include "Stopwatch.h"
 
 using std::vector;
 
@@ -21,6 +22,7 @@ public:
 
 	Grid* grid;
 	Toolbar* toolbar;
+	Stopwatch* stopwatch;
     
 	void run(float dt);
 

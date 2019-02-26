@@ -45,6 +45,9 @@ bool Simulator::init()
 	path_generator.setHeuristic(AStar::Heuristic::manhattan);
 	path_generator.setDiagonalMovement(false);
 
+	stopwatch = Stopwatch::create();
+	this->addChild(stopwatch);
+
     return true;
 }
 
@@ -59,9 +62,9 @@ void Simulator::run(float dt)
 		}
 
 		// Remove package from grid if there is a robot on top of it.
-		if (robot->grid_coord == robot->package) {
+		if (robot->grid_coord == robot->package) 
+		{
 			grid->setState(Square::EMPTY, robot->package);
-			this->packages_delivered++;
 		}
 			
 		// Update screen position of a robot
@@ -195,15 +198,16 @@ void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 {
 	this->createRobots();
 
-	if (!this->isRunning)
+	if (!this->isRunning) 
 	{
 		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.2f);
+		this->stopwatch->start();
 	}
 	else
 	{
 		this->unscheduleAllSelectors();
+		this->stopwatch->stop();
 	}
-		
 
 	this->isRunning = !this->isRunning;
 }
@@ -212,6 +216,7 @@ void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 {
 	this->unscheduleAllSelectors();
 	this->load();
+	this->stopwatch->reset();
 	this->isRunning = false;
 }
 
