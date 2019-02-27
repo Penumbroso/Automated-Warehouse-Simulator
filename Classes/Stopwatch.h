@@ -1,4 +1,5 @@
 #include "cocos2d.h"
+#include <string>
 
 class Stopwatch : public cocos2d::Node
 {
@@ -12,6 +13,9 @@ public:
 	int getSeconds();
 	int getMilliseconds();
 	void reset();
+
+	cocos2d::Label* label;
+	std::string toString();
 
 	CREATE_FUNC(Stopwatch);
 

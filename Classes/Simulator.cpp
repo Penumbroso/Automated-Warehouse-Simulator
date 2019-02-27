@@ -41,12 +41,14 @@ bool Simulator::init()
 
 	this->addChild(toolbar);
 
+	stopwatch = Stopwatch::create();
+	this->addChild(stopwatch);
+
+	toolbar->addChild(stopwatch->label);
+
 	path_generator.setWorldSize({ grid->number_of_columns, grid->number_of_lines });
 	path_generator.setHeuristic(AStar::Heuristic::manhattan);
 	path_generator.setDiagonalMovement(false);
-
-	stopwatch = Stopwatch::create();
-	this->addChild(stopwatch);
 
     return true;
 }

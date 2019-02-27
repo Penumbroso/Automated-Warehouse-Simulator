@@ -8,6 +8,14 @@ bool Stopwatch::init()
 	minutes = 0;
 	seconds = 0;
 	milliseconds = 0;
+
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+
+	auto text = this->toString();
+	label = Label::createWithTTF(text, "fonts/arial.ttf", 20);
+	label->setColor(Color3B::GRAY);
+	label->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 15));
+
 	return true;
 }
 
@@ -43,6 +51,12 @@ void Stopwatch::reset()
 	minutes = 0;
 }
 
+std::string Stopwatch::toString()
+{
+	std::string text = std::to_string(minutes) + ":" + std::to_string(seconds) + ":" + std::to_string(milliseconds/10);
+	return text;
+}
+
 void Stopwatch::count(float dt)
 {
 	milliseconds++;
@@ -58,5 +72,7 @@ void Stopwatch::count(float dt)
 		seconds = 0;
 		minutes++;
 	}
+
+	label->setString(this->toString());
 }
 

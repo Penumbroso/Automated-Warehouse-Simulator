@@ -4,14 +4,23 @@ bool Toolbar::init()
 {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
-	auto rectangle = DrawNode::create();
+	auto top_bar = DrawNode::create();
 
-	rectangle->drawSolidRect(
+	top_bar->drawSolidRect(
+		Vec2(0, visibleSize.height),
+		Vec2(visibleSize.width, visibleSize.height - 30),
+		Color4F(0.3f, 0.3f, 0.3f, 1));
+
+	this->addChild(top_bar);
+
+	auto left_bar = DrawNode::create();
+
+	left_bar->drawSolidRect(
 		Vec2(0, 0), 
 		Vec2(30, visibleSize.height), 
 		Color4F(0.3f, 0.3f, 0.3f, 1));
 
-	this->addChild(rectangle);
+	this->addChild(left_bar);
 
 	// TODO: create a second callback here that changes the icon after pressed the run button to the pause button.
 
