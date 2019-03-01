@@ -14,8 +14,6 @@ using std::vector;
 class Simulator : public cocos2d::Scene
 {
 public:
-    static cocos2d::Scene* createScene();
-
     virtual bool init();
 
     CREATE_FUNC(Simulator);
@@ -32,7 +30,7 @@ private:
 	void run(float dt);
 	void start();
 	void stop();
-	void load();
+	void reset();
 	bool isCollisionImminent(Point next_position);
 	void createRobots();
 	Robot* getRobotAt(Point grid_position);

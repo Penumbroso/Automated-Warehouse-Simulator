@@ -6,11 +6,6 @@
 
 USING_NS_CC;
 
-Scene* Simulator::createScene()
-{
-    return Simulator::create();
-}
-
 bool Simulator::init()
 {
     if ( !Scene::init() )
@@ -59,32 +54,29 @@ void Simulator::run(float dt)
 {
 	for (auto robot : this->robots) 
 	{
+		// Remove package from grid if there is a robot on top of it.
+		if (robot->grid_coord == robot->package)
+			grid->setState(Square::EMPTY, robot->package);
+
 		if (!robot->path.empty())
 		{
 			this->preventCollisionOf(robot);
 			robot->move(dt);
 
+			auto moveTo = MoveTo::create(0.17, grid->getPositionOf(robot->grid_coord));
+			robot->runAction(moveTo);
+
 			if (robot->grid_coord == robot->end && robot->state == Robot::FULL)
 				Util::addIfUnique<Point>(&packages_delivered, robot->package);
-			
+
 			robot->updateState();
 		}
 
-		// Remove package from grid if there is a robot on top of it.
-		if (robot->grid_coord == robot->package) 
-			grid->setState(Square::EMPTY, robot->package);
-		
-
-		// Update screen position of a robot
-		auto current_grid_position = robot->grid_coord;
-		auto current_screen_position = grid->getPositionOf(current_grid_position);
-		robot->setPosition(current_screen_position);
-
 		if (robot->path.empty())
-			definePathOf(robot);
+			this->definePathOf(robot);
 
 		if (grid->packages.size() == packages_delivered.size())
-			stop();
+			this->stop();
 	}
 }
 
@@ -197,7 +189,7 @@ Robot * Simulator::getRobotAt(Point grid_position)
 	return nullptr;
 }
 
-void Simulator::load()
+void Simulator::reset()
 {
 	// TODO: (refactoring) create an update function in the grid that constantly enquires these vectors, 
 	// and when one of them is changed it would automaticly change the grid visual
@@ -208,7 +200,7 @@ void Simulator::load()
 	grid->available_packages = grid->packages;
 
 	for (Robot* robot : this->robots)
-		robot->removeFromParent();
+		robot->removeFromParentAndCleanup(true);
 	
 	robots.clear();
 	packages_delivered.clear();
@@ -234,7 +226,7 @@ void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 {
 	this->stop();
-	this->load();
+	this->reset();
 }
 
 void Simulator::gridSquareCallback(Point coord)
