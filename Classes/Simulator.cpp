@@ -2,7 +2,6 @@
 #include "SimpleAudioEngine.h"
 #include "AStar.hpp"
 #include <algorithm>
-#include <vector>
 #include <limits>
 
 USING_NS_CC;
@@ -17,6 +16,8 @@ bool Simulator::init()
     if ( !Scene::init() )
         return false;
     
+	isRunning = false;
+
 	auto background = LayerColor::create(Color4B::RED);
 	this->addChild(background);
 
@@ -28,6 +29,7 @@ bool Simulator::init()
 		auto square = p.second;
 		square->setCallback(CC_CALLBACK_0(Simulator::gridSquareCallback, this, square->grid_coord));
 	}
+
 	grid->setPosition(30, 0);
 	this->addChild(grid);
 
@@ -61,25 +63,44 @@ void Simulator::run(float dt)
 		{
 			this->preventCollisionOf(robot);
 			robot->move(dt);
+
+			if (robot->grid_coord == robot->end && robot->state == Robot::FULL)
+				Util::addIfUnique<Point>(&packages_delivered, robot->package);
+			
+			robot->updateState();
 		}
 
 		// Remove package from grid if there is a robot on top of it.
 		if (robot->grid_coord == robot->package) 
-		{
 			grid->setState(Square::EMPTY, robot->package);
-		}
-			
+		
+
 		// Update screen position of a robot
 		auto current_grid_position = robot->grid_coord;
 		auto current_screen_position = grid->getPositionOf(current_grid_position);
 		robot->setPosition(current_screen_position);
 
 		if (robot->path.empty())
-			this->definePathOf(robot);
+			definePathOf(robot);
 
-		if (grid->packages.size() == this->packages_delivered)
-			this->unscheduleAllSelectors();
+		if (grid->packages.size() == packages_delivered.size())
+			stop();
 	}
+}
+
+void Simulator::start()
+{
+	this->createRobots();
+	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.2f);
+	this->stopwatch->start();
+	this->isRunning = true;
+}
+
+void Simulator::stop()
+{
+	this->unschedule(CC_SCHEDULE_SELECTOR(Simulator::run));
+	this->stopwatch->stop();
+	this->isRunning = false;
 }
 
 void Simulator::createRobots() {
@@ -112,6 +133,7 @@ void Simulator::definePathOf(Robot * robot)
 	{
 		robot->path = this->findShortestPath(robot->grid_coord, grid->ends);
 		robot->destination = robot->path[0];
+		robot->end = robot->destination;
 	}
 }
 
@@ -188,8 +210,13 @@ void Simulator::load()
 	for (Robot* robot : this->robots)
 		robot->removeFromParent();
 	
-	this->robots = {};
+	robots.clear();
+	packages_delivered.clear();
 }
+
+/*************/
+/* Callbacks */
+/*************/
 
 void Simulator::menuToolCallback(Toolbar::Tool tool)
 {
@@ -198,28 +225,16 @@ void Simulator::menuToolCallback(Toolbar::Tool tool)
 
 void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 {
-	this->createRobots();
-
-	if (!this->isRunning) 
-	{
-		this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.2f);
-		this->stopwatch->start();
-	}
+	if (this->isRunning) 
+		this->stop();
 	else
-	{
-		this->unscheduleAllSelectors();
-		this->stopwatch->stop();
-	}
-
-	this->isRunning = !this->isRunning;
+		this->start();
 }
 
 void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 {
-	this->unscheduleAllSelectors();
+	this->stop();
 	this->load();
-	this->stopwatch->reset();
-	this->isRunning = false;
 }
 
 void Simulator::gridSquareCallback(Point coord)

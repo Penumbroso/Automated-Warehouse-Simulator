@@ -27,6 +27,7 @@ public:
 	Point grid_coord;
 	Point destination;
 	Point package;
+	Point end;
 
 	void move(float dt);
 	void updateState();

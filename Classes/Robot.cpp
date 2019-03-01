@@ -18,15 +18,14 @@ void Robot::move(float dt)
 		this->path.pop_back();
 		this->grid_coord = next_position;
 	}
-
-	this->updateState();
 }
 
 void Robot::updateState()
 {
-	if (grid_coord == destination)
-	{
-		state = (state == FULL) ? EMPTY : FULL;
-	}
+	if (grid_coord == this->package)
+		this->state = FULL;
+	
+	if (grid_coord == this->end)
+		this->state = EMPTY;
 }
 

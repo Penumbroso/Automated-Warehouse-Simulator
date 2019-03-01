@@ -18,35 +18,33 @@ public:
 
     virtual bool init();
 
-	std::vector<Robot*> robots;
+    CREATE_FUNC(Simulator);
 
+private:
+	std::vector<Robot*> robots;
 	Grid* grid;
 	Toolbar* toolbar;
 	Stopwatch* stopwatch;
-    
+	bool isRunning;
+	vector<Point> packages_delivered;
+	AStar::Generator path_generator;
+
 	void run(float dt);
-
-    CREATE_FUNC(Simulator);
-
-protected:
+	void start();
+	void stop();
 	void load();
-	void menuToolCallback(Toolbar::Tool tool);
-	void menuRunCallback(cocos2d::Ref * pSender);
-	void menuResetCallback(cocos2d::Ref * pSender);
-	void gridSquareCallback(Point coord);
+	bool isCollisionImminent(Point next_position);
 	void createRobots();
+	Robot* getRobotAt(Point grid_position);
 	void definePathOf(Robot * robot);
 	void preventCollisionOf(Robot* robot);
 	vector<Point> findShortestPath(Point origin, vector<Point> destinations);
 
-private:
-	bool isRunning = false;
-	int packages_delivered = 0;
-	AStar::Generator path_generator;
-
-	// TODO: move this to its own file as it can be used by other if added a template.
-	bool isCollisionImminent(Point next_position);
-	Robot* getRobotAt(Point grid_position);
+	// Callbacks
+	void menuToolCallback(Toolbar::Tool tool);
+	void menuRunCallback(cocos2d::Ref * pSender);
+	void menuResetCallback(cocos2d::Ref * pSender);
+	void gridSquareCallback(Point coord);
 };
 
 #endif // __HELLOWORLD_SCENE_H__
