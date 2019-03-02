@@ -10,7 +10,8 @@ public:
 		EMPTY,
 		PACKAGE,
 		BEGIN,
-		END
+		END, 
+		BLOCKADE
 	};
 
 	State state = EMPTY;

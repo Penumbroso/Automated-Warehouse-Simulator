@@ -34,6 +34,7 @@ bool Simulator::init()
 	toolbar->beginItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::BEGIN));
 	toolbar->endItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::END));
 	toolbar->eraseItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::ERASE));
+	toolbar->blockadeItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::BLOCKADE));
 	toolbar->resetItem->setCallback(CC_CALLBACK_1(Simulator::menuResetCallback, this));
 
 	this->addChild(toolbar);
@@ -63,7 +64,7 @@ void Simulator::run(float dt)
 			this->preventCollisionOf(robot);
 			robot->move(dt);
 
-			auto moveTo = MoveTo::create(0.17, grid->getPositionOf(robot->grid_coord));
+			auto moveTo = MoveTo::create(0.18, grid->getPositionOf(robot->grid_coord));
 			robot->runAction(moveTo);
 
 			if (robot->grid_coord == robot->end && robot->state == Robot::FULL)
@@ -248,5 +249,10 @@ void Simulator::gridSquareCallback(Point coord)
 	case Toolbar::ERASE:
 		grid->setState(Square::EMPTY, coord);
 		break;
+
+	case Toolbar::BLOCKADE:
+		grid->setState(Square::BLOCKADE, coord);
+		break;
 	}
+
 }

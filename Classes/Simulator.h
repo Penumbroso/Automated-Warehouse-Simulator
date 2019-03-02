@@ -31,14 +31,18 @@ private:
 	void start();
 	void stop();
 	void reset();
-	bool isCollisionImminent(Point next_position);
 	void createRobots();
-	Robot* getRobotAt(Point grid_position);
+
+	// Path functions
 	void definePathOf(Robot * robot);
-	void preventCollisionOf(Robot* robot);
 	vector<Point> findShortestPath(Point origin, vector<Point> destinations);
 
-	// Callbacks
+	// Collision functions
+	void preventCollisionOf(Robot* robot);
+	bool isCollisionImminent(Point next_position);
+	Robot* getRobotAt(Point grid_position);
+
+	// Callbacks functions
 	void menuToolCallback(Toolbar::Tool tool);
 	void menuRunCallback(cocos2d::Ref * pSender);
 	void menuResetCallback(cocos2d::Ref * pSender);

@@ -51,6 +51,11 @@ void Grid::setState(Square::State state, Point point)
 		Util::addIfUnique<Point>(&static_collidables, point);
 		break;
 
+	case Square::BLOCKADE:
+		Util::addIfUnique<Point>(&static_collidables, point);
+		Util::addIfUnique<Point>(&blockades, point);
+		break;
+
 	case Square::EMPTY:
 		this->removeSymbol(point);
 		square->setColor(Color3B::WHITE);
@@ -59,6 +64,7 @@ void Grid::setState(Square::State state, Point point)
 		Util::removeIfContains(&available_packages, point);
 		Util::removeIfContains(&static_collidables, point);
 		break;
+		
 	}
 
 }

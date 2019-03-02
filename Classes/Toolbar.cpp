@@ -48,6 +48,10 @@ bool Toolbar::init()
 		"resetBtn.png",
 		"resetBtn_pressed.png");
 
+	blockadeItem = MenuItemImage::create(
+		"BlockadeBtn.png",
+		"BlockadeBtn_pressed.png");
+
 	// TODO: add a purely collidable object so that the user can make walls
 
 	runItem->setPosition(Vec2(15, visibleSize.height - 15 * 2));
@@ -56,8 +60,9 @@ bool Toolbar::init()
 	endItem->setPosition(Vec2(15, visibleSize.height - 15 * 8));
 	eraseItem->setPosition(Vec2(15, visibleSize.height - 15 * 10));
 	resetItem->setPosition(Vec2(15, visibleSize.height - 15 * 12));
+	blockadeItem->setPosition(Vec2(15, visibleSize.height - 15 * 14));
 	  
-	auto menu = Menu::create(runItem, packageItem, beginItem, endItem, eraseItem, resetItem,  NULL);
+	auto menu = Menu::create(runItem, packageItem, beginItem, endItem, eraseItem, resetItem, blockadeItem,  NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 
