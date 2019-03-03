@@ -49,6 +49,7 @@ void Stopwatch::reset()
 	milliseconds = 0;
 	seconds = 0;
 	minutes = 0;
+	label->setString(this->toString());
 }
 
 std::string Stopwatch::toString()

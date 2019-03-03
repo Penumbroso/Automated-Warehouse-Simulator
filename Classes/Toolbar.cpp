@@ -52,8 +52,6 @@ bool Toolbar::init()
 		"BlockadeBtn.png",
 		"BlockadeBtn_pressed.png");
 
-	// TODO: add a purely collidable object so that the user can make walls
-
 	runItem->setPosition(Vec2(15, visibleSize.height - 15 * 2));
 	packageItem->setPosition(Vec2(15, visibleSize.height - 15 * 4));
 	beginItem->setPosition(Vec2(15, visibleSize.height - 15 * 6));

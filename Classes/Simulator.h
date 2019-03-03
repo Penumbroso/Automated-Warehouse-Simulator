@@ -8,6 +8,7 @@
 #include <vector>
 #include "AStar.hpp"
 #include "Stopwatch.h"
+#include "RobotController.h"
 
 using std::vector;
 
@@ -19,28 +20,20 @@ public:
     CREATE_FUNC(Simulator);
 
 private:
-	std::vector<Robot*> robots;
+	vector<Robot*> robots;
 	Grid* grid;
 	Toolbar* toolbar;
 	Stopwatch* stopwatch;
+	RobotController * robotController;
+
 	bool isRunning;
 	vector<Point> packages_delivered;
-	AStar::Generator path_generator;
 
 	void run(float dt);
 	void start();
 	void stop();
 	void reset();
 	void createRobots();
-
-	// Path functions
-	void definePathOf(Robot * robot);
-	vector<Point> findShortestPath(Point origin, vector<Point> destinations);
-
-	// Collision functions
-	void preventCollisionOf(Robot* robot);
-	bool isCollisionImminent(Point next_position);
-	Robot* getRobotAt(Point grid_position);
 
 	// Callbacks functions
 	void menuToolCallback(Toolbar::Tool tool);
