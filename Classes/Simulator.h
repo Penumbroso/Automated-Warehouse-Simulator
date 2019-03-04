@@ -6,7 +6,6 @@
 #include "Robot.h"
 #include "Toolbar.h"
 #include <vector>
-#include "AStar.hpp"
 #include "Stopwatch.h"
 #include "RobotController.h"
 

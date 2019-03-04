@@ -10,9 +10,6 @@
     <Filter Include="src">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\GUI">
-      <UniqueIdentifier>{6c1e890c-b9c0-4f16-8929-435d95f20d76}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -33,12 +30,6 @@
     <ClCompile Include="..\Classes\Square.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Toolbar.cpp">
-      <Filter>src\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Grid.cpp">
-      <Filter>src\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Util.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -46,6 +37,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\RobotController.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Grid.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Toolbar.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,12 +65,6 @@
     <ClInclude Include="..\Classes\Square.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Toolbar.h">
-      <Filter>src\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Grid.h">
-      <Filter>src\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Util.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -83,10 +74,19 @@
     <ClInclude Include="..\Classes\RobotController.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\Grid.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Toolbar.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">
       <Filter>resource</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

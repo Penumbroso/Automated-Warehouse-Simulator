@@ -79,14 +79,18 @@ void Simulator::run(float dt)
 		if (robot->path.empty())
 			robotController->definePathOf(robot);
 
-		if (grid->packages.size() == packages_delivered.size())
-			this->stop();
 	}
+
+	// TODO: finish when all robot are the their respective starts
+	// TODO: verify if everyone is parked
+	//if (grid->packages.size() == packages_delivered.size())
+	//	this->stop();
 }
 
 void Simulator::start()
 {
 	this->createRobots();
+	// TODO: for each robot, start a stopwatch that measures that robot time
 	this->robotController->robots = robots;
 	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.2f);
 	this->stopwatch->start();
@@ -111,6 +115,7 @@ void Simulator::createRobots() {
 		robot->setColor(Color3B(150, 150, 150));
 		robot->setContentSize(Size(grid->square_size, grid->square_size));
 		robot->grid_coord = start;
+		robot->start = start;
 		grid->addChild(robot);
 
 		this->robots.push_back(robot);

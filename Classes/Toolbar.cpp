@@ -24,6 +24,8 @@ bool Toolbar::init()
 
 	// TODO: create a second callback here that changes the icon after pressed the run button to the pause button.
 
+	// TODO: create a button to show the path a robot has taken
+
 	runItem = MenuItemImage::create(
 		"RunBtn.png",
 		"RunBtn_pressed.png");

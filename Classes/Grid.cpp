@@ -64,7 +64,6 @@ void Grid::setState(Square::State state, Point point)
 		Util::removeIfContains(&available_packages, point);
 		Util::removeIfContains(&static_collidables, point);
 		break;
-		
 	}
 
 }

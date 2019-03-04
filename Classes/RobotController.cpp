@@ -20,11 +20,19 @@ void RobotController::definePathOf(Robot * robot)
 		robot->package = robot->destination;
 		Util::removeIfContains<Point>(&grid->available_packages, robot->destination);
 	}
-	else
+
+	else if(robot->state == Robot::FULL)
 	{
 		robot->path = this->findShortestPath(robot->grid_coord, grid->ends);
 		robot->destination = robot->path[0];
 		robot->end = robot->destination;
+	}
+
+	else if (robot->state == Robot::EMPTY && grid->available_packages.empty()) 
+	{
+		// TODO: check for null grid->parking
+		robot->path = this->findShortestPath(robot->grid_coord, {robot->start});
+		robot->destination = robot->path[0];
 	}
 }
 
@@ -39,6 +47,7 @@ void RobotController::preventCollisionOf(Robot * robot)
 	{
 		auto collision_robot = this->getRobotAt(next_position);
 		auto path = collision_robot->path;
+
 		if (!Util::contains<Point>(&path, robot->grid_coord))
 		{
 			robot->path.push_back(robot->grid_coord);
