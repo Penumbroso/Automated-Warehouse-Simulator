@@ -81,10 +81,8 @@ void Simulator::run(float dt)
 
 	}
 
-	// TODO: finish when all robot are the their respective starts
-	// TODO: verify if everyone is parked
-	//if (grid->packages.size() == packages_delivered.size())
-	//	this->stop();
+	if (allRobotsAreParked() && allPackagesWereDelivered())
+		stop();
 }
 
 void Simulator::start()
@@ -122,6 +120,21 @@ void Simulator::createRobots() {
 	}
 }
 
+bool Simulator::allPackagesWereDelivered()
+{
+	return grid->packages.size() == packages_delivered.size();
+}
+
+bool Simulator::allRobotsAreParked()
+{
+	for (auto robot : robots) 
+	{
+		if (robot->grid_coord != robot->start)
+			return false;
+	}
+	return true;
+}
+
 void Simulator::reset()
 {
 	for (Point package : grid->packages)
@@ -147,17 +160,17 @@ void Simulator::menuToolCallback(Toolbar::Tool tool)
 
 void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 {
-	if (this->isRunning) 
-		this->stop();
+	if (isRunning) 
+		stop();
 	else
-		this->start();
+		start();
 }
 
 void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 {
-	this->stop();
-	this->stopwatch->reset();
-	this->reset();
+	stop();
+	stopwatch->reset();
+	reset();
 }
 
 void Simulator::gridSquareCallback(Point coord)

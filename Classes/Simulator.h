@@ -33,6 +33,8 @@ private:
 	void stop();
 	void reset();
 	void createRobots();
+	bool allPackagesWereDelivered();
+	bool allRobotsAreParked();
 
 	// Callbacks functions
 	void menuToolCallback(Toolbar::Tool tool);
