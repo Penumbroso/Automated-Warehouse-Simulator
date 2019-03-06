@@ -28,6 +28,9 @@ bool Simulator::init()
 	grid->setPosition(30, 0);
 	this->addChild(grid);
 
+	infobar = Infobar::create();
+	this->addChild(infobar);
+
 	toolbar = Toolbar::create();
 	toolbar->runItem->setCallback(CC_CALLBACK_1(Simulator::menuRunCallback, this));
 	toolbar->packageItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PACKAGE));
@@ -42,7 +45,7 @@ bool Simulator::init()
 	stopwatch = Stopwatch::create();
 	this->addChild(stopwatch);
 
-	toolbar->addChild(stopwatch->label);
+	infobar->addChild(stopwatch->label);
 
 	robotController = RobotController::create();
 	robotController->grid = grid;

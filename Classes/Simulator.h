@@ -8,6 +8,7 @@
 #include <vector>
 #include "Stopwatch.h"
 #include "RobotController.h"
+#include "Infobar.h"
 
 using std::vector;
 
@@ -22,6 +23,7 @@ private:
 	vector<Robot*> robots;
 	Grid* grid;
 	Toolbar* toolbar;
+	Infobar* infobar;
 	Stopwatch* stopwatch;
 	RobotController * robotController;
 
