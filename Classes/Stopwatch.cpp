@@ -5,16 +5,7 @@ USING_NS_CC;
 bool Stopwatch::init()
 {
 	Node::init();
-	minutes = 0;
-	seconds = 0;
-	milliseconds = 0;
-
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-
-	auto text = this->toString();
-	label = Label::createWithTTF(text, "fonts/arial.ttf", 20);
-	label->setColor(Color3B::GRAY);
-	label->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 15));
+	this->reset();
 
 	return true;
 }
@@ -49,7 +40,8 @@ void Stopwatch::reset()
 	milliseconds = 0;
 	seconds = 0;
 	minutes = 0;
-	label->setString(this->toString());
+
+	text = this->toString();
 }
 
 std::string Stopwatch::toString()
@@ -74,6 +66,6 @@ void Stopwatch::count(float dt)
 		minutes++;
 	}
 
-	label->setString(this->toString());
+	text = this->toString();
 }
 

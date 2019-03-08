@@ -14,7 +14,7 @@ public:
 	int getMilliseconds();
 	void reset();
 
-	cocos2d::Label* label;
+	std::string text;
 	std::string toString();
 
 	CREATE_FUNC(Stopwatch);

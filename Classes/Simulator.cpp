@@ -45,7 +45,8 @@ bool Simulator::init()
 	stopwatch = Stopwatch::create();
 	this->addChild(stopwatch);
 
-	infobar->addChild(stopwatch->label);
+	//infobar->addChild(stopwatch->label);
+	infobar->time = &stopwatch->text;
 
 	robotController = RobotController::create();
 	robotController->grid = grid;
