@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include <vector>
+#include "Stopwatch.h"
 
 USING_NS_CC;
 
@@ -29,6 +30,8 @@ public:
 	Point package;
 	Point start;
 	Point end;
+
+	Stopwatch* stopwatch;
 
 	void move(float dt);
 	void updateState();

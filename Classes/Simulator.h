@@ -6,7 +6,6 @@
 #include "Robot.h"
 #include "Toolbar.h"
 #include <vector>
-#include "Stopwatch.h"
 #include "RobotController.h"
 #include "Infobar.h"
 
@@ -29,6 +28,7 @@ private:
 
 	bool isRunning;
 	vector<Point> packages_delivered;
+	std::map<Point, Stopwatch*> stopwatches;
 
 	void run(float dt);
 	void start();

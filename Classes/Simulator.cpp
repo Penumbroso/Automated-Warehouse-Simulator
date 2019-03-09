@@ -57,7 +57,7 @@ bool Simulator::init()
 
 void Simulator::run(float dt) 
 {
-	for (auto robot : this->robots) 
+	for (auto robot : robots) 
 	{
 		// Remove package from grid if there is a robot on top of it.
 		if (robot->grid_coord == robot->package)
@@ -83,6 +83,10 @@ void Simulator::run(float dt)
 		if (robot->path.empty())
 			robotController->definePathOf(robot);
 
+		// TODO: substitute the second condition as a function called isRobotParked
+		if (allPackagesWereDelivered() && robot->grid_coord == robot->start)
+			robot->stopwatch->stop();
+		
 	}
 
 	if (allRobotsAreParked() && allPackagesWereDelivered())
@@ -92,7 +96,11 @@ void Simulator::run(float dt)
 void Simulator::start()
 {
 	this->createRobots();
-	// TODO: for each robot, start a stopwatch that measures that robot time
+
+	// TODO: make this into a function called startIndividualRobotsWatches
+	for (auto robot : robots)
+		robot->stopwatch->start();
+	
 	this->robotController->robots = robots;
 	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.2f);
 	this->stopwatch->start();
