@@ -45,6 +45,16 @@ bool Toolbar::init()
 		"BlockadeBtn.png",
 		"BlockadeBtn_pressed.png");
 
+	// TODO: create a path icon
+	pathItem = MenuItemImage::create(
+		"BlockadeBtn.png",
+		"BlockadeBtn_pressed.png");
+
+	// TODO: create a clock icon
+	clockItem = MenuItemImage::create(
+		"BlockadeBtn.png",
+		"BlockadeBtn_pressed.png");
+
 	runItem->setPosition(Vec2(15, visibleSize.height - 15 * 2));
 	packageItem->setPosition(Vec2(15, visibleSize.height - 15 * 4));
 	beginItem->setPosition(Vec2(15, visibleSize.height - 15 * 6));
@@ -52,8 +62,10 @@ bool Toolbar::init()
 	eraseItem->setPosition(Vec2(15, visibleSize.height - 15 * 10));
 	resetItem->setPosition(Vec2(15, visibleSize.height - 15 * 12));
 	blockadeItem->setPosition(Vec2(15, visibleSize.height - 15 * 14));
+	pathItem->setPosition(Vec2(15, visibleSize.height - 15 * 16));
+	clockItem->setPosition(Vec2(15, visibleSize.height - 15 * 18));
 	  
-	auto menu = Menu::create(runItem, packageItem, beginItem, endItem, eraseItem, resetItem, blockadeItem,  NULL);
+	auto menu = Menu::create(runItem, packageItem, beginItem, endItem, eraseItem, resetItem, blockadeItem, pathItem, clockItem, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 

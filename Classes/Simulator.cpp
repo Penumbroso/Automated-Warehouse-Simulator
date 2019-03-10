@@ -40,12 +40,15 @@ bool Simulator::init()
 	toolbar->blockadeItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::BLOCKADE));
 	toolbar->resetItem->setCallback(CC_CALLBACK_1(Simulator::menuResetCallback, this));
 
+	toolbar->pathItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PATH));
+	toolbar->clockItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::CLOCK));
+
 	this->addChild(toolbar);
 
 	stopwatch = Stopwatch::create();
 	this->addChild(stopwatch);
 
-	//infobar->addChild(stopwatch->label);
+	// Set infobar clock to be the global simulation time
 	infobar->time = &stopwatch->text;
 
 	robotController = RobotController::create();
@@ -86,7 +89,6 @@ void Simulator::run(float dt)
 		// TODO: substitute the second condition as a function called isRobotParked
 		if (allPackagesWereDelivered() && robot->grid_coord == robot->start)
 			robot->stopwatch->stop();
-		
 	}
 
 	if (allRobotsAreParked() && allPackagesWereDelivered())
@@ -207,6 +209,12 @@ void Simulator::gridSquareCallback(Point coord)
 
 	case Toolbar::BLOCKADE:
 		grid->setState(Square::BLOCKADE, coord);
+		break;
+	case Toolbar::PATH:
+		// TODO: color the grid on the path of the robot at the current selected start
+		break;
+	case Toolbar::CLOCK:
+		// TOOD: change the infobar time string to the robot at the current start
 		break;
 	}
 

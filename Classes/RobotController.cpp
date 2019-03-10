@@ -7,7 +7,7 @@ void RobotController::onEnter()
 
 	path_generator.setWorldSize({ grid->number_of_columns, grid->number_of_lines });
 	path_generator.setHeuristic(AStar::Heuristic::manhattan);
-	path_generator.setDiagonalMovement(false);
+	path_generator.setDiagonalMovement(true);
 }
 
 // Accordingly with the current state of the Robot, choose if the next destination is a package or a delivery

@@ -12,7 +12,9 @@ class Toolbar : public cocos2d::Layer
 			BEGIN,
 			END,
 			ERASE,
-			BLOCKADE
+			BLOCKADE,
+			CLOCK,
+			PATH
 		};
 
 		Tool selected = PACKAGE;
@@ -24,6 +26,9 @@ class Toolbar : public cocos2d::Layer
 		MenuItemImage* resetItem;
 		MenuItemImage* eraseItem;
 		MenuItemImage* blockadeItem;
+
+		MenuItemImage* pathItem;
+		MenuItemImage* clockItem;
 
 		CREATE_FUNC(Toolbar);
 };

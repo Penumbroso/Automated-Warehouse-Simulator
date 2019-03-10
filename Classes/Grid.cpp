@@ -71,7 +71,7 @@ void Grid::setState(Square::State state, Point point)
 void Grid::drawLines()
 {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Color4F lightGray = Color4F(0.9f, 0.9f, 0.9f, 1);
+	Color4F lightGray = Color4F(0.95f, 0.95f, 0.95f, 1);
 
 	for (int i = 0; i < number_of_columns; i++) {
 		auto drawVerticalLine = DrawNode::create();
