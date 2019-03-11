@@ -55,15 +55,21 @@ bool Toolbar::init()
 		"BlockadeBtn.png",
 		"BlockadeBtn_pressed.png");
 
-	runItem->setPosition(Vec2(15, visibleSize.height - 15 * 2));
-	packageItem->setPosition(Vec2(15, visibleSize.height - 15 * 4));
-	beginItem->setPosition(Vec2(15, visibleSize.height - 15 * 6));
-	endItem->setPosition(Vec2(15, visibleSize.height - 15 * 8));
-	eraseItem->setPosition(Vec2(15, visibleSize.height - 15 * 10));
-	resetItem->setPosition(Vec2(15, visibleSize.height - 15 * 12));
-	blockadeItem->setPosition(Vec2(15, visibleSize.height - 15 * 14));
-	pathItem->setPosition(Vec2(15, visibleSize.height - 15 * 16));
-	clockItem->setPosition(Vec2(15, visibleSize.height - 15 * 18));
+	buttons.push_back(runItem);
+	buttons.push_back(packageItem);
+	buttons.push_back(beginItem);
+	buttons.push_back(endItem);
+	buttons.push_back(eraseItem);
+	buttons.push_back(resetItem);
+	buttons.push_back(blockadeItem);
+	buttons.push_back(pathItem);
+	buttons.push_back(clockItem);
+
+	int min_distance = 17;
+	for (int i = 0; i < buttons.size(); i++)
+	{
+		buttons[i]->setPosition(Vec2(15, visibleSize.height - 15 * i * 2 - min_distance));
+	}
 	  
 	auto menu = Menu::create(runItem, packageItem, beginItem, endItem, eraseItem, resetItem, blockadeItem, pathItem, clockItem, NULL);
 	menu->setPosition(Vec2::ZERO);

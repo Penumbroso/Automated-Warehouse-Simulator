@@ -74,7 +74,7 @@ void Simulator::run(float dt)
 			robotController->preventCollisionOf(robot);
 			robot->move(dt);
 
-			auto moveTo = MoveTo::create(0.18, grid->getPositionOf(robot->grid_coord));
+			auto moveTo = MoveTo::create(0.19, grid->getPositionOf(robot->grid_coord));
 			robot->runAction(moveTo);
 
 			if (robot->grid_coord == robot->end && robot->state == Robot::FULL)

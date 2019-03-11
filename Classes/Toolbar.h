@@ -19,6 +19,8 @@ class Toolbar : public cocos2d::Layer
 
 		Tool selected = PACKAGE;
 
+		std::vector<MenuItemImage*> buttons;
+
 		MenuItemImage* runItem;
 		MenuItemImage* endItem;
 		MenuItemImage* packageItem;
