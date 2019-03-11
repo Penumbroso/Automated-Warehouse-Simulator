@@ -87,7 +87,7 @@ void Simulator::run(float dt)
 			robotController->definePathOf(robot);
 
 		// TODO: substitute the second condition as a function called isRobotParked
-		if (allPackagesWereDelivered() && robot->grid_coord == robot->start)
+		if (allPackagesWereDelivered() && robot->isParked())
 			robot->stopwatch->stop();
 	}
 
@@ -143,7 +143,7 @@ bool Simulator::allRobotsAreParked()
 {
 	for (auto robot : robots) 
 	{
-		if (robot->grid_coord != robot->start)
+		if (!robot->isParked())
 			return false;
 	}
 	return true;
@@ -156,6 +156,7 @@ void Simulator::reset()
 	
 	grid->available_packages = grid->packages;
 
+	this->infobar->time = &this->stopwatch->text;
 	for (Robot* robot : this->robots)
 		robot->removeFromParentAndCleanup(true);
 	
@@ -215,7 +216,9 @@ void Simulator::gridSquareCallback(Point coord)
 		break;
 	case Toolbar::CLOCK:
 		// TOOD: change the infobar time string to the robot at the current start
-		break;
+		Robot * robot = this->robotController->getRobotAt(coord);
+		auto robot_stopwatch = robot->stopwatch;
+		this->infobar->time = &robot_stopwatch->text;
 	}
 
 }

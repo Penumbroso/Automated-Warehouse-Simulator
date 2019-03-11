@@ -15,13 +15,13 @@ public:
 
 	void definePathOf(Robot * robot);
 	void preventCollisionOf(Robot* robot);
+	Robot* getRobotAt(Point grid_position);
 
 	CREATE_FUNC(RobotController);
 
 private:
 	vector<Point> findShortestPath(Point origin, vector<Point> destinations);
 	bool isCollisionImminent(Point next_position);
-	Robot* getRobotAt(Point grid_position);
 };
 
 

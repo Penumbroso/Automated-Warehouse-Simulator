@@ -31,3 +31,8 @@ void Robot::updateState()
 		this->state = EMPTY;
 }
 
+bool Robot::isParked()
+{
+	return grid_coord == start;
+}
+
