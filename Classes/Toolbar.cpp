@@ -52,8 +52,8 @@ bool Toolbar::init()
 
 	// TODO: create a clock icon
 	clockItem = MenuItemImage::create(
-		"BlockadeBtn.png",
-		"BlockadeBtn_pressed.png");
+		"Timer.png",
+		"Timer_pressed.png");
 
 	buttons.push_back(runItem);
 	buttons.push_back(packageItem);
@@ -62,16 +62,16 @@ bool Toolbar::init()
 	buttons.push_back(eraseItem);
 	buttons.push_back(resetItem);
 	buttons.push_back(blockadeItem);
-	buttons.push_back(pathItem);
+	//buttons.push_back(pathItem);
 	buttons.push_back(clockItem);
 
-	int min_distance = 17;
+	int offset = 30;
 	for (int i = 0; i < buttons.size(); i++)
 	{
-		buttons[i]->setPosition(Vec2(15, visibleSize.height - 15 * i * 2 - min_distance));
+		buttons[i]->setPosition(Vec2(15, visibleSize.height - 15 * i * 2 - offset));
 	}
 	  
-	auto menu = Menu::create(runItem, packageItem, beginItem, endItem, eraseItem, resetItem, blockadeItem, pathItem, clockItem, NULL);
+	auto menu = Menu::create(runItem, packageItem, beginItem, endItem, eraseItem, resetItem, blockadeItem, clockItem, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 

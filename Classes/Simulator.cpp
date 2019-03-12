@@ -39,8 +39,7 @@ bool Simulator::init()
 	toolbar->eraseItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::ERASE));
 	toolbar->blockadeItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::BLOCKADE));
 	toolbar->resetItem->setCallback(CC_CALLBACK_1(Simulator::menuResetCallback, this));
-
-	toolbar->pathItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PATH));
+	//toolbar->pathItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PATH));
 	toolbar->clockItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::CLOCK));
 
 	this->addChild(toolbar);
@@ -215,7 +214,6 @@ void Simulator::gridSquareCallback(Point coord)
 		// TODO: color the grid on the path of the robot at the current selected start
 		break;
 	case Toolbar::CLOCK:
-		// TOOD: change the infobar time string to the robot at the current start
 		Robot * robot = this->robotController->getRobotAt(coord);
 		auto robot_stopwatch = robot->stopwatch;
 		this->infobar->time = &robot_stopwatch->text;

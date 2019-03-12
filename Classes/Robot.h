@@ -24,6 +24,7 @@ public:
 	State state = EMPTY;
 	
 	vector<Point> path;
+	vector<Point> complete_path;
 
 	Point grid_coord;
 	Point destination;

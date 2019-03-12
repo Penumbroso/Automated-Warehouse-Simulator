@@ -25,7 +25,8 @@ bool Infobar::init()
 
 void Infobar::updateClock(float dt)
 {
-	
+	// Updated clock label accordingly with the text stored in time
+	// The text stored in time can be from the Simulator or a Individual robot.
 	if (time) 
 	{
 		label->setString(*time);
