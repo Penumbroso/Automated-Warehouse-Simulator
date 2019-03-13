@@ -39,6 +39,7 @@ void RobotController::definePathOf(Robot * robot)
 // Check if collision is Immminent, if so choose between two reactions:
 // 1: dont move case the collidable robot is not in your path
 // 2: move in case he is
+// TODO: should check to see the situation when it comes to diagonal movement since the robot occupies multiple squares on the grid.
 void RobotController::preventCollisionOf(Robot * robot)
 {
 	auto next_position = robot->path.back();

@@ -43,6 +43,7 @@ private:
 	void menuRunCallback(cocos2d::Ref * pSender);
 	void menuResetCallback(cocos2d::Ref * pSender);
 	void gridSquareCallback(Point coord);
+	void menuExportCallback(cocos2d::Ref * pSender);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

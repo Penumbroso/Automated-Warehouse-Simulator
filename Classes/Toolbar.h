@@ -28,7 +28,7 @@ class Toolbar : public cocos2d::Layer
 		MenuItemImage* resetItem;
 		MenuItemImage* eraseItem;
 		MenuItemImage* blockadeItem;
-
+		MenuItemImage* exportItem;
 		MenuItemImage* pathItem;
 		MenuItemImage* clockItem;
 

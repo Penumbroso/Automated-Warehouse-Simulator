@@ -41,6 +41,7 @@ bool Simulator::init()
 	toolbar->resetItem->setCallback(CC_CALLBACK_1(Simulator::menuResetCallback, this));
 	//toolbar->pathItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PATH));
 	toolbar->clockItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::CLOCK));
+	toolbar->exportItem->setCallback(CC_CALLBACK_1(Simulator::menuExportCallback, this));
 
 	this->addChild(toolbar);
 
@@ -219,4 +220,9 @@ void Simulator::gridSquareCallback(Point coord)
 		this->infobar->time = &robot_stopwatch->text;
 	}
 
+}
+
+void Simulator::menuExportCallback(cocos2d::Ref * pSender)
+{
+	// TODO: export all times into a txt file
 }
