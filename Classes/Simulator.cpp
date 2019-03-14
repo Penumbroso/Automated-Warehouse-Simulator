@@ -224,5 +224,12 @@ void Simulator::gridSquareCallback(Point coord)
 
 void Simulator::menuExportCallback(cocos2d::Ref * pSender)
 {
-	// TODO: export all times into a txt file
+	std::ofstream out("output.txt");
+	for (auto robot : robots)
+	{
+		out << robot->stopwatch->toString();
+		out << std::endl;
+	}
+
+	out.close();
 }

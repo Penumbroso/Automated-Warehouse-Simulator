@@ -8,6 +8,7 @@
 #include <vector>
 #include "RobotController.h"
 #include "Infobar.h"
+#include <fstream>
 
 using std::vector;
 
