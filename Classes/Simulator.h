@@ -9,6 +9,7 @@
 #include "RobotController.h"
 #include "Infobar.h"
 #include <fstream>
+#include "Actionbar.h"
 
 using std::vector;
 
@@ -24,6 +25,7 @@ private:
 	Grid* grid;
 	Toolbar* toolbar;
 	Infobar* infobar;
+	Actionbar* actionbar;
 	Stopwatch* stopwatch;
 	RobotController * robotController;
 

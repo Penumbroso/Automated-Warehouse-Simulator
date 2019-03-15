@@ -32,18 +32,21 @@ bool Simulator::init()
 	this->addChild(infobar);
 
 	toolbar = Toolbar::create();
-	toolbar->runItem->setCallback(CC_CALLBACK_1(Simulator::menuRunCallback, this));
 	toolbar->packageItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PACKAGE));
 	toolbar->beginItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::BEGIN));
 	toolbar->endItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::END));
 	toolbar->eraseItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::ERASE));
 	toolbar->blockadeItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::BLOCKADE));
-	toolbar->resetItem->setCallback(CC_CALLBACK_1(Simulator::menuResetCallback, this));
-	//toolbar->pathItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PATH));
 	toolbar->clockItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::CLOCK));
-	toolbar->exportItem->setCallback(CC_CALLBACK_1(Simulator::menuExportCallback, this));
-
+	//toolbar->pathItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PATH));
 	this->addChild(toolbar);
+
+	actionbar = Actionbar::create();
+	actionbar->runItem->setCallback(CC_CALLBACK_1(Simulator::menuRunCallback, this));
+	actionbar->exportItem->setCallback(CC_CALLBACK_1(Simulator::menuExportCallback, this));
+	actionbar->resetItem->setCallback(CC_CALLBACK_1(Simulator::menuResetCallback, this));
+
+	this->addChild(actionbar);
 
 	stopwatch = Stopwatch::create();
 	this->addChild(stopwatch);
@@ -68,6 +71,7 @@ void Simulator::run(float dt)
 
 		if (!robot->path.empty())
 		{
+			// This is to prevent the problem where the robot goes out of bounds.
 			robot->stopAllActions();
 			robot->setPosition(grid->getPositionOf(robot->grid_coord));
 
