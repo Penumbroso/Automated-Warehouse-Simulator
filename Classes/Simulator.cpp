@@ -38,7 +38,7 @@ bool Simulator::init()
 	toolbar->eraseItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::ERASE));
 	toolbar->blockadeItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::BLOCKADE));
 	toolbar->clockItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::CLOCK));
-	//toolbar->pathItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PATH));
+	toolbar->pathItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PATH));
 	this->addChild(toolbar);
 
 	actionbar = Actionbar::create();
@@ -194,6 +194,7 @@ void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 
 void Simulator::gridSquareCallback(Point coord)
 {
+	Robot * robot = this->robotController->getRobotAt(coord);
 	switch (this->toolbar->selected)
 	{
 	case Toolbar::PACKAGE:
@@ -215,11 +216,14 @@ void Simulator::gridSquareCallback(Point coord)
 	case Toolbar::BLOCKADE:
 		grid->setState(Square::BLOCKADE, coord);
 		break;
+	// TODO: separete path and clock into different function
 	case Toolbar::PATH:
-		// TODO: color the grid on the path of the robot at the current selected start
+		for (auto coord : robot->complete_path)
+		{
+			grid->squares[coord]->setColor(Color3B::RED);
+		}
 		break;
 	case Toolbar::CLOCK:
-		Robot * robot = this->robotController->getRobotAt(coord);
 		auto robot_stopwatch = robot->stopwatch;
 		this->infobar->time = &robot_stopwatch->text;
 	}

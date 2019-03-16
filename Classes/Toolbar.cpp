@@ -52,8 +52,8 @@ bool Toolbar::init()
 	buttons.push_back(endItem);
 	buttons.push_back(eraseItem);
 	buttons.push_back(blockadeItem);
-	//buttons.push_back(pathItem);
 	buttons.push_back(clockItem);
+	buttons.push_back(pathItem);
 
 	int offset = 120;
 	for (int i = 0; i < buttons.size(); i++)
@@ -61,7 +61,7 @@ bool Toolbar::init()
 		buttons[i]->setPosition(Vec2(15, visibleSize.height - 15 * i * 2 - offset));
 	}
 	  
-	auto menu = Menu::create( packageItem, beginItem, endItem, eraseItem, blockadeItem, clockItem, NULL);
+	auto menu = Menu::create( packageItem, beginItem, endItem, eraseItem, blockadeItem, clockItem, pathItem, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 
