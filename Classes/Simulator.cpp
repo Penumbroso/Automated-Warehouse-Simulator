@@ -13,25 +13,33 @@ bool Simulator::init()
     
 	isRunning = false;
 
-	auto background = LayerColor::create(Color4B::RED);
-	this->addChild(background);
-
 	// TODO: make the grid draggable.
 	// TODO: make grid zoomable.
 	grid = Grid::create();
-	for (const auto &p : grid->squares)
-	{
-		auto square = p.second;
-		square->setCallback(CC_CALLBACK_0(Simulator::gridSquareCallback, this, square->grid_coord));
-	}
+	stopwatch = Stopwatch::create();
+	infobar = Infobar::create();
+	toolbar = Toolbar::create();
+	actionbar = Actionbar::create();
+	robotController = RobotController::create();
 
 	grid->setPosition(30, 0);
+	infobar->time = &stopwatch->text;
+	robotController->grid = grid;
+
 	this->addChild(grid);
-
-	infobar = Infobar::create();
+	this->addChild(stopwatch);
 	this->addChild(infobar);
+	this->addChild(toolbar);
+	this->addChild(actionbar);
+	this->addChild(robotController);
 
-	toolbar = Toolbar::create();
+	this->setCallbacks();
+
+    return true;
+}
+
+void Simulator::setCallbacks()
+{
 	toolbar->packageItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PACKAGE));
 	toolbar->beginItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::BEGIN));
 	toolbar->endItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::END));
@@ -39,26 +47,16 @@ bool Simulator::init()
 	toolbar->blockadeItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::BLOCKADE));
 	toolbar->clockItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::CLOCK));
 	toolbar->pathItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PATH));
-	this->addChild(toolbar);
 
-	actionbar = Actionbar::create();
 	actionbar->runItem->setCallback(CC_CALLBACK_1(Simulator::menuRunCallback, this));
 	actionbar->exportItem->setCallback(CC_CALLBACK_1(Simulator::menuExportCallback, this));
 	actionbar->resetItem->setCallback(CC_CALLBACK_1(Simulator::menuResetCallback, this));
 
-	this->addChild(actionbar);
-
-	stopwatch = Stopwatch::create();
-	this->addChild(stopwatch);
-
-	// Set infobar clock to be the global simulation time
-	infobar->time = &stopwatch->text;
-
-	robotController = RobotController::create();
-	robotController->grid = grid;
-	this->addChild(robotController);
-
-    return true;
+	for (const auto &p : grid->squares)
+	{
+		auto square = p.second;
+		square->setCallback(CC_CALLBACK_0(Simulator::gridSquareCallback, this, square->grid_coord));
+	}
 }
 
 void Simulator::run(float dt) 
@@ -76,6 +74,7 @@ void Simulator::run(float dt)
 			robot->setPosition(grid->getPositionOf(robot->grid_coord));
 
 			robotController->preventCollisionOf(robot);
+
 			robot->move(dt);
 
 			auto moveTo = MoveTo::create(0.19, grid->getPositionOf(robot->grid_coord));
@@ -87,6 +86,7 @@ void Simulator::run(float dt)
 			robot->updateState();
 		}
 
+		// Define a new path
 		if (robot->path.empty())
 			robotController->definePathOf(robot);
 
@@ -103,7 +103,6 @@ void Simulator::start()
 {
 	this->createRobots();
 
-	// TODO: make this into a function called startIndividualRobotsWatches
 	for (auto robot : robots)
 		robot->stopwatch->start();
 	
@@ -153,6 +152,8 @@ bool Simulator::allRobotsAreParked()
 	return true;
 }
 
+
+
 void Simulator::reset()
 {
 	for (Point package : grid->packages)
@@ -167,10 +168,6 @@ void Simulator::reset()
 	robots.clear();
 	packages_delivered.clear();
 }
-
-/*************/
-/* Callbacks */
-/*************/
 
 void Simulator::menuToolCallback(Toolbar::Tool tool)
 {
@@ -195,6 +192,7 @@ void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 void Simulator::gridSquareCallback(Point coord)
 {
 	Robot * robot = this->robotController->getRobotAt(coord);
+
 	switch (this->toolbar->selected)
 	{
 	case Toolbar::PACKAGE:
@@ -216,12 +214,10 @@ void Simulator::gridSquareCallback(Point coord)
 	case Toolbar::BLOCKADE:
 		grid->setState(Square::BLOCKADE, coord);
 		break;
-	// TODO: separete path and clock into different function
 	case Toolbar::PATH:
 		for (auto coord : robot->complete_path)
-		{
 			grid->squares[coord]->setColor(Color3B::RED);
-		}
+		
 		break;
 	case Toolbar::CLOCK:
 		auto robot_stopwatch = robot->stopwatch;
@@ -232,7 +228,7 @@ void Simulator::gridSquareCallback(Point coord)
 
 void Simulator::menuExportCallback(cocos2d::Ref * pSender)
 {
-	std::ofstream out("output.txt");
+	std::ofstream out("times.txt");
 	for (auto robot : robots)
 	{
 		out << robot->stopwatch->toString();

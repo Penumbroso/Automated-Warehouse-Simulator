@@ -40,6 +40,7 @@ private:
 	void createRobots();
 	bool allPackagesWereDelivered();
 	bool allRobotsAreParked();
+	void setCallbacks();
 
 	// Callbacks functions
 	void menuToolCallback(Toolbar::Tool tool);
