@@ -37,3 +37,18 @@ bool Robot::isParked()
 	return grid_coord == start;
 }
 
+bool Robot::isAtDeliverty()
+{
+	return grid_coord == end;
+}
+
+bool Robot::isFull()
+{
+	return state == FULL;
+}
+
+bool Robot::isAtPackage()
+{	
+	return grid_coord == package;
+}
+

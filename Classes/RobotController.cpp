@@ -86,7 +86,6 @@ vector<Point> RobotController::findShortestPath(Point origin, vector<Point> dest
 	return shortest_path;
 }
 
-// Check to see if the next position that a robot is gonna move contains already another robot.
 bool RobotController::isCollisionImminent(Point next_position)
 {
 	if (this->getRobotAt(next_position))
@@ -95,7 +94,6 @@ bool RobotController::isCollisionImminent(Point next_position)
 		return false;
 }
 
-// Simply gets a robot at an specifit grid position.
 Robot * RobotController::getRobotAt(Point grid_position)
 {
 	for (auto robot : robots)

@@ -64,14 +64,14 @@ void Simulator::run(float dt)
 	for (auto robot : robots) 
 	{
 		// Remove package from grid if there is a robot on top of it.
-		if (robot->grid_coord == robot->package)
+		if (robot->isAtPackage())
 			grid->setState(Square::EMPTY, robot->package);
 
 		if (!robot->path.empty())
 		{
-			// This is to prevent the problem where the robot goes out of bounds.
 			robot->stopAllActions();
-			robot->setPosition(grid->getPositionOf(robot->grid_coord));
+			auto pixel_position = grid->getPositionOf(robot->grid_coord);
+			robot->setPosition(pixel_position);
 
 			robotController->preventCollisionOf(robot);
 
@@ -80,13 +80,12 @@ void Simulator::run(float dt)
 			auto moveTo = MoveTo::create(0.19, grid->getPositionOf(robot->grid_coord));
 			robot->runAction(moveTo);
 
-			if (robot->grid_coord == robot->end && robot->state == Robot::FULL)
+			if (robot->isAtDeliverty() && robot->isFull())
 				Util::addIfUnique<Point>(&packages_delivered, robot->package);
 
 			robot->updateState();
 		}
 
-		// Define a new path
 		if (robot->path.empty())
 			robotController->definePathOf(robot);
 
@@ -152,8 +151,6 @@ bool Simulator::allRobotsAreParked()
 	return true;
 }
 
-
-
 void Simulator::reset()
 {
 	for (Point package : grid->packages)
@@ -167,6 +164,7 @@ void Simulator::reset()
 	
 	robots.clear();
 	packages_delivered.clear();
+	stopwatch->reset();
 }
 
 void Simulator::menuToolCallback(Toolbar::Tool tool)
@@ -185,7 +183,6 @@ void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 {
 	stop();
-	stopwatch->reset();
 	reset();
 }
 

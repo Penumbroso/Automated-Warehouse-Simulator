@@ -37,6 +37,9 @@ public:
 	void move(float dt);
 	void updateState();
 	bool isParked();
+	bool isAtDeliverty();
+	bool isFull();
+	bool isAtPackage();
 
 	CREATE_FUNC(Robot);
 };
