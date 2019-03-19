@@ -89,13 +89,12 @@ void Simulator::run(float dt)
 		if (robot->path.empty())
 			robotController->definePathOf(robot);
 
-		// TODO: substitute the second condition as a function called isRobotParked
 		if (allPackagesWereDelivered() && robot->isParked())
 			robot->stopwatch->stop();
 	}
 
 	if (allRobotsAreParked() && allPackagesWereDelivered())
-		stop();
+		this->stop();
 }
 
 void Simulator::start()

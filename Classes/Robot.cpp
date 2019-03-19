@@ -1,4 +1,5 @@
 #include "Robot.h"
+#include "Util.h"
 
 USING_NS_CC;
 
@@ -28,7 +29,7 @@ void Robot::updateState()
 	if (grid_coord == this->package)
 		this->state = FULL;
 	
-	if (grid_coord == this->end)
+	if (grid_coord == this->delivery_point)
 		this->state = EMPTY;
 }
 
@@ -39,7 +40,7 @@ bool Robot::isParked()
 
 bool Robot::isAtDeliverty()
 {
-	return grid_coord == end;
+	return grid_coord == delivery_point;
 }
 
 bool Robot::isFull()
@@ -50,5 +51,10 @@ bool Robot::isFull()
 bool Robot::isAtPackage()
 {	
 	return grid_coord == package;
+}
+
+bool Robot::isInThe(vector<Point> path)
+{
+	return Util::contains<Point>(&path, this->grid_coord);
 }
 

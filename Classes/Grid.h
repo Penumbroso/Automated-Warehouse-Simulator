@@ -26,7 +26,7 @@ public:
 	void setState(Square::State state, Point point);
 
 	vector<Point> starts;
-	vector<Point> ends;
+	vector<Point> delivery_points;
 	vector<Point> packages;
 	vector<Point> blockades;
 

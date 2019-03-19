@@ -23,9 +23,9 @@ void RobotController::definePathOf(Robot * robot)
 
 	else if(robot->state == Robot::FULL)
 	{
-		robot->path = this->findShortestPath(robot->grid_coord, grid->ends);
+		robot->path = this->findShortestPath(robot->grid_coord, grid->delivery_points);
 		robot->destination = robot->path[0];
-		robot->end = robot->destination;
+		robot->delivery_point = robot->destination;
 	}
 
 	else if (robot->state == Robot::EMPTY && grid->available_packages.empty()) 
@@ -36,9 +36,6 @@ void RobotController::definePathOf(Robot * robot)
 	}
 }
 
-// Check if collision is Immminent, if so choose between two reactions:
-// 1: dont move case the collidable robot is not in your path
-// 2: move in case he is
 // TODO: should check to see the situation when it comes to diagonal movement since the robot occupies multiple squares on the grid.
 void RobotController::preventCollisionOf(Robot * robot)
 {
@@ -48,17 +45,16 @@ void RobotController::preventCollisionOf(Robot * robot)
 	{
 		auto collision_robot = this->getRobotAt(next_position);
 		auto path = collision_robot->path;
-
-		if (!Util::contains<Point>(&path, robot->grid_coord))
-		{
-			robot->path.push_back(robot->grid_coord);
-		}
-		else
+		
+		if (robot->isInThe(path))
 		{
 			grid->static_collidables.push_back(next_position);
 			robot->path = this->findShortestPath(robot->grid_coord, { robot->destination });
 			grid->static_collidables.pop_back();
-
+		}
+		else
+		{
+			robot->path.push_back(robot->grid_coord);
 		}
 		// TODO: add case where the collision_robot path is empty
 	}

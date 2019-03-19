@@ -30,7 +30,7 @@ public:
 	Point destination;
 	Point package;
 	Point start;
-	Point end;
+	Point delivery_point;
 
 	Stopwatch* stopwatch;
 
@@ -40,6 +40,7 @@ public:
 	bool isAtDeliverty();
 	bool isFull();
 	bool isAtPackage();
+	bool isInThe(vector<Point> path);
 
 	CREATE_FUNC(Robot);
 };
