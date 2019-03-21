@@ -50,6 +50,8 @@ private:
 	void menuResetCallback(cocos2d::Ref * pSender);
 	void gridSquareCallback(Point coord);
 	void menuExportCallback(cocos2d::Ref * pSender);
+	void menuSpeedUpCallback(cocos2d::Ref* pSender);
+	void menuSlowDownCallback(cocos2d::Ref* pSender);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

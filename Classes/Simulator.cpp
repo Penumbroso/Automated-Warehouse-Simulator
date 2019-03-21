@@ -52,6 +52,8 @@ void Simulator::setCallbacks()
 	actionbar->runItem->setCallback(CC_CALLBACK_1(Simulator::menuRunCallback, this));
 	actionbar->exportItem->setCallback(CC_CALLBACK_1(Simulator::menuExportCallback, this));
 	actionbar->resetItem->setCallback(CC_CALLBACK_1(Simulator::menuResetCallback, this));
+	actionbar->speedUpItem->setCallback(CC_CALLBACK_1(Simulator::menuSpeedUpCallback, this));
+	actionbar->slowDownItem->setCallback(CC_CALLBACK_1(Simulator::menuSlowDownCallback, this));
 
 	for (const auto &p : grid->squares)
 	{
@@ -175,6 +177,7 @@ void Simulator::menuToolCallback(Toolbar::Tool tool)
 
 void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 {
+	// TODO: Change icon of the button;
 	if (isRunning) 
 		stop();
 	else
@@ -238,4 +241,20 @@ void Simulator::menuExportCallback(cocos2d::Ref * pSender)
 	}
 
 	out.close();
+}
+
+void Simulator::menuSpeedUpCallback(cocos2d::Ref * pSender)
+{
+	// TODO: speed needs to be in terms of multiplier, so normal is 1x then 1.5x...
+	// TOOD: needs to aply the speed to every stopwatch too.
+	stop();
+	speed *= 2;
+	start();
+}
+
+void Simulator::menuSlowDownCallback(cocos2d::Ref * pSender)
+{
+	stop();
+	speed /= 2;
+	start();
 }

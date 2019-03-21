@@ -13,6 +13,8 @@ public:
 	MenuItemImage* runItem;
 	MenuItemImage* exportItem;
 	MenuItemImage* resetItem;
+	MenuItemImage* speedUpItem;
+	MenuItemImage* slowDownItem;
 
 	CREATE_FUNC(Actionbar);
 };
