@@ -33,6 +33,8 @@ private:
 	vector<Point> packages_delivered;
 	std::map<Point, Stopwatch*> stopwatches;
 
+	float speed;
+
 	void run(float dt);
 	void start();
 	void stop();

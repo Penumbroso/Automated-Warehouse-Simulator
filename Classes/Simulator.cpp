@@ -12,6 +12,7 @@ bool Simulator::init()
         return false;
     
 	isRunning = false;
+	speed = 0.2f;
 
 	// TODO: make the grid draggable.
 	// TODO: make grid zoomable.
@@ -77,7 +78,8 @@ void Simulator::run(float dt)
 
 			robot->move(dt);
 
-			auto moveTo = MoveTo::create(0.19, grid->getPositionOf(robot->grid_coord));
+			// TODO: solve problem of diagonal movement being faster than vertical and horizontal movement
+			auto moveTo = MoveTo::create(speed, grid->getPositionOf(robot->grid_coord));
 			robot->runAction(moveTo);
 
 			if (robot->isAtDeliverty() && robot->isFull())
@@ -105,7 +107,7 @@ void Simulator::start()
 		robot->stopwatch->start();
 	
 	this->robotController->robots = robots;
-	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.2f);
+	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), speed);
 	this->stopwatch->start();
 	this->isRunning = true;
 }
@@ -216,8 +218,12 @@ void Simulator::gridSquareCallback(Point coord)
 		
 		break;
 	case Toolbar::CLOCK:
-		auto robot_stopwatch = robot->stopwatch;
-		this->infobar->time = &robot_stopwatch->text;
+		if (robot)
+		{
+			auto robot_stopwatch = robot->stopwatch;
+			this->infobar->time = &robot_stopwatch->text;
+		}
+		
 	}
 
 }

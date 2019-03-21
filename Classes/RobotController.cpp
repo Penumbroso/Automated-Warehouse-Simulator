@@ -52,16 +52,19 @@ void RobotController::preventCollisionOf(Robot * robot)
 			robot->path = this->findShortestPath(robot->grid_coord, { robot->destination });
 			grid->static_collidables.pop_back();
 		}
+		else if (collision_robot->path.empty()) 
+		{
+			grid->static_collidables.push_back(next_position);
+			robot->path = this->findShortestPath(robot->grid_coord, { robot->destination });
+			grid->static_collidables.pop_back();
+		}
 		else
 		{
 			robot->path.push_back(robot->grid_coord);
 		}
-		// TODO: add case where the collision_robot path is empty
 	}
 }
 
-// Find the shortest path between a point and a list of destinations
-// To do this he makes each path and chooses the shortest one between them.
 vector<Point> RobotController::findShortestPath(Point origin, vector<Point> destinations) {
 	vector<Point> shortest_path;
 	int min_size = std::numeric_limits<int>::max();

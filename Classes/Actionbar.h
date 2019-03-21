@@ -9,6 +9,7 @@ public:
 
 	std::vector<MenuItemImage*> buttons;
 
+	// TODO: add button to accelerato or desaccelerate simulation
 	MenuItemImage* runItem;
 	MenuItemImage* exportItem;
 	MenuItemImage* resetItem;
