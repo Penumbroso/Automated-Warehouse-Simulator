@@ -178,11 +178,12 @@ void Simulator::reset()
 void Simulator::menuToolCallback(Toolbar::Tool tool)
 {
 	this->toolbar->selected = tool;
+	// TODO: change icon when clicked
 }
 
 void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 {
-	// TODO: Change icon of the button;
+	this->actionbar->runItem->setNormalImage(Sprite::create("RunBtn_pressed.png"));
 	if (isRunning) 
 		stop();
 	else
@@ -199,31 +200,39 @@ void Simulator::gridSquareCallback(Point coord)
 {
 	Robot * robot = this->robotController->getRobotAt(coord);
 
+	// TODO: for each button change the icon to show that it was selected
 	switch (this->toolbar->selected)
 	{
 	case Toolbar::PACKAGE:
+		this->toolbar->packageItem->setNormalImage(Sprite::create("PackageBtn_pressed.png"));
 		grid->setState(Square::PACKAGE, coord);
 		break;
 
 	case Toolbar::BEGIN:
+		this->toolbar->beginItem->setNormalImage(Sprite::create("PlusBtn_pressed.png"));
 		grid->setState(Square::BEGIN, coord);
 		break;
 
 	case Toolbar::END:
+		this->toolbar->endItem->setNormalImage(Sprite::create("MinusBtn_pressed.png"));
 		grid->setState(Square::END, coord);
 		break;
 
 	case Toolbar::ERASE:
+		this->toolbar->eraseItem->setNormalImage(Sprite::create("EraseBtn_pressed.png"));
 		grid->setState(Square::EMPTY, coord);
 		break;
 
 	case Toolbar::BLOCKADE:
+		this->toolbar->blockadeItem->setNormalImage(Sprite::create("BlockadeBtn_pressed.png"));
 		grid->setState(Square::BLOCKADE, coord);
 		break;
 	case Toolbar::PATH:
-		for (auto coord : robot->complete_path)
-			grid->squares[coord]->setColor(Color3B::RED);
-		
+		if (robot) 
+		{
+			for (auto coord : robot->complete_path)
+				grid->squares[coord]->setColor(Color3B::RED);
+		}
 		break;
 	case Toolbar::CLOCK:
 		if (robot)
@@ -231,7 +240,7 @@ void Simulator::gridSquareCallback(Point coord)
 			auto robot_stopwatch = robot->stopwatch;
 			this->infobar->time = &robot_stopwatch->text;
 		}
-		
+		break;
 	}
 
 }
