@@ -12,7 +12,7 @@ bool Simulator::init()
         return false;
     
 	isRunning = false;
-	speed = 0.2f;
+	speed_factor = 1.0f;
 
 	// TODO: make the grid draggable.
 	// TODO: make grid zoomable.
@@ -81,7 +81,7 @@ void Simulator::run(float dt)
 			robot->move(dt);
 
 			// TODO: solve problem of diagonal movement being faster than vertical and horizontal movement
-			auto moveTo = MoveTo::create(speed, grid->getPositionOf(robot->grid_coord));
+			auto moveTo = MoveTo::create(0.2f * speed_factor, grid->getPositionOf(robot->grid_coord));
 			robot->runAction(moveTo);
 
 			if (robot->isAtDeliverty() && robot->isFull())
@@ -106,10 +106,15 @@ void Simulator::start()
 	this->createRobots();
 
 	for (auto robot : robots)
+	{
+		robot->stopwatch->setSpeedFactor(speed_factor);
 		robot->stopwatch->start();
+	}
+		
 	
 	this->robotController->robots = robots;
-	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), speed);
+	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.2f * speed_factor);
+	this->stopwatch->setSpeedFactor(speed_factor);
 	this->stopwatch->start();
 	this->isRunning = true;
 }
@@ -245,16 +250,14 @@ void Simulator::menuExportCallback(cocos2d::Ref * pSender)
 
 void Simulator::menuSpeedUpCallback(cocos2d::Ref * pSender)
 {
-	// TODO: speed needs to be in terms of multiplier, so normal is 1x then 1.5x...
-	// TOOD: needs to aply the speed to every stopwatch too.
 	stop();
-	speed *= 2;
+	speed_factor /= 2;
 	start();
 }
 
 void Simulator::menuSlowDownCallback(cocos2d::Ref * pSender)
 {
 	stop();
-	speed /= 2;
+	speed_factor *= 2;
 	start();
 }

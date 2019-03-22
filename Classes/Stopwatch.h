@@ -14,8 +14,11 @@ public:
 	int getMilliseconds();
 	void reset();
 
+	float speed_factor;
+
 	std::string text;
 	std::string toString();
+	void setSpeedFactor(float factor);
 
 	CREATE_FUNC(Stopwatch);
 
