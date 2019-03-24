@@ -47,6 +47,9 @@ bool Toolbar::init()
 		"Timer.png",
 		"Timer_pressed.png");
 
+	auto menu = Menu::create();
+	menu->setPosition(Vec2::ZERO);
+
 	buttons.push_back(packageItem);
 	buttons.push_back(beginItem);
 	buttons.push_back(endItem);
@@ -59,10 +62,9 @@ bool Toolbar::init()
 	for (int i = 0; i < buttons.size(); i++)
 	{
 		buttons[i]->setPosition(Vec2(15, visibleSize.height - 15 * i * 2 - offset));
+		menu->addChild(buttons[i]);
 	}
 	  
-	auto menu = Menu::create( packageItem, beginItem, endItem, eraseItem, blockadeItem, clockItem, pathItem, NULL);
-	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 
 	return true;

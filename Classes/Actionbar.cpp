@@ -19,12 +19,16 @@ bool Actionbar::init()
 		"Timer_pressed.png");
 
 	speedUpItem = MenuItemImage::create(
-		"Timer.png",
-		"Timer_pressed.png");
+		"SpeedUpBtn.png",
+		"SpeedUpBtn.png");
 
 	slowDownItem = MenuItemImage::create(
-		"Timer.png",
-		"Timer_pressed.png");
+		"SlowDownBtn.png",
+		"SlowDownBtn.png");
+
+
+	auto menu = Menu::create();
+	menu->setPosition(Vec2::ZERO);
 
 
 	buttons.push_back(runItem);
@@ -37,10 +41,9 @@ bool Actionbar::init()
 	for (int i = 0; i < buttons.size(); i++)
 	{
 		buttons[i]->setPosition(Vec2(15, visibleSize.height - 15 * i * 2 - offset));
+		menu->addChild(buttons[i]);
 	}
 
-	auto menu = Menu::create(runItem, resetItem, exportItem, speedUpItem, slowDownItem, NULL);
-	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 
 	return true;
