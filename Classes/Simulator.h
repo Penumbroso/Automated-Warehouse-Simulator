@@ -45,7 +45,6 @@ private:
 	void setCallbacks();
 
 	// Callbacks functions
-	void menuToolCallback(Toolbar::Tool tool);
 	void menuRunCallback(cocos2d::Ref * pSender);
 	void menuResetCallback(cocos2d::Ref * pSender);
 	void gridSquareCallback(Point coord);

@@ -17,45 +17,13 @@ bool Toolbar::init()
 	selected_bg->drawSolidRect(
 		Vec2(0, 0),
 		Vec2(30, 30),
-		Color4F(0.25f, 0.25f, 0.25f, 1));
+		Color4F(0.20f, 0.20f, 0.20f, 1));
 	selected_bg->setContentSize(Size(30, 30));
 	selected_bg->setVisible(false);
 	selected_bg->setAnchorPoint(Vec2(0.5, 0.5));
 	this->addChild(selected_bg);
 
-	// TODO: create a second callback here that changes the icon after pressed the run button to the pause button.
-
-	// TODO: create a button to show the path a robot has taken
-
-	packageItem = MenuItemImage::create(
-		"PackageBtn.png",
-		"PackageBtn_pressed.png");
-
-	beginItem = MenuItemImage::create(
-		"PlusBtn.png",
-		"PlusBtn_pressed.png");
-
-	endItem = MenuItemImage::create(
-		"MinusBtn.png",
-		"MinusBtn_pressed.png");
-
-	eraseItem = MenuItemImage::create(
-		"EraseBtn.png",
-		"EraseBtn_pressed.png");
-
-	blockadeItem = MenuItemImage::create(
-		"BlockadeBtn.png",
-		"BlockadeBtn_pressed.png");
-
-	// TODO: create a path icon
-	pathItem = MenuItemImage::create(
-		"BlockadeBtn.png",
-		"BlockadeBtn_pressed.png");
-
-	// TODO: create a clock icon
-	clockItem = MenuItemImage::create(
-		"Timer.png",
-		"Timer_pressed.png");
+	createButtons();
 
 	auto menu = Menu::create();
 	menu->setPosition(Vec2::ZERO);
@@ -77,10 +45,12 @@ bool Toolbar::init()
 	  
 	this->addChild(menu, 1);
 
+	this->setCallbacks();
+
 	return true;
 }
 
-void Toolbar::selectTool(Tool tool)
+void Toolbar::setTool(Tool tool)
 {
 	selected_bg->setVisible(true);
 	this->selected = tool;
@@ -110,4 +80,48 @@ void Toolbar::selectTool(Tool tool)
 	default:
 		break;
 	}
+}
+
+void Toolbar::setCallbacks()
+{
+	this->packageItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::PACKAGE));
+	this->beginItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::BEGIN));
+	this->endItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::END));
+	this->eraseItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::ERASE));
+	this->blockadeItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::BLOCKADE));
+	this->clockItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::CLOCK));
+	this->pathItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::PATH));
+}
+
+void Toolbar::createButtons()
+{
+	packageItem = MenuItemImage::create(
+		"PackageBtn.png",
+		"PackageBtn_pressed.png");
+
+	beginItem = MenuItemImage::create(
+		"PlusBtn.png",
+		"PlusBtn_pressed.png");
+
+	endItem = MenuItemImage::create(
+		"MinusBtn.png",
+		"MinusBtn_pressed.png");
+
+	eraseItem = MenuItemImage::create(
+		"EraseBtn.png",
+		"EraseBtn_pressed.png");
+
+	blockadeItem = MenuItemImage::create(
+		"BlockadeBtn.png",
+		"BlockadeBtn_pressed.png");
+
+	// TODO: create a path icon
+	pathItem = MenuItemImage::create(
+		"BlockadeBtn.png",
+		"BlockadeBtn_pressed.png");
+
+	// TODO: create a clock icon
+	clockItem = MenuItemImage::create(
+		"Timer.png",
+		"Timer_pressed.png");
 }

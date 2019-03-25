@@ -41,15 +41,6 @@ bool Simulator::init()
 
 void Simulator::setCallbacks()
 {
-	// TODO: move tool selection callbacks to toolbar
-	toolbar->packageItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PACKAGE));
-	toolbar->beginItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::BEGIN));
-	toolbar->endItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::END));
-	toolbar->eraseItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::ERASE));
-	toolbar->blockadeItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::BLOCKADE));
-	toolbar->clockItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::CLOCK));
-	toolbar->pathItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PATH));
-
 	actionbar->runItem->setCallback(CC_CALLBACK_1(Simulator::menuRunCallback, this));
 	actionbar->exportItem->setCallback(CC_CALLBACK_1(Simulator::menuExportCallback, this));
 	actionbar->resetItem->setCallback(CC_CALLBACK_1(Simulator::menuResetCallback, this));
@@ -174,11 +165,6 @@ void Simulator::reset()
 	robots.clear();
 	packages_delivered.clear();
 	stopwatch->reset();
-}
-
-void Simulator::menuToolCallback(Toolbar::Tool tool)
-{
-	this->toolbar->selectTool(tool);
 }
 
 void Simulator::menuRunCallback(cocos2d::Ref * pSender)
