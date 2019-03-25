@@ -29,5 +29,9 @@ class Toolbar : public cocos2d::Layer
 		MenuItemImage* pathItem;
 		MenuItemImage* clockItem;
 
+		void selectTool(Tool tool);
+
 		CREATE_FUNC(Toolbar);
+	private:
+		DrawNode* selected_bg;
 };

@@ -13,6 +13,16 @@ bool Toolbar::init()
 
 	this->addChild(left_bar);
 
+	selected_bg = DrawNode::create();
+	selected_bg->drawSolidRect(
+		Vec2(0, 0),
+		Vec2(30, 30),
+		Color4F(0.25f, 0.25f, 0.25f, 1));
+	selected_bg->setContentSize(Size(30, 30));
+	selected_bg->setVisible(false);
+	selected_bg->setAnchorPoint(Vec2(0.5, 0.5));
+	this->addChild(selected_bg);
+
 	// TODO: create a second callback here that changes the icon after pressed the run button to the pause button.
 
 	// TODO: create a button to show the path a robot has taken
@@ -68,4 +78,36 @@ bool Toolbar::init()
 	this->addChild(menu, 1);
 
 	return true;
+}
+
+void Toolbar::selectTool(Tool tool)
+{
+	selected_bg->setVisible(true);
+	this->selected = tool;
+	switch (tool)
+	{
+	case Toolbar::PACKAGE:
+		selected_bg->setPosition(packageItem->getPosition());
+		break;
+	case Toolbar::BEGIN:
+		selected_bg->setPosition(beginItem->getPosition());
+		break;
+	case Toolbar::END:
+		selected_bg->setPosition(endItem->getPosition());
+		break;
+	case Toolbar::ERASE:
+		selected_bg->setPosition(eraseItem->getPosition());
+		break;
+	case Toolbar::BLOCKADE:
+		selected_bg->setPosition(blockadeItem->getPosition());
+		break;
+	case Toolbar::CLOCK:
+		selected_bg->setPosition(clockItem->getPosition());
+		break;
+	case Toolbar::PATH:
+		selected_bg->setPosition(pathItem->getPosition());
+		break;
+	default:
+		break;
+	}
 }

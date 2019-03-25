@@ -41,6 +41,7 @@ bool Simulator::init()
 
 void Simulator::setCallbacks()
 {
+	// TODO: move tool selection callbacks to toolbar
 	toolbar->packageItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::PACKAGE));
 	toolbar->beginItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::BEGIN));
 	toolbar->endItem->setCallback(CC_CALLBACK_0(Simulator::menuToolCallback, this, Toolbar::END));
@@ -177,8 +178,7 @@ void Simulator::reset()
 
 void Simulator::menuToolCallback(Toolbar::Tool tool)
 {
-	this->toolbar->selected = tool;
-	// TODO: change icon when clicked
+	this->toolbar->selectTool(tool);
 }
 
 void Simulator::menuRunCallback(cocos2d::Ref * pSender)
@@ -200,31 +200,25 @@ void Simulator::gridSquareCallback(Point coord)
 {
 	Robot * robot = this->robotController->getRobotAt(coord);
 
-	// TODO: for each button change the icon to show that it was selected
 	switch (this->toolbar->selected)
 	{
 	case Toolbar::PACKAGE:
-		this->toolbar->packageItem->setNormalImage(Sprite::create("PackageBtn_pressed.png"));
 		grid->setState(Square::PACKAGE, coord);
 		break;
 
 	case Toolbar::BEGIN:
-		this->toolbar->beginItem->setNormalImage(Sprite::create("PlusBtn_pressed.png"));
 		grid->setState(Square::BEGIN, coord);
 		break;
 
 	case Toolbar::END:
-		this->toolbar->endItem->setNormalImage(Sprite::create("MinusBtn_pressed.png"));
 		grid->setState(Square::END, coord);
 		break;
 
 	case Toolbar::ERASE:
-		this->toolbar->eraseItem->setNormalImage(Sprite::create("EraseBtn_pressed.png"));
 		grid->setState(Square::EMPTY, coord);
 		break;
 
 	case Toolbar::BLOCKADE:
-		this->toolbar->blockadeItem->setNormalImage(Sprite::create("BlockadeBtn_pressed.png"));
 		grid->setState(Square::BLOCKADE, coord);
 		break;
 	case Toolbar::PATH:
