@@ -35,6 +35,7 @@ bool Toolbar::init()
 	buttons.push_back(blockadeItem);
 	buttons.push_back(clockItem);
 	buttons.push_back(pathItem);
+	buttons.push_back(moveItem);
 
 	int offset = 200;
 	for (int i = 0; i < buttons.size(); i++)
@@ -50,47 +51,23 @@ bool Toolbar::init()
 	return true;
 }
 
-void Toolbar::setTool(Tool tool)
+void Toolbar::setTool(Tool tool, MenuItemImage * btn)
 {
 	selected_bg->setVisible(true);
 	this->selected = tool;
-	switch (tool)
-	{
-	case Toolbar::PACKAGE:
-		selected_bg->setPosition(packageItem->getPosition());
-		break;
-	case Toolbar::BEGIN:
-		selected_bg->setPosition(beginItem->getPosition());
-		break;
-	case Toolbar::END:
-		selected_bg->setPosition(endItem->getPosition());
-		break;
-	case Toolbar::ERASE:
-		selected_bg->setPosition(eraseItem->getPosition());
-		break;
-	case Toolbar::BLOCKADE:
-		selected_bg->setPosition(blockadeItem->getPosition());
-		break;
-	case Toolbar::CLOCK:
-		selected_bg->setPosition(clockItem->getPosition());
-		break;
-	case Toolbar::PATH:
-		selected_bg->setPosition(pathItem->getPosition());
-		break;
-	default:
-		break;
-	}
+	selected_bg->setPosition(btn->getPosition());
 }
 
 void Toolbar::setCallbacks()
 {
-	this->packageItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::PACKAGE));
-	this->beginItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::BEGIN));
-	this->endItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::END));
-	this->eraseItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::ERASE));
-	this->blockadeItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::BLOCKADE));
-	this->clockItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::CLOCK));
-	this->pathItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::PATH));
+	this->packageItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::PACKAGE, packageItem));
+	this->beginItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::BEGIN, beginItem));
+	this->endItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::END, endItem));
+	this->eraseItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::ERASE, eraseItem));
+	this->blockadeItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::BLOCKADE, blockadeItem));
+	this->clockItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::CLOCK, clockItem));
+	this->pathItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::PATH, pathItem));
+	this->moveItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::PATH, moveItem));
 }
 
 void Toolbar::createButtons()
@@ -122,6 +99,10 @@ void Toolbar::createButtons()
 
 	// TODO: create a clock icon
 	clockItem = MenuItemImage::create(
+		"Timer.png",
+		"Timer_pressed.png");
+
+	moveItem = MenuItemImage::create(
 		"Timer.png",
 		"Timer_pressed.png");
 }

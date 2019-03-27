@@ -14,7 +14,8 @@ class Toolbar : public cocos2d::Layer
 			ERASE,
 			BLOCKADE,
 			CLOCK,
-			PATH
+			PATH,
+			MOVE
 		};
 
 		Tool selected = PACKAGE;
@@ -28,8 +29,9 @@ class Toolbar : public cocos2d::Layer
 		MenuItemImage* blockadeItem;
 		MenuItemImage* pathItem;
 		MenuItemImage* clockItem;
+		MenuItemImage* moveItem;
 
-		void setTool(Tool tool);
+		void setTool(Tool tool, MenuItemImage* btn);
 
 		CREATE_FUNC(Toolbar);
 	private:

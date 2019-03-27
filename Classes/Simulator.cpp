@@ -2,7 +2,6 @@
 #include "SimpleAudioEngine.h"
 #include "AStar.hpp"
 #include <algorithm>
-#include <limits>
 
 USING_NS_CC;
 

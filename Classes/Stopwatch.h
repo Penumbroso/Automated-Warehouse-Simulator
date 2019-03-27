@@ -14,8 +14,6 @@ public:
 	int getMilliseconds();
 	void reset();
 
-	float speed_factor;
-
 	std::string text;
 	std::string toString();
 	void setSpeedFactor(float factor);
@@ -26,6 +24,8 @@ private:
 	int minutes;
 	int seconds;
 	int milliseconds;
+
+	float speed_factor;
 
 	void count(float dt);
 };
