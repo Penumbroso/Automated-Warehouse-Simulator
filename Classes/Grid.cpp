@@ -10,6 +10,8 @@ bool Grid::init()
 	menu = Menu::create();
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu);
+	
+	//menu->setEnabled(false);
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -19,6 +21,11 @@ bool Grid::init()
 	this->createSquares();
 	this->drawLines();
 
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->onTouchBegan = CC_CALLBACK_2(Grid::onTouchBegan, this);
+	listener->onTouchMoved = CC_CALLBACK_2(Grid::onTouchMoved, this);
+	listener->onTouchEnded = CC_CALLBACK_2(Grid::onTouchEnded, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 	return true;
 }
 
@@ -122,4 +129,43 @@ void Grid::createSquares()
 			menu->addChild(square);
 		}
 	}
+}
+
+bool Grid::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event)
+{
+
+	CCLOG("onTouchBegan x = %f, y = %f", touch->getLocation().x, touch->getLocation().y);
+
+
+	this->setPosition(touch->getLocation().x, touch->getLocation().y);
+
+
+	return true;
+
+}
+
+
+void Grid::onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *event)
+{
+
+	CCLOG("onTouchMoved x = %f, y = %f", touch->getLocation().x, touch->getLocation().y);
+
+
+
+	this->setPosition(touch->getLocation().x, touch->getLocation().y);
+
+}
+
+
+
+void Grid::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *event)
+{
+
+	CCLOG("onTouchEnded x = %f, y = %f", touch->getLocation().x, touch->getLocation().y);
+
+
+	//physicsBBody->setDynamic(true);
+	this->setPosition(touch->getLocation().x, touch->getLocation().y);
+
+
 }
