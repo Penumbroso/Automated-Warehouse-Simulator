@@ -45,6 +45,7 @@ void Simulator::setCallbacks()
 	actionbar->resetItem->setCallback(CC_CALLBACK_1(Simulator::menuResetCallback, this));
 	actionbar->speedUpItem->setCallback(CC_CALLBACK_1(Simulator::menuSpeedUpCallback, this));
 	actionbar->slowDownItem->setCallback(CC_CALLBACK_1(Simulator::menuSlowDownCallback, this));
+	actionbar->moveItem->setCallback(CC_CALLBACK_1(Simulator::menuMoveGridCallback, this));
 
 	for (const auto &p : grid->squares)
 	{
@@ -251,4 +252,9 @@ void Simulator::menuSlowDownCallback(cocos2d::Ref * pSender)
 	stop();
 	speed_factor *= 2;
 	start();
+}
+
+void Simulator::menuMoveGridCallback(cocos2d::Ref * pSender)
+{
+	this->grid->enableDragAndDrop(true);
 }

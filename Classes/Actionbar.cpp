@@ -26,6 +26,10 @@ bool Actionbar::init()
 		"SlowDownBtn.png",
 		"SlowDownBtn.png");
 
+	moveItem = MenuItemImage::create(
+		"Timer.png",
+		"Timer_pressed.png");
+
 
 	auto menu = Menu::create();
 	menu->setPosition(Vec2::ZERO);
@@ -36,6 +40,7 @@ bool Actionbar::init()
 	buttons.push_back(exportItem);
 	buttons.push_back(speedUpItem);
 	buttons.push_back(slowDownItem);
+	buttons.push_back(moveItem);
 
 	int offset = 30;
 	for (int i = 0; i < buttons.size(); i++)

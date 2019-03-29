@@ -15,6 +15,7 @@ public:
 	MenuItemImage* resetItem;
 	MenuItemImage* speedUpItem;
 	MenuItemImage* slowDownItem;
+	MenuItemImage* moveItem;
 
 	CREATE_FUNC(Actionbar);
 };

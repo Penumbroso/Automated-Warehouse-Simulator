@@ -51,6 +51,7 @@ private:
 	void menuExportCallback(cocos2d::Ref * pSender);
 	void menuSpeedUpCallback(cocos2d::Ref* pSender);
 	void menuSlowDownCallback(cocos2d::Ref* pSender);
+	void menuMoveGridCallback(cocos2d::Ref* pSender);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

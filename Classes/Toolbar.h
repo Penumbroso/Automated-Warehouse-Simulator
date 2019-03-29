@@ -29,7 +29,6 @@ class Toolbar : public cocos2d::Layer
 		MenuItemImage* blockadeItem;
 		MenuItemImage* pathItem;
 		MenuItemImage* clockItem;
-		MenuItemImage* moveItem;
 
 		void setTool(Tool tool, MenuItemImage* btn);
 

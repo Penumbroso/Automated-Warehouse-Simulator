@@ -35,7 +35,6 @@ bool Toolbar::init()
 	buttons.push_back(blockadeItem);
 	buttons.push_back(clockItem);
 	buttons.push_back(pathItem);
-	buttons.push_back(moveItem);
 
 	int offset = 200;
 	for (int i = 0; i < buttons.size(); i++)
@@ -67,7 +66,6 @@ void Toolbar::setCallbacks()
 	this->blockadeItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::BLOCKADE, blockadeItem));
 	this->clockItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::CLOCK, clockItem));
 	this->pathItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::PATH, pathItem));
-	this->moveItem->setCallback(CC_CALLBACK_0(Toolbar::setTool, this, Toolbar::PATH, moveItem));
 }
 
 void Toolbar::createButtons()
@@ -99,10 +97,6 @@ void Toolbar::createButtons()
 
 	// TODO: create a clock icon
 	clockItem = MenuItemImage::create(
-		"Timer.png",
-		"Timer_pressed.png");
-
-	moveItem = MenuItemImage::create(
 		"Timer.png",
 		"Timer_pressed.png");
 }
