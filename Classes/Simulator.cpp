@@ -184,7 +184,7 @@ void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 void Simulator::gridSquareCallback(Point coord)
 {
 	Robot * robot = this->robotController->getRobotAt(coord);
-
+	grid->enableDragAndDrop(false);
 	switch (this->toolbar->selected)
 	{
 	case Toolbar::PACKAGE:
@@ -219,6 +219,9 @@ void Simulator::gridSquareCallback(Point coord)
 			auto robot_stopwatch = robot->stopwatch;
 			this->infobar->time = &robot_stopwatch->text;
 		}
+		break;
+	case Toolbar::MOVE:
+		//grid->enableDragAndDrop(false);
 		break;
 	}
 

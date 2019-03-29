@@ -33,6 +33,8 @@ public:
 	// TODO: available_packages shoulndt be here since it only concerns the simulation
 	vector<Point> available_packages;
 	vector<Point> static_collidables;
+
+	void enableDragAndDrop(boolean enabled);
 	
 	CREATE_FUNC(Grid);
 
@@ -45,7 +47,9 @@ private:
 	void createSquares();
 	bool onTouchBegan(cocos2d::Touch * touch, cocos2d::Event * event);
 	void onTouchMoved(cocos2d::Touch * touch, cocos2d::Event * event);
-	void onTouchEnded(cocos2d::Touch * touch, cocos2d::Event * event);
+
+
+	Point initial_touch_location;
 };
 
 #endif
