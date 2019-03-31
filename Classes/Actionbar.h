@@ -16,6 +16,10 @@ public:
 	MenuItemImage* speedUpItem;
 	MenuItemImage* slowDownItem;
 	MenuItemImage* moveItem;
+	MenuItemImage* zoomInItem;
+	MenuItemImage* zoomOutItem;
 
 	CREATE_FUNC(Actionbar);
+private:
+	void createButtons();
 };

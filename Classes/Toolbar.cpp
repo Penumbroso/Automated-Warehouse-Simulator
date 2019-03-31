@@ -36,7 +36,7 @@ bool Toolbar::init()
 	buttons.push_back(clockItem);
 	buttons.push_back(pathItem);
 
-	int offset = 200;
+	int offset = 300;
 	for (int i = 0; i < buttons.size(); i++)
 	{
 		buttons[i]->setPosition(Vec2(15, visibleSize.height - 15 * i * 2 - offset));

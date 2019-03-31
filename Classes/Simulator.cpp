@@ -13,7 +13,6 @@ bool Simulator::init()
 	isRunning = false;
 	speed_factor = 1.0f;
 
-	// TODO: make the grid draggable.
 	// TODO: make grid zoomable.
 	grid = Grid::create();
 	stopwatch = Stopwatch::create();
@@ -46,6 +45,8 @@ void Simulator::setCallbacks()
 	actionbar->speedUpItem->setCallback(CC_CALLBACK_1(Simulator::menuSpeedUpCallback, this));
 	actionbar->slowDownItem->setCallback(CC_CALLBACK_1(Simulator::menuSlowDownCallback, this));
 	actionbar->moveItem->setCallback(CC_CALLBACK_1(Simulator::menuMoveGridCallback, this));
+	actionbar->zoomInItem->setCallback(CC_CALLBACK_0(Simulator::menuZoomCallback, this, 0.25));
+	actionbar->zoomOutItem->setCallback(CC_CALLBACK_0(Simulator::menuZoomCallback, this, -0.25));
 
 	for (const auto &p : grid->squares)
 	{
@@ -257,4 +258,10 @@ void Simulator::menuSlowDownCallback(cocos2d::Ref * pSender)
 void Simulator::menuMoveGridCallback(cocos2d::Ref * pSender)
 {
 	this->grid->enableDragAndDrop(true);
+}
+
+void Simulator::menuZoomCallback(float n)
+{
+	float scale = this->grid->getScale();
+	this->grid->setScale(scale + n);
 }

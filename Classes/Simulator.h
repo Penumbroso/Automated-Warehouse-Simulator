@@ -52,6 +52,7 @@ private:
 	void menuSpeedUpCallback(cocos2d::Ref* pSender);
 	void menuSlowDownCallback(cocos2d::Ref* pSender);
 	void menuMoveGridCallback(cocos2d::Ref* pSender);
+	void menuZoomCallback(float n);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

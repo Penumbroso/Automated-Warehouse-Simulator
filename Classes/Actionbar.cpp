@@ -6,6 +6,36 @@ bool Actionbar::init()
 
 	// TODO: create a second callback here that changes the icon after pressed the run button to the pause button.
 
+	this->createButtons();
+
+
+	auto menu = Menu::create();
+	menu->setPosition(Vec2::ZERO);
+
+
+	buttons.push_back(runItem);
+	buttons.push_back(resetItem);
+	buttons.push_back(exportItem);
+	buttons.push_back(speedUpItem);
+	buttons.push_back(slowDownItem);
+	buttons.push_back(moveItem);
+	buttons.push_back(zoomInItem);
+	buttons.push_back(zoomOutItem);
+
+	int offset = 30;
+	for (int i = 0; i < buttons.size(); i++)
+	{
+		buttons[i]->setPosition(Vec2(15, visibleSize.height - 15 * i * 2 - offset));
+		menu->addChild(buttons[i]);
+	}
+
+	this->addChild(menu, 1);
+
+	return true;
+}
+
+void Actionbar::createButtons()
+{
 	runItem = MenuItemImage::create(
 		"RunBtn.png",
 		"RunBtn_pressed.png");
@@ -30,26 +60,11 @@ bool Actionbar::init()
 		"Timer.png",
 		"Timer_pressed.png");
 
+	zoomInItem = MenuItemImage::create(
+		"Timer.png",
+		"Timer_pressed.png");
 
-	auto menu = Menu::create();
-	menu->setPosition(Vec2::ZERO);
-
-
-	buttons.push_back(runItem);
-	buttons.push_back(resetItem);
-	buttons.push_back(exportItem);
-	buttons.push_back(speedUpItem);
-	buttons.push_back(slowDownItem);
-	buttons.push_back(moveItem);
-
-	int offset = 30;
-	for (int i = 0; i < buttons.size(); i++)
-	{
-		buttons[i]->setPosition(Vec2(15, visibleSize.height - 15 * i * 2 - offset));
-		menu->addChild(buttons[i]);
-	}
-
-	this->addChild(menu, 1);
-
-	return true;
+	zoomOutItem = MenuItemImage::create(
+		"Timer.png",
+		"Timer_pressed.png");
 }
