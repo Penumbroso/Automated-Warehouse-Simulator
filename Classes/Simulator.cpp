@@ -42,11 +42,11 @@ void Simulator::setCallbacks()
 	actionbar->runItem->setCallback(CC_CALLBACK_1(Simulator::menuRunCallback, this));
 	actionbar->exportItem->setCallback(CC_CALLBACK_1(Simulator::menuExportCallback, this));
 	actionbar->resetItem->setCallback(CC_CALLBACK_1(Simulator::menuResetCallback, this));
-	actionbar->speedUpItem->setCallback(CC_CALLBACK_1(Simulator::menuSpeedUpCallback, this));
-	actionbar->slowDownItem->setCallback(CC_CALLBACK_1(Simulator::menuSlowDownCallback, this));
+	actionbar->speedUpItem->setCallback(CC_CALLBACK_0(Simulator::menuChangeSpeedCallback, this, 1/2.0));
+	actionbar->slowDownItem->setCallback(CC_CALLBACK_0(Simulator::menuChangeSpeedCallback, this, 2.0));
 	actionbar->moveItem->setCallback(CC_CALLBACK_1(Simulator::menuMoveGridCallback, this));
-	actionbar->zoomInItem->setCallback(CC_CALLBACK_0(Simulator::menuZoomCallback, this, 0.25));
-	actionbar->zoomOutItem->setCallback(CC_CALLBACK_0(Simulator::menuZoomCallback, this, -0.25));
+	actionbar->zoomInItem->setCallback(CC_CALLBACK_0(Simulator::menuZoomCallback, this, 1.10));
+	actionbar->zoomOutItem->setCallback(CC_CALLBACK_0(Simulator::menuZoomCallback, this, 1/1.10));
 
 	for (const auto &p : grid->squares)
 	{
@@ -241,17 +241,10 @@ void Simulator::menuExportCallback(cocos2d::Ref * pSender)
 	out.close();
 }
 
-void Simulator::menuSpeedUpCallback(cocos2d::Ref * pSender)
+void Simulator::menuChangeSpeedCallback(float multiplier)
 {
 	stop();
-	speed_factor /= 2;
-	start();
-}
-
-void Simulator::menuSlowDownCallback(cocos2d::Ref * pSender)
-{
-	stop();
-	speed_factor *= 2;
+	speed_factor *= multiplier;
 	start();
 }
 
@@ -260,8 +253,8 @@ void Simulator::menuMoveGridCallback(cocos2d::Ref * pSender)
 	this->grid->enableDragAndDrop(true);
 }
 
-void Simulator::menuZoomCallback(float n)
+void Simulator::menuZoomCallback(float multiplier)
 {
 	float scale = this->grid->getScale();
-	this->grid->setScale(scale + n);
+	this->grid->setScale(scale * multiplier);
 }

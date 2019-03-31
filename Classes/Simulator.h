@@ -49,10 +49,9 @@ private:
 	void menuResetCallback(cocos2d::Ref * pSender);
 	void gridSquareCallback(Point coord);
 	void menuExportCallback(cocos2d::Ref * pSender);
-	void menuSpeedUpCallback(cocos2d::Ref* pSender);
-	void menuSlowDownCallback(cocos2d::Ref* pSender);
+	void menuChangeSpeedCallback(float multiplier);
 	void menuMoveGridCallback(cocos2d::Ref* pSender);
-	void menuZoomCallback(float n);
+	void menuZoomCallback(float multiplier);
 };
 
 #endif // __HELLOWORLD_SCENE_H__
