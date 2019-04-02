@@ -13,7 +13,6 @@ bool Simulator::init()
 	isRunning = false;
 	speed_factor = 1.0f;
 
-	// TODO: make grid zoomable.
 	grid = Grid::create();
 	stopwatch = Stopwatch::create();
 	infobar = Infobar::create();
@@ -59,7 +58,6 @@ void Simulator::run(float dt)
 {
 	for (auto robot : robots) 
 	{
-		// Remove package from grid if there is a robot on top of it.
 		if (robot->isAtPackage())
 			grid->setState(Square::EMPTY, robot->package);
 
@@ -74,8 +72,8 @@ void Simulator::run(float dt)
 			robot->move(dt);
 
 			// TODO: solve problem of diagonal movement being faster than vertical and horizontal movement
-			auto moveTo = MoveTo::create(0.2f * speed_factor, grid->getPositionOf(robot->grid_coord));
-			robot->runAction(moveTo);
+			auto moveToNextSquare = MoveTo::create(0.2f * speed_factor, grid->getPositionOf(robot->grid_coord));
+			robot->runAction(moveToNextSquare);
 
 			if (robot->isAtDeliverty() && robot->isFull())
 				Util::addIfUnique<Point>(&packages_delivered, robot->package);
@@ -104,7 +102,6 @@ void Simulator::start()
 		robot->stopwatch->start();
 	}
 		
-	
 	this->robotController->robots = robots;
 	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.2f * speed_factor);
 	this->stopwatch->setSpeedFactor(speed_factor);
@@ -186,7 +183,6 @@ void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 void Simulator::gridSquareCallback(Point coord)
 {
 	Robot * robot = this->robotController->getRobotAt(coord);
-	grid->enableDragAndDrop(false);
 	switch (this->toolbar->selected)
 	{
 	case Toolbar::PACKAGE:
@@ -222,9 +218,6 @@ void Simulator::gridSquareCallback(Point coord)
 			this->infobar->time = &robot_stopwatch->text;
 		}
 		break;
-	case Toolbar::MOVE:
-		//grid->enableDragAndDrop(false);
-		break;
 	}
 
 }
@@ -250,7 +243,7 @@ void Simulator::menuChangeSpeedCallback(float multiplier)
 
 void Simulator::menuMoveGridCallback(cocos2d::Ref * pSender)
 {
-	this->grid->enableDragAndDrop(true);
+	this->grid->toggleDragAndDrop();
 }
 
 void Simulator::menuZoomCallback(float multiplier)

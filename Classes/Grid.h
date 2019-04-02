@@ -34,7 +34,7 @@ public:
 	vector<Point> available_packages;
 	vector<Point> static_collidables;
 
-	void enableDragAndDrop(boolean enabled);
+	void toggleDragAndDrop();
 	
 	CREATE_FUNC(Grid);
 

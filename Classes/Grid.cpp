@@ -72,9 +72,9 @@ void Grid::setState(Square::State state, Point point)
 
 }
 
-void Grid::enableDragAndDrop(boolean enabled)
+void Grid::toggleDragAndDrop()
 {
-	menu->setEnabled(!enabled);
+	menu->setEnabled(!menu->isEnabled());
 }
 
 void Grid::drawLines()

@@ -14,8 +14,7 @@ class Toolbar : public cocos2d::Layer
 			ERASE,
 			BLOCKADE,
 			CLOCK,
-			PATH,
-			MOVE
+			PATH
 		};
 
 		Tool selected = PACKAGE;
