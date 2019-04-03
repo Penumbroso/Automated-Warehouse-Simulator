@@ -9,7 +9,6 @@ class RobotController : public cocos2d::Node
 public:
 	virtual void onEnter();
 
-	AStar::Generator path_generator;
 	vector<Robot*> robots;
 	Grid* grid;
 
@@ -22,6 +21,7 @@ public:
 private:
 	vector<Point> findShortestPath(Point origin, vector<Point> destinations);
 	bool isCollisionImminent(Point next_position);
+	AStar::Generator path_generator;
 };
 
 

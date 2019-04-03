@@ -24,14 +24,14 @@ bool Simulator::init()
 	infobar->time = &stopwatch->text;
 	robotController->grid = grid;
 
-	this->addChild(grid);
-	this->addChild(stopwatch);
-	this->addChild(infobar);
-	this->addChild(toolbar);
-	this->addChild(actionbar);
-	this->addChild(robotController);
+	addChild(grid);
+	addChild(stopwatch);
+	addChild(infobar);
+	addChild(toolbar);
+	addChild(actionbar);
+	addChild(robotController);
 
-	this->setCallbacks();
+	setCallbacks();
 
     return true;
 }
@@ -89,12 +89,12 @@ void Simulator::run(float dt)
 	}
 
 	if (allRobotsAreParked() && allPackagesWereDelivered())
-		this->stop();
+		stop();
 }
 
 void Simulator::start()
 {
-	this->createRobots();
+	createRobots();
 
 	for (auto robot : robots)
 	{
@@ -102,18 +102,18 @@ void Simulator::start()
 		robot->stopwatch->start();
 	}
 		
-	this->robotController->robots = robots;
-	this->schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.2f * speed_factor);
-	this->stopwatch->setSpeedFactor(speed_factor);
-	this->stopwatch->start();
-	this->isRunning = true;
+	robotController->robots = robots;
+	schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.2f * speed_factor);
+	stopwatch->setSpeedFactor(speed_factor);
+	stopwatch->start();
+	isRunning = true;
 }
 
 void Simulator::stop()
 {
-	this->unschedule(CC_SCHEDULE_SELECTOR(Simulator::run));
-	this->stopwatch->stop();
-	this->isRunning = false;
+	unschedule(CC_SCHEDULE_SELECTOR(Simulator::run));
+	stopwatch->stop();
+	isRunning = false;
 }
 
 void Simulator::createRobots() {
@@ -130,7 +130,7 @@ void Simulator::createRobots() {
 		robot->start = start;
 		grid->addChild(robot);
 
-		this->robots.push_back(robot);
+		robots.push_back(robot);
 	}
 }
 
@@ -156,8 +156,8 @@ void Simulator::reset()
 	
 	grid->available_packages = grid->packages;
 
-	this->infobar->time = &this->stopwatch->text;
-	for (Robot* robot : this->robots)
+	infobar->time = &stopwatch->text;
+	for (auto robot : robots)
 		robot->removeFromParentAndCleanup(true);
 	
 	robots.clear();
@@ -167,7 +167,7 @@ void Simulator::reset()
 
 void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 {
-	this->actionbar->runItem->setNormalImage(Sprite::create("RunBtn_pressed.png"));
+	actionbar->runItem->setNormalImage(Sprite::create("RunBtn_pressed.png"));
 	if (isRunning) 
 		stop();
 	else
@@ -182,8 +182,8 @@ void Simulator::menuResetCallback(cocos2d::Ref * pSender)
 
 void Simulator::gridSquareCallback(Point coord)
 {
-	Robot * robot = this->robotController->getRobotAt(coord);
-	switch (this->toolbar->selected)
+	auto robot = robotController->getRobotAt(coord);
+	switch (toolbar->selected)
 	{
 	case Toolbar::PACKAGE:
 		grid->setState(Square::PACKAGE, coord);
@@ -215,7 +215,7 @@ void Simulator::gridSquareCallback(Point coord)
 		if (robot)
 		{
 			auto robot_stopwatch = robot->stopwatch;
-			this->infobar->time = &robot_stopwatch->text;
+			infobar->time = &robot_stopwatch->text;
 		}
 		break;
 	}
@@ -243,11 +243,11 @@ void Simulator::menuChangeSpeedCallback(float multiplier)
 
 void Simulator::menuMoveGridCallback(cocos2d::Ref * pSender)
 {
-	this->grid->toggleDragAndDrop();
+	grid->toggleDragAndDrop();
 }
 
 void Simulator::menuZoomCallback(float multiplier)
 {
-	float scale = this->grid->getScale();
-	this->grid->setScale(scale * multiplier);
+	float scale = grid->getScale();
+	grid->setScale(scale * multiplier);
 }

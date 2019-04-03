@@ -9,15 +9,15 @@ bool Grid::init()
 	
 	menu = Menu::create();
 	menu->setPosition(Vec2::ZERO);
-	this->addChild(menu);
+	addChild(menu);
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
 	number_of_lines = visibleSize.height / square_size + 1;
 	number_of_columns = visibleSize.width / square_size + 1;
 
-	this->createSquares();
-	this->drawLines();
+	createSquares();
+	drawLines();
 
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = CC_CALLBACK_2(Grid::onTouchBegan, this);
@@ -40,12 +40,12 @@ void Grid::setState(Square::State state, Point point)
 	switch (state)
 	{
 	case Square::BEGIN:
-		this->addSymbol("Plus.png", point);
+		addSymbol("Plus.png", point);
 		Util::addIfUnique<Point>(&starts, point);
 		break;
 
 	case Square::END:
-		this->addSymbol("Minus.png", point);
+		addSymbol("Minus.png", point);
 		Util::addIfUnique<Point>(&delivery_points, point);
 		break;
 
@@ -61,7 +61,7 @@ void Grid::setState(Square::State state, Point point)
 		break;
 
 	case Square::EMPTY:
-		this->removeSymbol(point);
+		removeSymbol(point);
 		square->setColor(Color3B::WHITE);
 		Util::removeIfContains(&starts, point);
 		Util::removeIfContains(&delivery_points, point);
@@ -100,18 +100,18 @@ void Grid::addSymbol(const std::string &filename, Point point)
 	Sprite* symbol = Sprite::create(filename);
 	symbol->setContentSize(Size(square_size - 10, square_size - 10));
 	symbol->setPosition(squares.at(point)->getPosition());
-	this->symbols[point] = symbol;
-	this->addChild(symbol);
+	symbols[point] = symbol;
+	addChild(symbol);
 }
 
 void Grid::removeSymbol(Point point)
 {
-	if (this->symbols.count(point) > 0) {
-		auto symbol = this->symbols.at(point);
+	if (symbols.count(point) > 0) {
+		auto symbol = symbols.at(point);
 		if(symbol)
 			symbol->removeFromParentAndCleanup(true);
 
-		this->symbols[point] = NULL;
+		symbols[point] = NULL;
 	}
 }
 
@@ -141,6 +141,6 @@ bool Grid::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event)
 
 void Grid::onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *event)
 {
-	this->setPosition(this->getPosition() + touch->getDelta());
+	setPosition(getPosition() + touch->getDelta());
 }
 

@@ -10,7 +10,6 @@ void RobotController::onEnter()
 	path_generator.setDiagonalMovement(true);
 }
 
-// Accordingly with the current state of the Robot, choose if the next destination is a package or a delivery
 void RobotController::definePathOf(Robot * robot)
 {
 	if (robot->state == Robot::EMPTY && !grid->available_packages.empty())
