@@ -52,6 +52,7 @@ private:
 	void menuChangeSpeedCallback(float multiplier);
 	void menuMoveGridCallback(cocos2d::Ref* pSender);
 	void menuZoomCallback(float multiplier);
+	bool onContactBegin(PhysicsContact& contact);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

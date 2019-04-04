@@ -6,10 +6,12 @@
 USING_NS_CC;
 
 bool Simulator::init()
-{
-    if ( !Scene::init() )
-        return false;
-    
+{    
+	if (!Scene::initWithPhysics())
+	{
+		return false;
+	}
+
 	isRunning = false;
 	speed_factor = 1.0f;
 
@@ -32,6 +34,10 @@ bool Simulator::init()
 	addChild(robotController);
 
 	setCallbacks();
+
+	auto contactListener = EventListenerPhysicsContact::create();
+	contactListener->onContactBegin = CC_CALLBACK_1(Simulator::onContactBegin, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
     return true;
 }
@@ -130,6 +136,10 @@ void Simulator::createRobots() {
 		robot->start = start;
 		grid->addChild(robot);
 
+		auto physicsBody = PhysicsBody::createBox(Size(30.0f, 30.0f), PhysicsMaterial(0.1f, 1.0f, 0.0f));
+		physicsBody->setGravityEnable(false);
+
+		robot->addComponent(physicsBody);
 		robots.push_back(robot);
 	}
 }
@@ -250,4 +260,10 @@ void Simulator::menuZoomCallback(float multiplier)
 {
 	float scale = grid->getScale();
 	grid->setScale(scale * multiplier);
+}
+
+bool Simulator::onContactBegin(PhysicsContact & contact)
+{
+	CCLOG("Collision");
+	return true;
 }
