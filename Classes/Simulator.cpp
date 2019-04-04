@@ -134,12 +134,15 @@ void Simulator::createRobots() {
 		robot->setContentSize(Size(grid->square_size, grid->square_size));
 		robot->grid_coord = start;
 		robot->start = start;
-		grid->addChild(robot);
 
 		auto physicsBody = PhysicsBody::createBox(Size(30.0f, 30.0f), PhysicsMaterial(0.1f, 1.0f, 0.0f));
 		physicsBody->setGravityEnable(false);
-
+		physicsBody->setDynamic(true);
+		physicsBody->setContactTestBitmask(true);
 		robot->addComponent(physicsBody);
+
+		grid->addChild(robot);
+
 		robots.push_back(robot);
 	}
 }
