@@ -14,6 +14,7 @@ public:
 
 	void definePathOf(Robot * robot);
 	void preventCollisionOf(Robot* robot);
+	void repath(Robot* r1, Robot* r2);
 	Robot* getRobotAt(Point grid_position);
 
 	CREATE_FUNC(RobotController);

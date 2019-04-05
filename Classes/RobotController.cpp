@@ -64,6 +64,31 @@ void RobotController::preventCollisionOf(Robot * robot)
 	}
 }
 
+void RobotController::repath(Robot * r1, Robot * r2)
+{
+	auto next_position = r1->path.back();
+
+	auto path = r2->path;
+
+	if (r1->isInThe(path))
+	{
+		grid->static_collidables.push_back(next_position);
+		r1->path = this->findShortestPath(r1->grid_coord, { r1->destination });
+		grid->static_collidables.pop_back();
+	}
+	else if (r2->path.empty())
+	{
+		grid->static_collidables.push_back(next_position);
+		r1->path = this->findShortestPath(r1->grid_coord, { r1->destination });
+		grid->static_collidables.pop_back();
+	}
+	else
+	{
+		r1->path.push_back(r1->grid_coord);
+	}
+
+}
+
 vector<Point> RobotController::findShortestPath(Point origin, vector<Point> destinations) {
 	vector<Point> shortest_path;
 	int min_size = std::numeric_limits<int>::max();

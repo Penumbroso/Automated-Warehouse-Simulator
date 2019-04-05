@@ -73,7 +73,7 @@ void Simulator::run(float dt)
 			auto pixel_position = grid->getPositionOf(robot->grid_coord);
 			robot->setPosition(pixel_position);
 
-			robotController->preventCollisionOf(robot);
+			//robotController->preventCollisionOf(robot);
 
 			robot->move(dt);
 
@@ -143,6 +143,7 @@ void Simulator::createRobots() {
 
 		grid->addChild(robot);
 
+		robots_bodies[physicsBody] = robot;
 		robots.push_back(robot);
 	}
 }
@@ -267,6 +268,12 @@ void Simulator::menuZoomCallback(float multiplier)
 
 bool Simulator::onContactBegin(PhysicsContact & contact)
 {
-	CCLOG("Collision");
+	auto bodyA = contact.getShapeA()->getBody();
+	auto bodyB = contact.getShapeB()->getBody();
+
+	auto r1 = robots_bodies[bodyA];
+	auto r2 = robots_bodies[bodyB];
+
+	robotController->repath(r1, r2);
 	return true;
 }
