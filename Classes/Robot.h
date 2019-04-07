@@ -26,6 +26,7 @@ public:
 	vector<Point> path;
 	vector<Point> complete_path;
 
+	// TODO: change point from grid point to screen points
 	Point grid_coord;
 	Point destination;
 	Point package;
@@ -41,6 +42,8 @@ public:
 	bool isFull();
 	bool isAtPackage();
 	bool isInThe(vector<Point> path);
+
+	// TODO: Create schedule to move the robot one its own
 
 	CREATE_FUNC(Robot);
 };

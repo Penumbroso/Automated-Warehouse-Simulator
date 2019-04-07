@@ -274,6 +274,8 @@ bool Simulator::onContactBegin(PhysicsContact & contact)
 	auto r1 = robots_bodies[bodyA];
 	auto r2 = robots_bodies[bodyB];
 
+	r1->stopAllActions();
+	r2->stopAllActions();
 	robotController->repath(r1, r2);
 	return true;
 }
