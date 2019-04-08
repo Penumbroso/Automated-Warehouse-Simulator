@@ -15,6 +15,26 @@ bool Robot::init()
 
 void Robot::move(float dt)
 {
+	//Vector<FiniteTimeAction*> movements;
+
+	//auto origin = this->getPosition();
+
+	//for (auto destination : path)
+	//{
+	//	//get the distance between the destination position and the node's position
+	//	double distance = sqrt(pow((destination.x - origin.x), 2.0) + pow((destination.y - origin.y), 2.0));
+
+	//	//calculate your new duration based on the distance
+	//	float moveDuration = 0.001*distance;
+
+	//	auto moveToNextSquare = MoveTo::create(moveDuration, destination);
+	//	movements.pushBack(moveToNextSquare);
+
+	//	origin = destination;
+	//}
+
+	//this->runAction(Sequence::create(movements));
+
 	if (!this->path.empty())
 	{
 		auto next_position = this->path.back();
