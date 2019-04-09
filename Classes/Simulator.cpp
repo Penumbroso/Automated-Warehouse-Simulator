@@ -64,30 +64,36 @@ void Simulator::run(float dt)
 {
 	for (auto robot : robots) 
 	{
-		if (robot->isAtPackage())
-			grid->setState(Square::EMPTY, robot->package);
-
-		if (!robot->path.empty())
+		if (robot->getPosition() == robot->screen_package)
 		{
-			robot->stopAllActions();
-			auto pixel_position = grid->getPositionOf(robot->grid_coord);
-			robot->setPosition(pixel_position);
-
-			//robotController->preventCollisionOf(robot);
-
-			robot->move(dt);
-
-			// TODO: solve problem of diagonal movement being faster than vertical and horizontal movement
-			auto moveToNextSquare = MoveTo::create(0.2f * speed_factor, grid->getPositionOf(robot->grid_coord));
-			robot->runAction(moveToNextSquare);
-
-			if (robot->isAtDeliverty() && robot->isFull())
-				Util::addIfUnique<Point>(&packages_delivered, robot->package);
-
-			robot->updateState();
+			CCLOG("Hey there");
+			grid->setState(Square::EMPTY, robot->grid_package);
 		}
+			
 
-		if (robot->path.empty())
+		//if (!robot->path.empty())
+		//{
+		//	robot->stopAllActions();
+		//	auto pixel_position = grid->getPositionOf(robot->grid_coord);
+		//	robot->setPosition(pixel_position);
+
+		//	//robotController->preventCollisionOf(robot);
+
+		//	robot->move(dt);
+
+		//	// TODO: solve problem of diagonal movement being faster than vertical and horizontal movement
+		//	auto moveToNextSquare = MoveTo::create(0.2f * speed_factor, grid->getPositionOf(robot->grid_coord));
+		//	robot->runAction(moveToNextSquare);
+
+		//	if (robot->isAtDeliverty() && robot->isFull())
+		//		Util::addIfUnique<Point>(&packages_delivered, robot->package);
+
+		//	robot->updateState();
+		//}
+		if (robot->getNumberOfRunningActions() == 0 && !robot->screen_path.empty())
+			robot->move(dt);
+		
+		if (robot->grid_path.empty())
 			robotController->definePathOf(robot);
 
 		if (allPackagesWereDelivered() && robot->isParked())
@@ -109,7 +115,7 @@ void Simulator::start()
 	}
 		
 	robotController->robots = robots;
-	schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.2f * speed_factor);
+	schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.001f * speed_factor);
 	stopwatch->setSpeedFactor(speed_factor);
 	stopwatch->start();
 	isRunning = true;
@@ -133,7 +139,7 @@ void Simulator::createRobots() {
 		robot->setColor(Color3B(150, 150, 150));
 		robot->setContentSize(Size(grid->square_size, grid->square_size));
 		robot->grid_coord = start;
-		robot->start = start;
+		robot->grid_start = start;
 
 		auto physicsBody = PhysicsBody::createBox(Size(30.0f, 30.0f), PhysicsMaterial(0.1f, 1.0f, 0.0f));
 		physicsBody->setGravityEnable(false);

@@ -23,15 +23,25 @@ public:
 
 	State state = EMPTY;
 	
-	vector<Point> path;
+	vector<Point> grid_path;
+	vector<Point> screen_path;
+
 	vector<Point> complete_path;
 
 	// TODO: change point from grid point to screen points
 	Point grid_coord;
-	Point destination;
-	Point package;
-	Point start;
-	Point delivery_point;
+
+	Point grid_destination;
+	Point screen_destination;
+
+	Point grid_package;
+	Point screen_package;
+
+	Point grid_start;
+	Point screen_start;
+
+	Point grid_delivery_point;
+	Point screen_delivery_point;
 
 	Stopwatch* stopwatch;
 
@@ -42,6 +52,8 @@ public:
 	bool isFull();
 	bool isAtPackage();
 	bool isInThe(vector<Point> path);
+
+	void test(cocos2d::Ref * pSender);
 
 	// TODO: Create schedule to move the robot one its own
 
