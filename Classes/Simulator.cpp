@@ -65,12 +65,8 @@ void Simulator::run(float dt)
 	for (auto robot : robots) 
 	{
 		if (robot->getPosition() == robot->screen_package)
-		{
-			CCLOG("Hey there");
 			grid->setState(Square::EMPTY, robot->grid_package);
-		}
-			
-
+		
 		//if (!robot->path.empty())
 		//{
 		//	robot->stopAllActions();

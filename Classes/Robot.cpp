@@ -18,7 +18,7 @@ void Robot::move(float dt)
 	Vector<FiniteTimeAction*> movements;
 
 	auto origin = this->getPosition();
-	//reverse(screen_path.begin(), screen_path.end());
+	reverse(screen_path.begin(), screen_path.end());
 	for (auto destination : screen_path)
 	{
 		//get the distance between the destination position and the node's position
@@ -33,29 +33,19 @@ void Robot::move(float dt)
 		origin = destination;
 	}
 
-	auto callbackJump = CallFunc::create([]() {
-		log("End");
-	});
+	auto callbackJump = CallFunc::create(CC_CALLBACK_0(Robot::test, this));
 
 	auto sequence_of_movements = Sequence::create(movements);
-	//auto movements_and_clear = Sequence::create(sequence_of_movements, callbackJump);
-	this->runAction(sequence_of_movements);
-
-	//if (!this->path.empty())
-	//{
-	//	auto next_position = this->path.back();
-	//	this->complete_path.push_back(next_position);
-	//	this->path.pop_back();
-	//	this->grid_coord = next_position;
-	//}
+	auto seq = Sequence::create(sequence_of_movements, callbackJump, nullptr);
+	this->runAction(seq);
 }
 
 void Robot::updateState()
 {
-	if (grid_coord == this->grid_package)
+	if (this->getPosition() == this->screen_package)
 		this->state = FULL;
 	
-	if (grid_coord == this->grid_delivery_point)
+	if (this->getPosition() == this->screen_delivery_point)
 		this->state = EMPTY;
 }
 
@@ -84,7 +74,11 @@ bool Robot::isInThe(vector<Point> path)
 	return Util::contains<Point>(&path, this->grid_coord);
 }
 
-void Robot::test(cocos2d::Ref * pSender)
+void Robot::test()
 {
+	log("Finished Action!");
+	this->grid_path.clear();
+	this->screen_path.clear();
+	updateState();
 }
 

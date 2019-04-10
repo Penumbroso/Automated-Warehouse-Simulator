@@ -28,7 +28,7 @@ public:
 
 	vector<Point> complete_path;
 
-	// TODO: change point from grid point to screen points
+
 	Point grid_coord;
 
 	Point grid_destination;
@@ -53,9 +53,7 @@ public:
 	bool isAtPackage();
 	bool isInThe(vector<Point> path);
 
-	void test(cocos2d::Ref * pSender);
-
-	// TODO: Create schedule to move the robot one its own
+	void test();
 
 	CREATE_FUNC(Robot);
 };
