@@ -19,8 +19,22 @@ void Robot::move(float dt)
 
 	auto origin = this->getPosition();
 	reverse(screen_path.begin(), screen_path.end());
+
+	CCLOG("ScreenPath");
+	for (auto p : screen_path)
+	{
+		CCLOG("x: %f, y: %f", p.x, p.y);
+	}
+
+	CCLOG("GridPath");
+	for (auto p : grid_path)
+	{
+		CCLOG("x: %f, y: %f", p.x, p.y);
+	}
+
 	for (auto destination : screen_path)
 	{
+		
 		//get the distance between the destination position and the node's position
 		double distance = sqrt(pow((destination.x - origin.x), 2.0) + pow((destination.y - origin.y), 2.0));
 
@@ -76,7 +90,7 @@ bool Robot::isInThe(vector<Point> path)
 
 void Robot::test()
 {
-	log("Finished Action!");
+	this->grid_coord = grid_path.at(0);
 	this->grid_path.clear();
 	this->screen_path.clear();
 	updateState();
