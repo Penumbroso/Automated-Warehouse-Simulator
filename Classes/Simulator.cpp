@@ -67,7 +67,7 @@ void Simulator::run(float dt)
 		if (robot->isAtPackage())
 			grid->setState(Square::EMPTY, robot->grid_package);
 			
-		if(robot->isAtDeliverty() && robot->isFull())
+		if(robot->isAtDeliverty())
 			Util::addIfUnique<Point>(&packages_delivered, robot->grid_package);
 			
 		if (robot->getNumberOfRunningActions() == 0 && !robot->screen_path.empty())

@@ -20,6 +20,8 @@ void Robot::move(float dt)
 	auto origin = this->getPosition();
 	reverse(screen_path.begin(), screen_path.end());
 
+	auto callbackUpdateGridPosition = CallFunc::create(CC_CALLBACK_0(Robot::updateGridPosition, this));
+
 	for (auto destination : screen_path)
 	{
 		double distance = sqrt(pow((destination.x - origin.x), 2.0) + pow((destination.y - origin.y), 2.0));
@@ -28,7 +30,7 @@ void Robot::move(float dt)
 
 		auto moveToNextSquare = MoveTo::create(moveDuration, destination);
 		movements.pushBack(moveToNextSquare);
-
+		movements.pushBack(callbackUpdateGridPosition);
 		origin = destination;
 	}
 
@@ -73,9 +75,15 @@ bool Robot::isInThe(vector<Point> path)
 	return Util::contains<Point>(&path, this->grid_coord);
 }
 
+void Robot::updateGridPosition()
+{
+	
+	grid_coord = grid_path.back();
+	grid_path.pop_back();
+}
+
 void Robot::finishedMovement()
 {
-	grid_coord = grid_path.at(0);
 	grid_path.clear();
 	screen_path.clear();
 	updateState();
