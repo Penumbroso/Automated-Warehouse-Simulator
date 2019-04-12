@@ -51,7 +51,7 @@ public:
 	bool isAtPackage();
 	bool isInThe(vector<Point> path);
 
-	void test();
+	void finishedMovement();
 
 	CREATE_FUNC(Robot);
 };

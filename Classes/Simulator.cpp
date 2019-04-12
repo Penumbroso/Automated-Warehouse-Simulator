@@ -64,28 +64,12 @@ void Simulator::run(float dt)
 {
 	for (auto robot : robots) 
 	{
-		if (robot->getPosition() == robot->screen_package)
+		if (robot->isAtPackage())
 			grid->setState(Square::EMPTY, robot->grid_package);
-		
-		//if (!robot->path.empty())
-		//{
-		//	robot->stopAllActions();
-		//	auto pixel_position = grid->getPositionOf(robot->grid_coord);
-		//	robot->setPosition(pixel_position);
-
-		//	//robotController->preventCollisionOf(robot);
-
-		//	robot->move(dt);
-
-		//	// TODO: solve problem of diagonal movement being faster than vertical and horizontal movement
-		//	auto moveToNextSquare = MoveTo::create(0.2f * speed_factor, grid->getPositionOf(robot->grid_coord));
-		//	robot->runAction(moveToNextSquare);
-
-		//	if (robot->isAtDeliverty() && robot->isFull())
-		//		Util::addIfUnique<Point>(&packages_delivered, robot->package);
-
-		//	robot->updateState();
-		//}
+			
+		if(robot->isAtDeliverty() && robot->isFull())
+			Util::addIfUnique<Point>(&packages_delivered, robot->grid_package);
+			
 		if (robot->getNumberOfRunningActions() == 0 && !robot->screen_path.empty())
 			robot->move(dt);
 		
@@ -270,14 +254,20 @@ void Simulator::menuZoomCallback(float multiplier)
 
 bool Simulator::onContactBegin(PhysicsContact & contact)
 {
+	this->stopAllActions();
 	auto bodyA = contact.getShapeA()->getBody();
 	auto bodyB = contact.getShapeB()->getBody();
 
 	auto r1 = robots_bodies[bodyA];
 	auto r2 = robots_bodies[bodyB];
 
+	r1->finishedMovement();
+	r2->finishedMovement();
+
 	r1->stopAllActions();
 	r2->stopAllActions();
-	robotController->repath(r1, r2);
+
+
+	//robotController->repath(r1, r2);
 	return true;
 }

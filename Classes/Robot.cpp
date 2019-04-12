@@ -20,25 +20,10 @@ void Robot::move(float dt)
 	auto origin = this->getPosition();
 	reverse(screen_path.begin(), screen_path.end());
 
-	CCLOG("ScreenPath");
-	for (auto p : screen_path)
-	{
-		CCLOG("x: %f, y: %f", p.x, p.y);
-	}
-
-	CCLOG("GridPath");
-	for (auto p : grid_path)
-	{
-		CCLOG("x: %f, y: %f", p.x, p.y);
-	}
-
 	for (auto destination : screen_path)
 	{
-		
-		//get the distance between the destination position and the node's position
 		double distance = sqrt(pow((destination.x - origin.x), 2.0) + pow((destination.y - origin.y), 2.0));
 
-		//calculate your new duration based on the distance
 		float moveDuration = 0.01*distance;
 
 		auto moveToNextSquare = MoveTo::create(moveDuration, destination);
@@ -47,20 +32,20 @@ void Robot::move(float dt)
 		origin = destination;
 	}
 
-	auto callbackJump = CallFunc::create(CC_CALLBACK_0(Robot::test, this));
+	auto callbackFinishedMovement = CallFunc::create(CC_CALLBACK_0(Robot::finishedMovement, this));
 
 	auto sequence_of_movements = Sequence::create(movements);
-	auto seq = Sequence::create(sequence_of_movements, callbackJump, nullptr);
-	this->runAction(seq);
+	auto seq = Sequence::create(sequence_of_movements, callbackFinishedMovement, nullptr);
+	runAction(seq);
 }
 
 void Robot::updateState()
 {
-	if (this->getPosition() == this->screen_package)
-		this->state = FULL;
+	if (getPosition() == screen_package)
+		state = FULL;
 	
-	if (this->getPosition() == this->screen_delivery_point)
-		this->state = EMPTY;
+	if (getPosition() == screen_delivery_point)
+		state = EMPTY;
 }
 
 bool Robot::isParked()
@@ -70,7 +55,7 @@ bool Robot::isParked()
 
 bool Robot::isAtDeliverty()
 {
-	return grid_coord == grid_delivery_point;
+	return getPosition() == screen_delivery_point;
 }
 
 bool Robot::isFull()
@@ -80,7 +65,7 @@ bool Robot::isFull()
 
 bool Robot::isAtPackage()
 {	
-	return grid_coord == grid_package;
+	return getPosition() == screen_package;
 }
 
 bool Robot::isInThe(vector<Point> path)
@@ -88,11 +73,11 @@ bool Robot::isInThe(vector<Point> path)
 	return Util::contains<Point>(&path, this->grid_coord);
 }
 
-void Robot::test()
+void Robot::finishedMovement()
 {
-	this->grid_coord = grid_path.at(0);
-	this->grid_path.clear();
-	this->screen_path.clear();
+	grid_coord = grid_path.at(0);
+	grid_path.clear();
+	screen_path.clear();
 	updateState();
 }
 
