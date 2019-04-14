@@ -39,6 +39,7 @@ private:
 	void run(float dt);
 	void start();
 	void stop();
+	void proceed();
 	void reset();
 	void createRobots();
 	bool allPackagesWereDelivered();

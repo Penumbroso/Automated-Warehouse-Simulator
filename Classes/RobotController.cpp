@@ -56,19 +56,19 @@ void RobotController::preventCollisionOf(Robot * robot)
 
 	if (isCollisionImminent(next_position))
 	{
-		auto collision_robot = this->getRobotAt(next_position);
+		auto collision_robot = getRobotAt(next_position);
 		auto path = collision_robot->grid_path;
 		
 		if (robot->isInThe(path))
 		{
 			grid->static_collidables.push_back(next_position);
-			robot->grid_path = this->findShortestPath(robot->grid_coord, { robot->grid_destination });
+			robot->grid_path = findShortestPath(robot->grid_coord, { robot->grid_destination });
 			grid->static_collidables.pop_back();
 		}
 		else if (collision_robot->grid_path.empty()) 
 		{
 			grid->static_collidables.push_back(next_position);
-			robot->grid_path = this->findShortestPath(robot->grid_coord, { robot->grid_destination });
+			robot->grid_path = findShortestPath(robot->grid_coord, { robot->grid_destination });
 			grid->static_collidables.pop_back();
 		}
 		else
@@ -80,11 +80,14 @@ void RobotController::preventCollisionOf(Robot * robot)
 
 void RobotController::repath(Robot * r1, Robot * r2)
 {
-	auto next_position = r1->grid_path.back();
+	grid->static_collidables.push_back(r2->grid_coord);
+	r1->grid_path = findShortestPath(r1->grid_coord, { r1->grid_destination });
+	r1->screen_path = convertGridPathToScreenPath(r1->grid_path);
+	grid->static_collidables.pop_back();
 
-	auto path = r2->grid_path;
+	r2->grid_path.push_back(r2->grid_coord);
+	r2->screen_path = convertGridPathToScreenPath(r2->grid_path);
 
-	r1->grid_path.push_back(r1->grid_coord);
 
 	//if (r1->isInThe(path))
 	//{

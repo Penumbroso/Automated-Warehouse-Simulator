@@ -64,9 +64,11 @@ void Simulator::run(float dt)
 {
 	for (auto robot : robots) 
 	{
+		// TODO: Remove package from static_collidables and recalculate every robot path
 		if (robot->isAtPackage())
 			grid->setState(Square::EMPTY, robot->grid_package);
-			
+		
+		// TODO: create event that is called when robot is at an package or delivery
 		if(robot->isAtDeliverty())
 			Util::addIfUnique<Point>(&packages_delivered, robot->grid_package);
 			
@@ -105,7 +107,21 @@ void Simulator::stop()
 {
 	unschedule(CC_SCHEDULE_SELECTOR(Simulator::run));
 	stopwatch->stop();
+	for (auto robot : robots)
+		robot->stopwatch->start();
+
 	isRunning = false;
+}
+
+void Simulator::proceed()
+{
+	stopwatch->start();
+	for (auto robot : robots)
+		robot->stopwatch->start();
+
+
+	schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.001f * speed_factor);
+	isRunning = true;
 }
 
 void Simulator::createRobots() {
@@ -254,20 +270,22 @@ void Simulator::menuZoomCallback(float multiplier)
 
 bool Simulator::onContactBegin(PhysicsContact & contact)
 {
-	this->stopAllActions();
+	CCLOG("Collision");
+	this->stop();
 	auto bodyA = contact.getShapeA()->getBody();
 	auto bodyB = contact.getShapeB()->getBody();
 
 	auto r1 = robots_bodies[bodyA];
 	auto r2 = robots_bodies[bodyB];
 
-	r1->finishedMovement();
-	r2->finishedMovement();
+	r1->pause();
+	r2->pause();
+	//r1->stopAllActions();
+	//r2->stopAllActions();
 
-	r1->stopAllActions();
-	r2->stopAllActions();
+	robotController->repath(r1, r2);
 
+	this->resume();
 
-	//robotController->repath(r1, r2);
 	return true;
 }
