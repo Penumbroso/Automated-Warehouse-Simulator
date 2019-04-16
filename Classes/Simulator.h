@@ -57,6 +57,7 @@ private:
 	bool onContactBegin(PhysicsContact& contact);
 
 	void robotIsAtDelivery(EventCustom* event);
+	void robotIsAtPackage(EventCustom* event);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

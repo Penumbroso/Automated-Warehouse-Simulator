@@ -90,6 +90,12 @@ void Robot::finishedMovement()
 		event.setUserData(this);
 		_eventDispatcher->dispatchEvent(&event);
 	}
+	else if (this->isAtPackage())
+	{
+		EventCustom event("robot_at_package");
+		event.setUserData(this);
+		_eventDispatcher->dispatchEvent(&event);
+	}
 
 
 	grid_path.clear();
