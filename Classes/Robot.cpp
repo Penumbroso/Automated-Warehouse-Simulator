@@ -84,6 +84,14 @@ void Robot::updateGridPosition()
 
 void Robot::finishedMovement()
 {
+	if (this->isAtDeliverty()) 
+	{
+		EventCustom event("robot_at_delivery");
+		event.setUserData(this);
+		_eventDispatcher->dispatchEvent(&event);
+	}
+
+
 	grid_path.clear();
 	screen_path.clear();
 	updateState();

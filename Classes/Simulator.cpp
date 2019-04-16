@@ -39,6 +39,9 @@ bool Simulator::init()
 	contactListener->onContactBegin = CC_CALLBACK_1(Simulator::onContactBegin, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
+	auto _listener = EventListenerCustom::create("robot_at_delivery", CC_CALLBACK_1(Simulator::robotIsAtDelivery, this));
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_listener, this);
+
     return true;
 }
 
@@ -65,12 +68,9 @@ void Simulator::run(float dt)
 	for (auto robot : robots) 
 	{
 		// TODO: Remove package from static_collidables and recalculate every robot path
+		// TODO: Create event to when the robot is at package location
 		if (robot->isAtPackage())
 			grid->setState(Square::EMPTY, robot->grid_package);
-		
-		// TODO: create event that is called when robot is at an package or delivery
-		if(robot->isAtDeliverty())
-			Util::addIfUnique<Point>(&packages_delivered, robot->grid_package);
 			
 		if (robot->getNumberOfRunningActions() == 0 && !robot->screen_path.empty())
 			robot->move(dt);
@@ -288,4 +288,10 @@ bool Simulator::onContactBegin(PhysicsContact & contact)
 	this->resume();
 
 	return true;
+}
+
+void Simulator::robotIsAtDelivery(EventCustom* event)
+{
+	Robot* robot = static_cast<Robot*>(event->getUserData());
+	Util::addIfUnique<Point>(&packages_delivered, robot->grid_package);
 }
