@@ -37,8 +37,13 @@ void Robot::move(float dt)
 	auto callbackFinishedMovement = CallFunc::create(CC_CALLBACK_0(Robot::finishedMovement, this));
 
 	auto sequence_of_movements = Sequence::create(movements);
-	auto seq = Sequence::create(sequence_of_movements, callbackFinishedMovement, nullptr);
-	runAction(seq);
+	this->movement = Sequence::create(sequence_of_movements, callbackFinishedMovement, nullptr);
+	runAction(movement);
+}
+
+void Robot::stop()
+{
+	this->stopAction(this->movement);
 }
 
 void Robot::updateState()

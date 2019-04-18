@@ -276,14 +276,16 @@ bool Simulator::onContactBegin(PhysicsContact & contact)
 	auto r1 = robots_bodies[bodyA];
 	auto r2 = robots_bodies[bodyB];
 
-	r1->pause();
-	r2->pause();
+	r1->stop();
+	r2->stop();
 	//r1->stopAllActions();
 	//r2->stopAllActions();
 
 	robotController->repath(r1, r2);
 
-	this->resume();
+	this->proceed();
+	r1->move(1.0);
+	r2->move(1.0);
 
 	return true;
 }

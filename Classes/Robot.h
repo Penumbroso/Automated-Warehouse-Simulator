@@ -22,6 +22,8 @@ public:
 	};
 
 	State state = EMPTY;
+
+	Sequence* movement;
 	
 	vector<Point> grid_path;
 	vector<Point> screen_path;
@@ -44,6 +46,7 @@ public:
 	Stopwatch* stopwatch;
 
 	void move(float dt);
+	void stop();
 	void updateState();
 	bool isParked();
 	bool isAtDeliverty();
