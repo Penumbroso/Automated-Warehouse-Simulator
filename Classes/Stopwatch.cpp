@@ -5,6 +5,7 @@ USING_NS_CC;
 bool Stopwatch::init()
 {
 	Node::init();
+	isCounting = false;
 	this->speed_factor = 1.0f;
 	this->reset();
 
@@ -14,11 +15,13 @@ bool Stopwatch::init()
 void Stopwatch::start()
 {
 	this->schedule(CC_SCHEDULE_SELECTOR(Stopwatch::count), 0.001f * speed_factor);
+	isCounting = true;
 }
 
 void Stopwatch::stop()
 {
 	this->unschedule(CC_SCHEDULE_SELECTOR(Stopwatch::count));
+	isCounting = false;
 }
 
 int Stopwatch::getMinutes()

@@ -73,9 +73,9 @@ void Simulator::run(float dt)
 		if (robot->grid_path.empty())
 			robotController->definePathOf(robot);
 
-		// TODO: this condition is incorrect, it should be when the robot is parked and when there are no more available packages?
-		if (allPackagesWereDelivered() && robot->isParked())
-			robot->stopwatch->stop();
+		//// TODO: this condition is incorrect, it should be when the robot is parked and when there are no more available packages?
+		//if (allPackagesWereDelivered() && robot->isParked())
+		//	robot->stopwatch->stop();
 	}
 
 	if (allRobotsAreParked() && allPackagesWereDelivered())

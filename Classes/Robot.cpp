@@ -60,7 +60,10 @@ void Robot::updateState()
 
 bool Robot::isParked()
 {
-	return grid_coord == grid_start;
+	if (grid_coord == grid_start && getNumberOfRunningActions() == 0)
+		return true;
+	else
+		return false;
 }
 
 bool Robot::isAtDeliverty()
@@ -86,7 +89,16 @@ bool Robot::isInThe(vector<Point> path)
 void Robot::update(float dt)
 {
 	if (getNumberOfRunningActions() == 0 && !screen_path.empty())
+	{
 		this->move();
+		if (!stopwatch->isCounting)
+			stopwatch->start();
+	}
+
+	if (isParked() && stopwatch->isCounting)
+	{
+		stopwatch->stop();
+	}
 }
 
 void Robot::updateGridPosition()
@@ -110,6 +122,7 @@ void Robot::finishedMovement()
 		event.setUserData(this);
 		_eventDispatcher->dispatchEvent(&event);
 	}
+	// TODO: create event to when robot parks
 
 
 	grid_path.clear();
