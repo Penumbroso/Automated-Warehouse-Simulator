@@ -70,12 +70,10 @@ void Simulator::run(float dt)
 {
 	for (auto robot : robots) 
 	{
-		if (robot->getNumberOfRunningActions() == 0 && !robot->screen_path.empty())
-			robot->move(dt);
-		
 		if (robot->grid_path.empty())
 			robotController->definePathOf(robot);
 
+		// TODO: this condition is incorrect, it should be when the robot is parked and when there are no more available packages?
 		if (allPackagesWereDelivered() && robot->isParked())
 			robot->stopwatch->stop();
 	}
@@ -269,25 +267,25 @@ void Simulator::menuZoomCallback(float multiplier)
 bool Simulator::onContactBegin(PhysicsContact & contact)
 {
 	CCLOG("Collision");
-	this->stop();
+	//this->stop();
 	auto bodyA = contact.getShapeA()->getBody();
 	auto bodyB = contact.getShapeB()->getBody();
 
 	auto r1 = robots_bodies[bodyA];
 	auto r2 = robots_bodies[bodyB];
 
-	r1->stop();
-	r2->stop();
+	//r1->stop();
+	//r2->stop();
 	//r1->stopAllActions();
 	//r2->stopAllActions();
 
-	robotController->repath(r1, r2);
+	//robotController->repath(r1, r2);
 
-	this->proceed();
-	r1->move(1.0);
-	r2->move(1.0);
+	//this->proceed();
+	//r1->move(1.0);
+	//r2->move(1.0);
 
-	return true;
+	return false;
 }
 
 void Simulator::robotIsAtDelivery(EventCustom* event)

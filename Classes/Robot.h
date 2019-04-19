@@ -45,7 +45,7 @@ public:
 
 	Stopwatch* stopwatch;
 
-	void move(float dt);
+	void move();
 	void stop();
 	void updateState();
 	bool isParked();
@@ -53,7 +53,7 @@ public:
 	bool isFull();
 	bool isAtPackage();
 	bool isInThe(vector<Point> path);
-
+	void update(float dt);
 	void updateGridPosition();
 	void finishedMovement();
 

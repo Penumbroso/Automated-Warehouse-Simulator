@@ -10,10 +10,12 @@ bool Robot::init()
 	
 	stopwatch = Stopwatch::create();
 	this->addChild(stopwatch);
+
+	this->scheduleUpdate();
 	return true;
 }
 
-void Robot::move(float dt)
+void Robot::move()
 {
 	Vector<FiniteTimeAction*> movements;
 
@@ -44,6 +46,7 @@ void Robot::move(float dt)
 void Robot::stop()
 {
 	this->stopAction(this->movement);
+	this->unscheduleUpdate();
 }
 
 void Robot::updateState()
@@ -78,6 +81,12 @@ bool Robot::isAtPackage()
 bool Robot::isInThe(vector<Point> path)
 {
 	return Util::contains<Point>(&path, this->grid_coord);
+}
+
+void Robot::update(float dt)
+{
+	if (getNumberOfRunningActions() == 0 && !screen_path.empty())
+		this->move();
 }
 
 void Robot::updateGridPosition()
