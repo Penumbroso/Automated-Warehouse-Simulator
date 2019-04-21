@@ -94,11 +94,6 @@ void Robot::update(float dt)
 		if (!stopwatch->isCounting)
 			stopwatch->start();
 	}
-
-	if (isParked() && stopwatch->isCounting)
-	{
-		stopwatch->stop();
-	}
 }
 
 void Robot::updateGridPosition()
@@ -122,7 +117,12 @@ void Robot::finishedMovement()
 		event.setUserData(this);
 		_eventDispatcher->dispatchEvent(&event);
 	}
-	// TODO: create event to when robot parks
+	else
+	{
+		EventCustom event("robot_is_parked");
+		event.setUserData(this);
+		_eventDispatcher->dispatchEvent(&event);
+	}
 
 
 	grid_path.clear();

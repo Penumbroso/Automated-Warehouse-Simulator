@@ -45,6 +45,9 @@ bool Simulator::init()
 	auto robotAtPackageListener = EventListenerCustom::create("robot_at_package", CC_CALLBACK_1(Simulator::robotIsAtPackage, this));
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(robotAtPackageListener, this);
 
+	auto robotIsParkedListener = EventListenerCustom::create("robot_is_parked", CC_CALLBACK_1(Simulator::robotIsParked, this));
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(robotIsParkedListener, this);
+
     return true;
 }
 
@@ -72,10 +75,6 @@ void Simulator::run(float dt)
 	{
 		if (robot->grid_path.empty())
 			robotController->definePathOf(robot);
-
-		//// TODO: this condition is incorrect, it should be when the robot is parked and when there are no more available packages?
-		//if (allPackagesWereDelivered() && robot->isParked())
-		//	robot->stopwatch->stop();
 	}
 
 	if (allRobotsAreParked() && allPackagesWereDelivered())
@@ -299,4 +298,11 @@ void Simulator::robotIsAtPackage(EventCustom* event)
 	// TODO: Remove package from static_collidables and recalculate every robot path
 	Robot* robot = static_cast<Robot*>(event->getUserData());
 	grid->setState(Square::EMPTY, robot->grid_package);
+}
+
+void Simulator::robotIsParked(EventCustom* event)
+{
+	CCLOG("Robot is parked");
+	Robot* robot = static_cast<Robot*>(event->getUserData());
+	robot->stopwatch->stop();
 }

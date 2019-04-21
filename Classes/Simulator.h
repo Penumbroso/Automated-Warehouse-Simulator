@@ -58,6 +58,7 @@ private:
 
 	void robotIsAtDelivery(EventCustom* event);
 	void robotIsAtPackage(EventCustom* event);
+	void robotIsParked(EventCustom* event);
 };
 
 #endif // __HELLOWORLD_SCENE_H__
