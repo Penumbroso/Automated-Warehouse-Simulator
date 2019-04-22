@@ -53,7 +53,6 @@ public:
 	bool isFull();
 	bool isAtPackage();
 	bool isInThe(vector<Point> path);
-	void update(float dt);
 	void updateGridPosition();
 	void finishedMovement();
 

@@ -11,12 +11,12 @@ bool Robot::init()
 	stopwatch = Stopwatch::create();
 	this->addChild(stopwatch);
 
-	this->scheduleUpdate();
 	return true;
 }
 
 void Robot::move()
 {
+	if (screen_path.empty()) return;
 	Vector<FiniteTimeAction*> movements;
 
 	auto origin = this->getPosition();
@@ -60,10 +60,7 @@ void Robot::updateState()
 
 bool Robot::isParked()
 {
-	if (grid_coord == grid_start && getNumberOfRunningActions() == 0)
-		return true;
-	else
-		return false;
+	return grid_coord == grid_start;
 }
 
 bool Robot::isAtDeliverty()
@@ -86,19 +83,8 @@ bool Robot::isInThe(vector<Point> path)
 	return Util::contains<Point>(&path, this->grid_coord);
 }
 
-void Robot::update(float dt)
-{
-	if (getNumberOfRunningActions() == 0 && !screen_path.empty())
-	{
-		this->move();
-		if (!stopwatch->isCounting)
-			stopwatch->start();
-	}
-}
-
 void Robot::updateGridPosition()
 {
-	
 	grid_coord = grid_path.back();
 	grid_path.pop_back();
 }
@@ -124,9 +110,16 @@ void Robot::finishedMovement()
 		_eventDispatcher->dispatchEvent(&event);
 	}
 
-
 	grid_path.clear();
 	screen_path.clear();
 	updateState();
+
+	if (!this->isParked())
+	{
+		EventCustom event("robot_completed_movement");
+		event.setUserData(this);
+		_eventDispatcher->dispatchEvent(&event);
+	}
+
 }
 

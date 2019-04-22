@@ -8,6 +8,9 @@ void RobotController::onEnter()
 	path_generator.setWorldSize({ grid->number_of_columns, grid->number_of_lines });
 	path_generator.setHeuristic(AStar::Heuristic::manhattan);
 	path_generator.setDiagonalMovement(true);
+
+	auto robotCompletedMovementListener = EventListenerCustom::create("robot_completed_movement", CC_CALLBACK_1(RobotController::robotCompletedMovement, this));
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(robotCompletedMovementListener, this);
 }
 
 void RobotController::definePathOf(Robot * robot)
@@ -154,4 +157,14 @@ Robot * RobotController::getRobotAt(Point grid_position)
 			return robot;
 	}
 	return nullptr;
+}
+
+void RobotController::robotCompletedMovement(EventCustom* event)
+{
+	CCLOG("Robot completed movement");
+	Robot* robot = static_cast<Robot*>(event->getUserData());
+	this->definePathOf(robot);
+	robot->move();
+	
+
 }

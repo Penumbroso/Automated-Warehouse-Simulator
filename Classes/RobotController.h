@@ -17,6 +17,8 @@ public:
 	void repath(Robot* r1, Robot* r2);
 	Robot* getRobotAt(Point grid_position);
 
+	void robotCompletedMovement(EventCustom* event);
+
 	CREATE_FUNC(RobotController);
 
 private:

@@ -71,12 +71,6 @@ void Simulator::setCallbacks()
 
 void Simulator::run(float dt) 
 {
-	for (auto robot : robots) 
-	{
-		if (robot->grid_path.empty())
-			robotController->definePathOf(robot);
-	}
-
 	if (allRobotsAreParked() && allPackagesWereDelivered())
 		stop();
 }
@@ -89,6 +83,8 @@ void Simulator::start()
 	{
 		robot->stopwatch->setSpeedFactor(speed_factor);
 		robot->stopwatch->start();
+		robotController->definePathOf(robot);
+		robot->move();
 	}
 		
 	robotController->robots = robots;
@@ -302,7 +298,6 @@ void Simulator::robotIsAtPackage(EventCustom* event)
 
 void Simulator::robotIsParked(EventCustom* event)
 {
-	CCLOG("Robot is parked");
 	Robot* robot = static_cast<Robot*>(event->getUserData());
 	robot->stopwatch->stop();
 }
