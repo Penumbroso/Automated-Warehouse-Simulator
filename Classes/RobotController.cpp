@@ -161,7 +161,6 @@ Robot * RobotController::getRobotAt(Point grid_position)
 
 void RobotController::robotCompletedMovement(EventCustom* event)
 {
-	CCLOG("Robot completed movement");
 	Robot* robot = static_cast<Robot*>(event->getUserData());
 	this->definePathOf(robot);
 	robot->move();

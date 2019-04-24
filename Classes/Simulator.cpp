@@ -69,12 +69,6 @@ void Simulator::setCallbacks()
 	}
 }
 
-void Simulator::run(float dt) 
-{
-	if (allRobotsAreParked() && allPackagesWereDelivered())
-		stop();
-}
-
 void Simulator::start()
 {
 	createRobots();
@@ -88,7 +82,6 @@ void Simulator::start()
 	}
 		
 	robotController->robots = robots;
-	schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.001f * speed_factor);
 	stopwatch->setSpeedFactor(speed_factor);
 	stopwatch->start();
 	isRunning = true;
@@ -96,7 +89,6 @@ void Simulator::start()
 
 void Simulator::stop()
 {
-	unschedule(CC_SCHEDULE_SELECTOR(Simulator::run));
 	stopwatch->stop();
 	for (auto robot : robots)
 		robot->stopwatch->start();
@@ -110,8 +102,6 @@ void Simulator::proceed()
 	for (auto robot : robots)
 		robot->stopwatch->start();
 
-
-	schedule(CC_SCHEDULE_SELECTOR(Simulator::run), 0.001f * speed_factor);
 	isRunning = true;
 }
 
@@ -298,6 +288,12 @@ void Simulator::robotIsAtPackage(EventCustom* event)
 
 void Simulator::robotIsParked(EventCustom* event)
 {
+	// TODO: register time of the robot
+	// TOOD: remove robots individual stopwatches, only needs one
 	Robot* robot = static_cast<Robot*>(event->getUserData());
 	robot->stopwatch->stop();
+
+	// Checking to see if the simulation is done.
+	if (allRobotsAreParked() && allPackagesWereDelivered())
+		stop();
 }

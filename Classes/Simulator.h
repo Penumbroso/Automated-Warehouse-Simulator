@@ -36,7 +36,6 @@ private:
 
 	float speed_factor;
 
-	void run(float dt);
 	void start();
 	void stop();
 	void proceed();
@@ -56,6 +55,7 @@ private:
 	void menuZoomCallback(float multiplier);
 	bool onContactBegin(PhysicsContact& contact);
 
+	// Event functions
 	void robotIsAtDelivery(EventCustom* event);
 	void robotIsAtPackage(EventCustom* event);
 	void robotIsParked(EventCustom* event);
