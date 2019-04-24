@@ -75,8 +75,6 @@ void Simulator::start()
 
 	for (auto robot : robots)
 	{
-		robot->stopwatch->setSpeedFactor(speed_factor);
-		robot->stopwatch->start();
 		robotController->definePathOf(robot);
 		robot->move();
 	}
@@ -90,18 +88,12 @@ void Simulator::start()
 void Simulator::stop()
 {
 	stopwatch->stop();
-	for (auto robot : robots)
-		robot->stopwatch->start();
-
 	isRunning = false;
 }
 
 void Simulator::proceed()
 {
 	stopwatch->start();
-	for (auto robot : robots)
-		robot->stopwatch->start();
-
 	isRunning = true;
 }
 
@@ -211,8 +203,9 @@ void Simulator::gridSquareCallback(Point coord)
 	case Toolbar::CLOCK:
 		if (robot)
 		{
-			auto robot_stopwatch = robot->stopwatch;
-			infobar->time = &robot_stopwatch->text;
+			auto robot_time = robot_times[robot];
+			std::string time = robot_time.getCString();
+			infobar->time = &time;
 		}
 		break;
 	}
@@ -224,7 +217,7 @@ void Simulator::menuExportCallback(cocos2d::Ref * pSender)
 	std::ofstream out("times.txt");
 	for (auto robot : robots)
 	{
-		out << robot->stopwatch->toString();
+		out << robot_times[robot].getCString();
 		out << std::endl;
 	}
 
@@ -291,7 +284,7 @@ void Simulator::robotIsParked(EventCustom* event)
 	// TODO: register time of the robot
 	// TOOD: remove robots individual stopwatches, only needs one
 	Robot* robot = static_cast<Robot*>(event->getUserData());
-	robot->stopwatch->stop();
+	robot_times[robot] = stopwatch->toString();
 
 	// Checking to see if the simulation is done.
 	if (allRobotsAreParked() && allPackagesWereDelivered())

@@ -33,17 +33,12 @@ public:
 
 	Point grid_destination;
 	Point screen_destination;
-
 	Point grid_package;
 	Point screen_package;
-
 	Point grid_start;
 	Point screen_start;
-
 	Point grid_delivery_point;
 	Point screen_delivery_point;
-
-	Stopwatch* stopwatch;
 
 	void move();
 	void stop();

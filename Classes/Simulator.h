@@ -31,7 +31,7 @@ private:
 
 	bool isRunning;
 	vector<Point> packages_delivered;
-	std::map<Point, Stopwatch*> stopwatches;
+	std::map<Robot*, String> robot_times;
 	std::map<PhysicsBody*, Robot*> robots_bodies;
 
 	float speed_factor;

@@ -7,9 +7,6 @@ bool Robot::init()
 {
 	if (!Sprite::init())
 		return false;
-	
-	stopwatch = Stopwatch::create();
-	this->addChild(stopwatch);
 
 	return true;
 }
