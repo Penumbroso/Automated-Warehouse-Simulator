@@ -44,6 +44,7 @@ private:
 	bool allPackagesWereDelivered();
 	bool allRobotsAreParked();
 	void setCallbacks();
+	void createCustomEvents();
 
 	// Callbacks functions
 	void menuRunCallback(cocos2d::Ref * pSender);

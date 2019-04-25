@@ -39,14 +39,7 @@ bool Simulator::init()
 	contactListener->onContactBegin = CC_CALLBACK_1(Simulator::onContactBegin, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
-	auto robotAtDeliveryListener = EventListenerCustom::create("robot_at_delivery", CC_CALLBACK_1(Simulator::robotIsAtDelivery, this));
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(robotAtDeliveryListener, this);
-
-	auto robotAtPackageListener = EventListenerCustom::create("robot_at_package", CC_CALLBACK_1(Simulator::robotIsAtPackage, this));
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(robotAtPackageListener, this);
-
-	auto robotIsParkedListener = EventListenerCustom::create("robot_is_parked", CC_CALLBACK_1(Simulator::robotIsParked, this));
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(robotIsParkedListener, this);
+	createCustomEvents();
 
     return true;
 }
@@ -67,6 +60,18 @@ void Simulator::setCallbacks()
 		auto square = p.second;
 		square->setCallback(CC_CALLBACK_0(Simulator::gridSquareCallback, this, square->grid_coord));
 	}
+}
+
+void Simulator::createCustomEvents()
+{
+	auto robotAtDeliveryListener = EventListenerCustom::create("robot_at_delivery", CC_CALLBACK_1(Simulator::robotIsAtDelivery, this));
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(robotAtDeliveryListener, this);
+
+	auto robotAtPackageListener = EventListenerCustom::create("robot_at_package", CC_CALLBACK_1(Simulator::robotIsAtPackage, this));
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(robotAtPackageListener, this);
+
+	auto robotIsParkedListener = EventListenerCustom::create("robot_is_parked", CC_CALLBACK_1(Simulator::robotIsParked, this));
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(robotIsParkedListener, this);
 }
 
 void Simulator::start()
@@ -281,12 +286,9 @@ void Simulator::robotIsAtPackage(EventCustom* event)
 
 void Simulator::robotIsParked(EventCustom* event)
 {
-	// TODO: register time of the robot
-	// TOOD: remove robots individual stopwatches, only needs one
 	Robot* robot = static_cast<Robot*>(event->getUserData());
 	robot_times[robot] = stopwatch->toString();
 
-	// Checking to see if the simulation is done.
 	if (allRobotsAreParked() && allPackagesWereDelivered())
 		stop();
 }
