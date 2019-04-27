@@ -55,6 +55,7 @@ void RobotController::definePathOf(Robot * robot)
 // TODO: should check to see the situation when it comes to diagonal movement since the robot occupies multiple squares on the grid.
 void RobotController::preventCollisionOf(Robot * robot)
 {
+	CCLOG("Creating new path");
 	auto next_position = robot->grid_path.back();
 
 	if (isCollisionImminent(next_position))
@@ -83,13 +84,41 @@ void RobotController::preventCollisionOf(Robot * robot)
 
 void RobotController::repath(Robot * r1, Robot * r2)
 {
-	grid->static_collidables.push_back(r2->grid_coord);
-	r1->grid_path = findShortestPath(r1->grid_coord, { r1->grid_destination });
-	r1->screen_path = convertGridPathToScreenPath(r1->grid_path);
-	grid->static_collidables.pop_back();
+	auto next_position = r1->grid_path.back();
+	auto path = r2->grid_path;
 
-	r2->grid_path.push_back(r2->grid_coord);
-	r2->screen_path = convertGridPathToScreenPath(r2->grid_path);
+	if (r1->isInThe(path))
+	{
+		for (auto p : r2->grid_path)
+		{
+			grid->static_collidables.push_back(next_position);
+		}
+		
+		r1->grid_path = findShortestPath(r1->grid_coord, { r1->grid_destination });
+		r1->screen_path = this->convertGridPathToScreenPath(r1->grid_path);
+
+		for (auto p : r2->grid_path)
+		{
+			grid->static_collidables.pop_back();
+		}
+		
+	}
+	else if (r2->grid_path.empty())
+	{
+		for (auto p : r2->grid_path)
+		{
+			grid->static_collidables.push_back(next_position);
+		}
+
+		r1->grid_path = findShortestPath(r1->grid_coord, { r1->grid_destination });
+		r1->screen_path = this->convertGridPathToScreenPath(r1->grid_path);
+
+		for (auto p : r2->grid_path)
+		{
+			grid->static_collidables.pop_back();
+		}
+	}
+	
 
 }
 
