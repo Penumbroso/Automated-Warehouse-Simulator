@@ -23,6 +23,8 @@ public:
 	float number_of_lines;
 
 	Point getPositionOf(Point point);
+	Point getGridPositionOf(Point screen_position);
+
 	void setState(Square::State state, Point point);
 
 	vector<Point> starts;

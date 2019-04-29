@@ -38,6 +38,17 @@ Point Grid::getPositionOf(Point point)
 	}
 }
 
+Point Grid::getGridPositionOf(Point screen_position)
+{	
+	for (const auto& p : squares)
+	{
+		auto square = p.second;
+		if (square->getPosition() == screen_position) 
+			return p.first;
+	}
+	return Point(0,0);
+}
+
 void Grid::setState(Square::State state, Point point)
 {
 	auto square = squares.at(point);
