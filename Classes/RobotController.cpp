@@ -23,7 +23,6 @@ void RobotController::definePathOf(Robot * robot)
 		robot->grid_destination = robot->grid_path[0];
 		robot->screen_destination = robot->screen_path[0];
 
-		robot->grid_package = robot->grid_destination;
 		robot->screen_package = robot->screen_destination;
 
 		Util::removeIfContains<Point>(&grid->available_packages, robot->grid_destination);
@@ -37,7 +36,6 @@ void RobotController::definePathOf(Robot * robot)
 		robot->grid_destination = robot->grid_path[0];
 		robot->screen_destination = robot->screen_path[0];
 
-		robot->grid_delivery_point = robot->grid_destination;
 		robot->screen_delivery_point = robot->screen_destination;
 	}
 

@@ -268,14 +268,16 @@ bool Simulator::onContactBegin(PhysicsContact & contact)
 void Simulator::robotIsAtDelivery(EventCustom* event)
 {
 	Robot* robot = static_cast<Robot*>(event->getUserData());
-	Util::addIfUnique<Point>(&packages_delivered, robot->grid_package);
+	Point grid_package = grid->getGridPositionOf(robot->screen_package);
+	Util::addIfUnique<Point>(&packages_delivered, grid_package);
 }
 
 void Simulator::robotIsAtPackage(EventCustom* event)
 {
 	// TODO: Remove package from static_collidables and recalculate every robot path
 	Robot* robot = static_cast<Robot*>(event->getUserData());
-	grid->setState(Square::EMPTY, robot->grid_package);
+	Point grid_package = grid->getGridPositionOf(robot->screen_package);
+	grid->setState(Square::EMPTY, grid_package);
 }
 
 void Simulator::robotIsParked(EventCustom* event)
