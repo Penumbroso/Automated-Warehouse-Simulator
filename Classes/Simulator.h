@@ -10,6 +10,7 @@
 #include "Infobar.h"
 #include <fstream>
 #include "Actionbar.h"
+#include "Stopwatch.h"
 
 using std::vector;
 

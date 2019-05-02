@@ -15,39 +15,37 @@ void RobotController::onEnter()
 
 void RobotController::definePathOf(Robot * robot)
 {
+	vector<Point> destinations;
+
 	if (robot->state == Robot::EMPTY && !grid->available_packages.empty())
 	{
-		robot->grid_path = this->findShortestPath(robot->grid_coord, grid->available_packages);
+		destinations = grid->available_packages;
+		robot->grid_path = this->findShortestPath(robot->grid_coord, destinations);
 		robot->screen_path = this->convertGridPathToScreenPath(robot->grid_path);
 
-		robot->grid_destination = robot->grid_path[0];
-		robot->screen_destination = robot->screen_path[0];
-
-		robot->screen_package = robot->screen_destination;
+		robot->screen_package = robot->screen_path[0];
 
 		Util::removeIfContains<Point>(&grid->available_packages, robot->grid_destination);
 	}
 
 	else if(robot->state == Robot::FULL)
 	{
-		robot->grid_path = this->findShortestPath(robot->grid_coord, grid->delivery_points);
+		destinations = grid->delivery_points;
+		robot->grid_path = this->findShortestPath(robot->grid_coord, destinations);
 		robot->screen_path = this->convertGridPathToScreenPath(robot->grid_path);
 
-		robot->grid_destination = robot->grid_path[0];
-		robot->screen_destination = robot->screen_path[0];
-
-		robot->screen_delivery_point = robot->screen_destination;
+		robot->screen_delivery_point = robot->screen_path[0];
 	}
 
 	else if (robot->state == Robot::EMPTY && grid->available_packages.empty()) 
 	{
-		// TODO: check for null grid->parking
-		robot->grid_path = this->findShortestPath(robot->grid_coord, {robot->grid_start});
+		destinations = { robot->grid_start };
+		robot->grid_path = this->findShortestPath(robot->grid_coord, destinations);
 		robot->screen_path = this->convertGridPathToScreenPath(robot->grid_path);
-
-		robot->grid_destination = robot->grid_path[0];
-		robot->screen_destination = robot->screen_path[0];
 	}
+
+	robot->grid_destination = robot->grid_path[0];
+	robot->screen_destination = robot->screen_path[0];
 }
 
 // TODO: should check to see the situation when it comes to diagonal movement since the robot occupies multiple squares on the grid.

@@ -10,6 +10,12 @@
     <Filter Include="src">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\GUI">
+      <UniqueIdentifier>{4e745498-1e77-404c-882f-47f64368cedf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Util">
+      <UniqueIdentifier>{9a5d5eb9-0af7-4a74-9ef3-dc2bd6e15e43}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -24,13 +30,7 @@
     <ClCompile Include="..\Classes\Robot.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\AStar.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Square.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Util.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Stopwatch.cpp">
@@ -42,14 +42,20 @@
     <ClCompile Include="..\Classes\Grid.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Toolbar.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\Classes\Actionbar.cpp">
+      <Filter>src\GUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Infobar.cpp">
-      <Filter>src</Filter>
+      <Filter>src\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Actionbar.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\Classes\Toolbar.cpp">
+      <Filter>src\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Util.cpp">
+      <Filter>src\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AStar.cpp">
+      <Filter>src\Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,13 +71,7 @@
     <ClInclude Include="..\Classes\Robot.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\AStar.hpp">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Square.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Util.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Stopwatch.h">
@@ -83,14 +83,20 @@
     <ClInclude Include="..\Classes\Grid.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Toolbar.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\Classes\Actionbar.h">
+      <Filter>src\GUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Infobar.h">
-      <Filter>src</Filter>
+      <Filter>src\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Actionbar.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\Classes\Toolbar.h">
+      <Filter>src\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Util.h">
+      <Filter>src\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AStar.hpp">
+      <Filter>src\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

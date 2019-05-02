@@ -115,7 +115,7 @@ void Simulator::createRobots() {
 		robot->grid_coord = start;
 		robot->grid_start = start;
 
-		auto physicsBody = PhysicsBody::createBox(Size(45.0f, 45.0f), PhysicsMaterial(0.1f, 1.0f, 0.0f));
+		auto physicsBody = PhysicsBody::createBox(Size(60.0f, 60.0f), PhysicsMaterial(0.1f, 1.0f, 0.0f));
 		physicsBody->setGravityEnable(false);
 		physicsBody->setDynamic(true);
 		physicsBody->setContactTestBitmask(true);

@@ -3,7 +3,6 @@
 
 #include "cocos2d.h"
 #include <vector>
-#include "Stopwatch.h"
 
 USING_NS_CC;
 
