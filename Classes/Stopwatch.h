@@ -14,8 +14,6 @@ public:
 	int getMilliseconds();
 	void reset();
 
-	bool isCounting;
-
 	std::string text;
 	std::string toString();
 	void setSpeedFactor(float factor);

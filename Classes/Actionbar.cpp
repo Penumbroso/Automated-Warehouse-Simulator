@@ -4,14 +4,10 @@ bool Actionbar::init()
 {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
-	// TODO: create a second callback here that changes the icon after pressed the run button to the pause button.
-
 	this->createButtons();
-
 
 	auto menu = Menu::create();
 	menu->setPosition(Vec2::ZERO);
-
 
 	buttons.push_back(runItem);
 	buttons.push_back(resetItem);

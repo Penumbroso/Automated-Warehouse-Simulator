@@ -32,7 +32,6 @@ public:
 	vector<Point> packages;
 	vector<Point> blockades;
 
-	// TODO: available_packages shoulndt be here since it only concerns the simulation
 	vector<Point> available_packages;
 	vector<Point> static_collidables;
 

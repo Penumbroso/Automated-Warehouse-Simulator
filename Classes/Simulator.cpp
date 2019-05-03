@@ -274,7 +274,6 @@ void Simulator::robotIsAtDelivery(EventCustom* event)
 
 void Simulator::robotIsAtPackage(EventCustom* event)
 {
-	// TODO: Remove package from static_collidables and recalculate every robot path
 	Robot* robot = static_cast<Robot*>(event->getUserData());
 	Point grid_package = grid->getGridPositionOf(robot->screen_package);
 	grid->setState(Square::EMPTY, grid_package);

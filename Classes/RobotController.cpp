@@ -93,8 +93,6 @@ void RobotController::repath(Robot * r1, Robot * r2)
 		}
 		
 	}
-	
-
 }
 
 vector<Point> RobotController::findShortestPath(Point origin, vector<Point> destinations) {
