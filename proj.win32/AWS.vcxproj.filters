@@ -33,9 +33,6 @@
     <ClCompile Include="..\Classes\Square.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Stopwatch.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\RobotController.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -57,6 +54,9 @@
     <ClCompile Include="..\Classes\AStar.cpp">
       <Filter>src\Util</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Stopwatch.cpp">
+      <Filter>src\Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -72,9 +72,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Square.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Stopwatch.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\RobotController.h">
@@ -96,6 +93,9 @@
       <Filter>src\Util</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\AStar.hpp">
+      <Filter>src\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Stopwatch.h">
       <Filter>src\Util</Filter>
     </ClInclude>
   </ItemGroup>

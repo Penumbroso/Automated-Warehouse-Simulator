@@ -12,7 +12,6 @@ bool Simulator::init()
 		return false;
 	}
 
-	isRunning = false;
 	speed_factor = 1.0f;
 
 	grid = Grid::create();
@@ -87,19 +86,20 @@ void Simulator::start()
 	robotController->robots = robots;
 	stopwatch->setSpeedFactor(speed_factor);
 	stopwatch->start();
-	isRunning = true;
 }
 
 void Simulator::stop()
 {
 	stopwatch->stop();
-	isRunning = false;
+	for (auto robot : robots)
+	{
+		robot->pause();
+	}
 }
 
 void Simulator::proceed()
 {
 	stopwatch->start();
-	isRunning = true;
 }
 
 void Simulator::createRobots() {
@@ -161,11 +161,7 @@ void Simulator::reset()
 
 void Simulator::menuRunCallback(cocos2d::Ref * pSender)
 {
-	actionbar->runItem->setNormalImage(Sprite::create("RunBtn_pressed.png"));
-	if (isRunning) 
-		stop();
-	else
-		start();
+	start();
 }
 
 void Simulator::menuResetCallback(cocos2d::Ref * pSender)

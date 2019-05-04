@@ -30,7 +30,6 @@ private:
 	Stopwatch* stopwatch;
 	RobotController * robotController;
 
-	bool isRunning;
 	vector<Point> packages_delivered;
 	std::map<Robot*, String> robot_times;
 	std::map<PhysicsBody*, Robot*> robots_bodies;
