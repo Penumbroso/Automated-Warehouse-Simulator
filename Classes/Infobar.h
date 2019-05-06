@@ -7,8 +7,10 @@ class Infobar : public cocos2d::Layer
 public:
 	virtual bool init();
 
-	cocos2d::Label* label;
+	cocos2d::Label* time_label;
 	std::string* time;
+
+	cocos2d::Label* speed_factor_label;
 
 	CREATE_FUNC(Infobar);
 
