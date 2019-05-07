@@ -12,6 +12,8 @@ public:
 
 	cocos2d::Label* speed_factor_label;
 
+	void updateSpeed(float speed);
+
 	CREATE_FUNC(Infobar);
 
 private:

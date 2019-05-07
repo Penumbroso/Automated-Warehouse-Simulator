@@ -28,6 +28,11 @@ bool Infobar::init()
 	return true;
 }
 
+void Infobar::updateSpeed(float speed)
+{
+	speed_factor_label->setString(std::to_string(speed));
+}
+
 void Infobar::updateClock(float dt)
 {
 	if (time) 

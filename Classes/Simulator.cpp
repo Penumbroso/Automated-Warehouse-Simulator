@@ -229,6 +229,7 @@ void Simulator::menuChangeSpeedCallback(float multiplier)
 {
 	stop();
 	speed_factor *= multiplier;
+	infobar->updateSpeed(speed_factor);
 	start();
 }
 
@@ -241,6 +242,7 @@ void Simulator::menuZoomCallback(float multiplier)
 {
 	float scale = grid->getScale();
 	grid->setScale(scale * multiplier);
+
 }
 
 bool Simulator::onContactBegin(PhysicsContact & contact)
