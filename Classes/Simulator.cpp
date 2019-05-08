@@ -229,7 +229,7 @@ void Simulator::menuChangeSpeedCallback(float multiplier)
 {
 	stop();
 	speed_factor *= multiplier;
-	infobar->updateSpeed(speed_factor);
+	infobar->updateSpeed(1 / speed_factor);
 	start();
 }
 

@@ -18,7 +18,7 @@ bool Infobar::init()
 	time_label->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 15));
 	this->addChild(time_label);
 
-	speed_factor_label = Label::createWithTTF("Simulation speed: x1", "fonts/arial.ttf", 20);
+	speed_factor_label = Label::createWithTTF("Speed: x1", "fonts/arial.ttf", 20);
 	speed_factor_label->setColor(Color3B::GRAY);
 	speed_factor_label->setPosition(Vec2(visibleSize.width / 2 - 200, visibleSize.height - 15));
 	this->addChild(speed_factor_label);
@@ -30,7 +30,8 @@ bool Infobar::init()
 
 void Infobar::updateSpeed(float speed)
 {
-	speed_factor_label->setString(std::to_string(speed));
+	std::string speed_mult = std::to_string(speed);
+	speed_factor_label->setString("Speed: x" + speed_mult.substr(0, 5));
 }
 
 void Infobar::updateClock(float dt)
