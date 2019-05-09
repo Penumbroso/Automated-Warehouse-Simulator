@@ -23,6 +23,11 @@ bool Infobar::init()
 	speed_factor_label->setPosition(Vec2(visibleSize.width / 2 - 200, visibleSize.height - 15));
 	this->addChild(speed_factor_label);
 
+	zoom_label = Label::createWithTTF("Zoom: x1", "fonts/arial.ttf", 20);
+	zoom_label->setColor(Color3B::GRAY);
+	zoom_label->setPosition(Vec2(visibleSize.width / 2 + 200, visibleSize.height - 15));
+	this->addChild(zoom_label);
+
 	this->schedule(CC_SCHEDULE_SELECTOR(Infobar::updateClock), 0.001f);
 
 	return true;
@@ -32,6 +37,12 @@ void Infobar::updateSpeed(float speed)
 {
 	std::string speed_mult = std::to_string(speed);
 	speed_factor_label->setString("Speed: x" + speed_mult.substr(0, 5));
+}
+
+void Infobar::updateZoom(float zoom)
+{
+	std::string speed_mult = std::to_string(zoom);
+	speed_factor_label->setString("Zoom: x" + speed_mult.substr(0, 5));
 }
 
 void Infobar::updateClock(float dt)

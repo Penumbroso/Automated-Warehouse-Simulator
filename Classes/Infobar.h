@@ -11,8 +11,10 @@ public:
 	std::string* time;
 
 	cocos2d::Label* speed_factor_label;
+	cocos2d::Label* zoom_label;
 
 	void updateSpeed(float speed);
+	void updateZoom(float zoom);
 
 	CREATE_FUNC(Infobar);
 
