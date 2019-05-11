@@ -242,6 +242,7 @@ void Simulator::menuZoomCallback(float multiplier)
 {
 	float scale = grid->getScale();
 	grid->setScale(scale * multiplier);
+	infobar->updateZoom(scale * multiplier);
 
 }
 
