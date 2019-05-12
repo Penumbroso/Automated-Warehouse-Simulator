@@ -84,6 +84,7 @@ void Robot::updateGridPosition()
 {
 	grid_coord = grid_path.back();
 	grid_path.pop_back();
+	complete_path.push_back(grid_coord);
 }
 
 void Robot::finishedMovement()
