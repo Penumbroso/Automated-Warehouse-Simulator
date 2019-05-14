@@ -22,8 +22,6 @@ public:
 
 	State state = EMPTY;
 
-	Sequence* movement;
-	
 	vector<Point> grid_path;
 	vector<Point> screen_path;
 	vector<Point> complete_path;
@@ -39,16 +37,21 @@ public:
 
 	void move();
 	void stop();
-	void updateState();
 	bool isParked();
 	bool isAtDeliverty();
 	bool isFull();
 	bool isAtPackage();
 	bool isInThe(vector<Point> path);
-	void updateGridPosition();
-	void finishedMovement();
 
 	CREATE_FUNC(Robot);
+
+private:
+	Sequence* movement;
+
+	void finishedMovement();
+	void updateState();
+	void updateGridPosition();
+
 };
 
 #endif
