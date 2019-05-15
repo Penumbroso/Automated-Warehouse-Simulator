@@ -7,11 +7,7 @@ class Infobar : public cocos2d::Layer
 public:
 	virtual bool init();
 
-	cocos2d::Label* time_label;
 	std::string* time;
-
-	cocos2d::Label* speed_factor_label;
-	cocos2d::Label* zoom_label;
 
 	void updateSpeed(float speed);
 	void updateZoom(float zoom);
@@ -19,5 +15,10 @@ public:
 	CREATE_FUNC(Infobar);
 
 private:
+	cocos2d::Label* speed_factor_label;
+	cocos2d::Label* zoom_label;
+
+	cocos2d::Label* time_label;
+
 	void updateClock(float dt);
 };

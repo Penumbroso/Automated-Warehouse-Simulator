@@ -12,10 +12,9 @@ class Grid : public cocos2d::Layer
 public:
 	virtual bool init();
 
-	std::map<Point, Square*> squares;
-	std::map<Point, Sprite*> symbols;
-
 	Menu * menu;
+
+	std::map<Point, Square*> squares;
 
 	const int square_size = 30;
 
@@ -45,10 +44,12 @@ protected:
 	void removeSymbol(Point point);
 
 private:
+
+	std::map<Point, Sprite*> symbols;
+
 	void createSquares();
 	bool onTouchBegan(cocos2d::Touch * touch, cocos2d::Event * event);
 	void onTouchMoved(cocos2d::Touch * touch, cocos2d::Event * event);
-
 
 	Point initial_touch_location;
 };
