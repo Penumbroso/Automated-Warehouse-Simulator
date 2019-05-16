@@ -12,8 +12,6 @@ class Grid : public cocos2d::Layer
 public:
 	virtual bool init();
 
-	Menu * menu;
-
 	std::map<Point, Square*> squares;
 
 	const int square_size = 30;
@@ -44,7 +42,7 @@ protected:
 	void removeSymbol(Point point);
 
 private:
-
+	Menu* menu;
 	std::map<Point, Sprite*> symbols;
 
 	void createSquares();

@@ -51,7 +51,6 @@ void RobotController::definePathOf(Robot * robot)
 // TODO: should check to see the situation when it comes to diagonal movement since the robot occupies multiple squares on the grid.
 void RobotController::preventCollisionOf(Robot * robot)
 {
-	CCLOG("Creating new path");
 	auto next_position = robot->grid_path.back();
 
 	if (isCollisionImminent(next_position))
@@ -148,6 +147,4 @@ void RobotController::robotCompletedMovement(EventCustom* event)
 	Robot* robot = static_cast<Robot*>(event->getUserData());
 	this->definePathOf(robot);
 	robot->move();
-	
-
 }

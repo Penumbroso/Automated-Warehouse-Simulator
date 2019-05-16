@@ -14,6 +14,7 @@ public:
 
 	virtual bool init();
 
+	// TODO: change to boolean instead of state
 	enum State
 	{
 		FULL,
