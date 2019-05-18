@@ -23,13 +23,14 @@ void Robot::move()
 
 	for (auto destination : screen_path)
 	{
-		double distance = sqrt(pow((destination.x - origin.x), 2.0) + pow((destination.y - origin.y), 2.0));
+		const double distance = sqrt(pow((destination.x - origin.x), 2.0) + pow((destination.y - origin.y), 2.0));
 
-		float moveDuration = 0.01*distance;
+		const float moveDuration = 0.01 * distance;
 
 		auto moveToNextSquare = MoveTo::create(moveDuration, destination);
 		movements.pushBack(moveToNextSquare);
 		movements.pushBack(callbackUpdateGridPosition);
+
 		origin = destination;
 	}
 
@@ -84,7 +85,7 @@ void Robot::updateGridPosition()
 {
 	grid_coord = grid_path.back();
 	grid_path.pop_back();
-	complete_path.push_back(grid_coord);
+	complete_grid_path.push_back(grid_coord);
 }
 
 void Robot::finishedMovement()

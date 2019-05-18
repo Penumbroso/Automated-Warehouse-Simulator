@@ -25,7 +25,7 @@ public:
 
 	vector<Point> grid_path;
 	vector<Point> screen_path;
-	vector<Point> complete_path;
+	vector<Point> complete_grid_path;
 
 	Point grid_coord;
 
