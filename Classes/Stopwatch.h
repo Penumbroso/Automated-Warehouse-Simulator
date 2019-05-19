@@ -16,7 +16,7 @@ public:
 
 	std::string text;
 	std::string toString();
-	void setSpeedFactor(float factor);
+	void setSpeedMultiplier(float multiplier);
 
 	CREATE_FUNC(Stopwatch);
 
@@ -25,7 +25,7 @@ private:
 	int seconds;
 	int milliseconds;
 
-	float speed_factor;
+	float speed_multiplier;
 
 
 	void count(float dt);

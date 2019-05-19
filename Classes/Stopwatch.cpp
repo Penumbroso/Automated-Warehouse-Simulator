@@ -5,7 +5,7 @@ USING_NS_CC;
 bool Stopwatch::init()
 {
 	Node::init();
-	this->speed_factor = 1.0f;
+	this->speed_multiplier = 1.0f;
 	this->reset();
 
 	return true;
@@ -13,7 +13,7 @@ bool Stopwatch::init()
 
 void Stopwatch::start()
 {
-	this->schedule(CC_SCHEDULE_SELECTOR(Stopwatch::count), 0.001f * speed_factor);
+	this->schedule(CC_SCHEDULE_SELECTOR(Stopwatch::count), 0.001f * speed_multiplier);
 }
 
 void Stopwatch::stop()
@@ -51,9 +51,9 @@ std::string Stopwatch::toString()
 	return text;
 }
 
-void Stopwatch::setSpeedFactor(float factor)
+void Stopwatch::setSpeedMultiplier(float factor)
 {
-	this->speed_factor = factor;
+	this->speed_multiplier = factor;
 }
 
 void Stopwatch::count(float dt)

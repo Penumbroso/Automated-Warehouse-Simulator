@@ -12,7 +12,7 @@ bool Simulator::init()
 		return false;
 	}
 
-	speed_factor = 1.0f;
+	speed_multiplier = 1.0f;
 
 	grid = Grid::create();
 	stopwatch = Stopwatch::create();
@@ -84,7 +84,7 @@ void Simulator::start()
 	}
 		
 	robotController->robots = robots;
-	stopwatch->setSpeedFactor(speed_factor);
+	stopwatch->setSpeedMultiplier(speed_multiplier);
 	stopwatch->start();
 }
 
@@ -197,7 +197,7 @@ void Simulator::gridSquareCallback(Point coord)
 	case Toolbar::PATH:
 		if (robot) 
 		{
-			for (auto coord : robot->complete_path)
+			for (auto coord : robot->complete_grid_path)
 				grid->squares[coord]->setColor(Color3B::RED);
 		}
 		break;
@@ -228,8 +228,8 @@ void Simulator::menuExportCallback(cocos2d::Ref * pSender)
 void Simulator::menuChangeSpeedCallback(float multiplier)
 {
 	stop();
-	speed_factor *= multiplier;
-	infobar->updateSpeed(1 / speed_factor);
+	speed_multiplier *= multiplier;
+	infobar->updateSpeed(1 / speed_multiplier);
 	start();
 }
 

@@ -34,7 +34,7 @@ private:
 	std::map<Robot*, String> robot_times;
 	std::map<PhysicsBody*, Robot*> robots_bodies;
 
-	float speed_factor;
+	float speed_multiplier;
 
 	void start();
 	void stop();
