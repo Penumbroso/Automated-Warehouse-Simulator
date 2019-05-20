@@ -20,7 +20,7 @@ void RobotController::definePathOf(Robot * robot)
 	if (robot->state == Robot::EMPTY && !grid->available_packages.empty())
 	{
 		destinations = grid->available_packages;
-		robot->grid_path = this->findShortestPath(robot->grid_coord, destinations);
+		robot->grid_path = this->findShortestPath(robot->grid_position, destinations);
 		robot->screen_path = this->convertGridPathToScreenPath(robot->grid_path);
 
 		robot->screen_package = robot->screen_path[0];
@@ -31,7 +31,7 @@ void RobotController::definePathOf(Robot * robot)
 	else if(robot->state == Robot::FULL)
 	{
 		destinations = grid->delivery_points;
-		robot->grid_path = this->findShortestPath(robot->grid_coord, destinations);
+		robot->grid_path = this->findShortestPath(robot->grid_position, destinations);
 		robot->screen_path = this->convertGridPathToScreenPath(robot->grid_path);
 
 		robot->screen_delivery_point = robot->screen_path[0];
@@ -40,7 +40,7 @@ void RobotController::definePathOf(Robot * robot)
 	else if (robot->state == Robot::EMPTY && grid->available_packages.empty()) 
 	{
 		destinations = { robot->grid_start };
-		robot->grid_path = this->findShortestPath(robot->grid_coord, destinations);
+		robot->grid_path = this->findShortestPath(robot->grid_position, destinations);
 		robot->screen_path = this->convertGridPathToScreenPath(robot->grid_path);
 	}
 
@@ -61,12 +61,12 @@ void RobotController::preventCollisionOf(Robot * robot)
 		if (robot->isInThe(path) || collision_robot->grid_path.empty())
 		{
 			grid->static_collidables.push_back(next_position);
-			robot->grid_path = findShortestPath(robot->grid_coord, { robot->grid_destination });
+			robot->grid_path = findShortestPath(robot->grid_position, { robot->grid_destination });
 			grid->static_collidables.pop_back();
 		}
 		else
 		{
-			robot->grid_path.push_back(robot->grid_coord);
+			robot->grid_path.push_back(robot->grid_position);
 		}
 	}
 }
@@ -83,7 +83,7 @@ void RobotController::repath(Robot * r1, Robot * r2)
 			grid->static_collidables.push_back(next_position);
 		}
 		
-		r1->grid_path = findShortestPath(r1->grid_coord, { r1->grid_destination });
+		r1->grid_path = findShortestPath(r1->grid_position, { r1->grid_destination });
 		r1->screen_path = this->convertGridPathToScreenPath(r1->grid_path);
 
 		for (auto p : r2->grid_path)
@@ -136,7 +136,7 @@ Robot * RobotController::getRobotAt(Point grid_position)
 {
 	for (auto robot : robots)
 	{
-		if (robot->grid_coord == grid_position)
+		if (robot->grid_position == grid_position)
 			return robot;
 	}
 	return nullptr;

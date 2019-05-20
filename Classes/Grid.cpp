@@ -142,7 +142,7 @@ void Grid::createSquares()
 			square->setContentSize(Size(square_size, square_size));
 
 			squares[Point(j, i)] = square;
-			square->grid_coord = Point(j, i);
+			square->grid_position = Point(j, i);
 
 			square->setPosition(Vec2(j * square_size + square_size / 2, i * square_size + square_size / 2));
 

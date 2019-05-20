@@ -58,7 +58,7 @@ void Robot::updateState()
 
 bool Robot::isParked()
 {
-	return grid_coord == grid_start;
+	return grid_position == grid_start;
 }
 
 bool Robot::isAtDeliverty()
@@ -78,14 +78,14 @@ bool Robot::isAtPackage()
 
 bool Robot::isInThe(vector<Point> path)
 {
-	return Util::contains<Point>(&path, this->grid_coord);
+	return Util::contains<Point>(&path, this->grid_position);
 }
 
 void Robot::updateGridPosition()
 {
-	grid_coord = grid_path.back();
+	grid_position = grid_path.back();
 	grid_path.pop_back();
-	complete_grid_path.push_back(grid_coord);
+	complete_grid_path.push_back(grid_position);
 }
 
 void Robot::finishedMovement()

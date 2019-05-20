@@ -57,7 +57,7 @@ void Simulator::setCallbacks()
 	for (const auto &p : grid->squares)
 	{
 		auto square = p.second;
-		square->setCallback(CC_CALLBACK_0(Simulator::gridSquareCallback, this, square->grid_coord));
+		square->setCallback(CC_CALLBACK_0(Simulator::gridSquareCallback, this, square->grid_position));
 	}
 }
 
@@ -112,7 +112,7 @@ void Simulator::createRobots() {
 		robot->setPosition(grid->getPositionOf(start));
 		robot->setColor(Color3B(150, 150, 150));
 		robot->setContentSize(Size(grid->square_size, grid->square_size));
-		robot->grid_coord = start;
+		robot->grid_position = start;
 		robot->grid_start = start;
 
 		auto physicsBody = PhysicsBody::createBox(Size(60.0f, 60.0f), PhysicsMaterial(0.1f, 1.0f, 0.0f));
