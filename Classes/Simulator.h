@@ -62,4 +62,4 @@ private:
 	void robotIsParked(EventCustom* event);
 };
 
-#endif // __HELLOWORLD_SCENE_H__
+#endif // __SIMULATOR_SCENE_H__

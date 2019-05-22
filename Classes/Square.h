@@ -14,7 +14,7 @@ public:
 		BLOCKADE
 	};
 
-	State state = EMPTY;
+	State state;
 
 	cocos2d::Point grid_position;
 

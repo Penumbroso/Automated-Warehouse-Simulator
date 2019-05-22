@@ -26,6 +26,7 @@ private:
 	bool isCollisionImminent(Point next_position);
 	AStar::Generator path_generator;
 	vector<Point> convertGridPathToScreenPath(vector<Point> path);
+	void setupGenerator();
 };
 
 

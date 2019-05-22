@@ -5,9 +5,7 @@ void RobotController::onEnter()
 {
 	Node::onEnter();
 
-	path_generator.setWorldSize({ grid->number_of_columns, grid->number_of_lines });
-	path_generator.setHeuristic(AStar::Heuristic::manhattan);
-	path_generator.setDiagonalMovement(true);
+	setupGenerator();
 
 	auto robotCompletedMovementListener = EventListenerCustom::create("robot_completed_movement", CC_CALLBACK_1(RobotController::robotCompletedMovement, this));
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(robotCompletedMovementListener, this);
@@ -130,6 +128,13 @@ vector<Point> RobotController::convertGridPathToScreenPath(vector<Point> path)
 		screen_path.push_back(grid->getPositionOf(point));
 	}
 	return screen_path;
+}
+
+void RobotController::setupGenerator()
+{
+	path_generator.setWorldSize({ grid->number_of_columns, grid->number_of_lines });
+	path_generator.setHeuristic(AStar::Heuristic::manhattan);
+	path_generator.setDiagonalMovement(true);
 }
 
 Robot * RobotController::getRobotAt(Point grid_position)
