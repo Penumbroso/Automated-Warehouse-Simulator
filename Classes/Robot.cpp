@@ -16,7 +16,7 @@ void Robot::move()
 	if (screen_path.empty()) return;
 	Vector<FiniteTimeAction*> movements;
 
-	auto origin = this->getPosition();
+	auto origin = getPosition();
 	reverse(screen_path.begin(), screen_path.end());
 
 	auto callbackUpdateGridPosition = CallFunc::create(CC_CALLBACK_0(Robot::updateGridPosition, this));
@@ -37,14 +37,14 @@ void Robot::move()
 	auto callbackFinishedMovement = CallFunc::create(CC_CALLBACK_0(Robot::finishedMovement, this));
 
 	auto sequence_of_movements = Sequence::create(movements);
-	this->movement = Sequence::create(sequence_of_movements, callbackFinishedMovement, nullptr);
+	movement = Sequence::create(sequence_of_movements, callbackFinishedMovement, nullptr);
 	runAction(movement);
 }
 
 void Robot::stop()
 {
-	this->stopAction(this->movement);
-	this->unscheduleUpdate();
+	stopAction(movement);
+	unscheduleUpdate();
 }
 
 void Robot::updateState()
@@ -78,7 +78,7 @@ bool Robot::isAtPackage()
 
 bool Robot::isInThe(vector<Point> path)
 {
-	return Util::contains<Point>(&path, this->grid_position);
+	return Util::contains<Point>(&path, grid_position);
 }
 
 void Robot::updateGridPosition()
@@ -90,13 +90,13 @@ void Robot::updateGridPosition()
 
 void Robot::finishedMovement()
 {
-	if (this->isAtDeliverty()) 
+	if (isAtDeliverty()) 
 	{
 		EventCustom event("robot_at_delivery");
 		event.setUserData(this);
 		_eventDispatcher->dispatchEvent(&event);
 	}
-	else if (this->isAtPackage())
+	else if (isAtPackage())
 	{
 		EventCustom event("robot_at_package");
 		event.setUserData(this);
@@ -113,7 +113,7 @@ void Robot::finishedMovement()
 	screen_path.clear();
 	updateState();
 
-	if (!this->isParked())
+	if (!isParked())
 	{
 		EventCustom event("robot_completed_movement");
 		event.setUserData(this);

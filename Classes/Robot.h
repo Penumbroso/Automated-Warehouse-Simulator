@@ -52,7 +52,6 @@ private:
 	void finishedMovement();
 	void updateState();
 	void updateGridPosition();
-
 };
 
 #endif
