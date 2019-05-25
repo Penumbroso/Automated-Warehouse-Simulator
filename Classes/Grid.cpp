@@ -6,7 +6,9 @@ bool Grid::init()
 {
 	if (!Layer::init())
 		return false;
-	
+
+	square_size = 30;
+
 	menu = Menu::create();
 	menu->setPosition(Vec2::ZERO);
 	addChild(menu);
@@ -52,6 +54,7 @@ Point Grid::getGridPositionOf(Point screen_position)
 void Grid::setState(Square::State state, Point point)
 {
 	auto square = squares.at(point);
+
 	square->setColor(Color3B::GRAY);
 	square->state = state;
 
@@ -97,8 +100,8 @@ void Grid::toggleDragAndDrop()
 
 void Grid::drawLines()
 {
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Color4F lightGray = Color4F(0.95f, 0.95f, 0.95f, 1);
+	const auto visibleSize = Director::getInstance()->getVisibleSize();
+	const Color4F lightGray = Color4F(0.95f, 0.95f, 0.95f, 1);
 
 	for (int i = 0; i < number_of_columns; i++) {
 		auto drawVerticalLine = DrawNode::create();
