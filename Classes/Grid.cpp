@@ -30,14 +30,7 @@ bool Grid::init()
 
 Point Grid::getPositionOf(Point point)
 {
-	try
-	{
-		return squares.at(point)->getPosition();
-	}
-	catch (std::out_of_range& const e)
-	{
-		return Point(0, 0);
-	}
+	return squares.at(point)->getPosition();
 }
 
 Point Grid::getGridPositionOf(Point screen_position)
