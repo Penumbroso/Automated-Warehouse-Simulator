@@ -216,10 +216,14 @@ void Simulator::gridSquareCallback(Point coord)
 void Simulator::menuExportCallback(cocos2d::Ref * pSender)
 {
 	std::ofstream out("times.txt");
+	int id = 0;
 	for (auto robot : robots)
 	{
+		out << id;
+		out << " ";
 		out << robot_times[robot].getCString();
 		out << std::endl;
+		id++;
 	}
 
 	out.close();
@@ -255,11 +259,11 @@ bool Simulator::onContactBegin(PhysicsContact & contact)
 	auto r1 = robots_bodies[bodyA];
 	auto r2 = robots_bodies[bodyB];
 
-	r1->stop();
+	//r1->stop();
 
-	robotController->repath(r1, r2);
+	//robotController->repath(r1, r2);
 
-	r1->move();
+	//r1->move();
 
 	return false;
 }
