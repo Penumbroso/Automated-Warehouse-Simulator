@@ -23,7 +23,7 @@ void RobotController::definePathOf(Robot * robot)
 
 		robot->screen_package = robot->screen_path[0];
 
-		Util::removeIfContains<Point>(&grid->available_packages, robot->grid_destination);
+		Util::removeIfContains<Point>(&grid->available_packages, robot->grid_path[0]);
 	}
 
 	else if(robot->state == Robot::FULL)
