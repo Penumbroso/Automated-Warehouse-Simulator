@@ -57,7 +57,9 @@
     <ClCompile Include="..\Classes\Stopwatch.cpp">
       <Filter>src\Util</Filter>
     </ClCompile>
-    <ClCompile Include="Sensor.cpp" />
+    <ClCompile Include="..\Classes\Sensor.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -99,7 +101,9 @@
     <ClInclude Include="..\Classes\Stopwatch.h">
       <Filter>src\Util</Filter>
     </ClInclude>
-    <ClInclude Include="Sensor.h" />
+    <ClInclude Include="..\Classes\Sensor.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">
