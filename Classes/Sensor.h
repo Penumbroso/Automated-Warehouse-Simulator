@@ -11,10 +11,12 @@ public:
 
 	virtual bool init();
 
+	void signal();
+
 	CREATE_FUNC(Sensor);
 
 private:
-
+	Node owner;
 };
 
 #endif

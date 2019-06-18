@@ -7,3 +7,10 @@ bool Sensor::init()
 
 	return true;
 }
+
+void Sensor::signal()
+{
+	EventCustom event("change_path");
+	event.setUserData(this);
+	_eventDispatcher->dispatchEvent(&event);
+}
