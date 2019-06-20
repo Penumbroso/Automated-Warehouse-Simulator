@@ -12,11 +12,12 @@ public:
 	virtual bool init();
 
 	void signal();
+	void setOwner(cocos2d::Node* owner);
 
 	CREATE_FUNC(Sensor);
 
 private:
-	Node owner;
+	cocos2d::Node * owner;
 };
 
 #endif

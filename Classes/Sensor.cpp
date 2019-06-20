@@ -14,3 +14,8 @@ void Sensor::signal()
 	event.setUserData(this);
 	_eventDispatcher->dispatchEvent(&event);
 }
+
+void Sensor::setOwner(Node * own)
+{
+	this->owner = own;
+}

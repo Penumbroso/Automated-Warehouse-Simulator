@@ -81,6 +81,12 @@ bool Robot::isInThe(vector<Point> path)
 	return Util::contains<Point>(&path, grid_position);
 }
 
+void Robot::addSensor(Sensor sensor)
+{
+	sensors.push_back(sensor);
+	sensor.setOwner(this);
+}
+
 void Robot::updateGridPosition()
 {
 	grid_position = grid_path.back();
