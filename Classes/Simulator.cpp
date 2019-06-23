@@ -21,10 +21,6 @@ bool Simulator::init()
 	actionbar = Actionbar::create();
 	robotController = RobotController::create();
 
-	grid->setPosition(30, 0);
-	infobar->time = &stopwatch->text;
-	robotController->grid = grid;
-
 	addChild(grid);
 	addChild(stopwatch);
 	addChild(infobar);
@@ -32,7 +28,7 @@ bool Simulator::init()
 	addChild(actionbar);
 	addChild(robotController);
 
-	setCallbacks();
+	setup();
 
 	auto contactListener = EventListenerPhysicsContact::create();
 	contactListener->onContactBegin = CC_CALLBACK_1(Simulator::onContactBegin, this);
@@ -71,6 +67,15 @@ void Simulator::createCustomEvents()
 
 	auto robotIsParkedListener = EventListenerCustom::create("robot_is_parked", CC_CALLBACK_1(Simulator::robotIsParked, this));
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(robotIsParkedListener, this);
+}
+
+void Simulator::setup()
+{
+	grid->setPosition(30, 0);
+	infobar->time = &stopwatch->text;
+	robotController->grid = grid;
+
+	setCallbacks();
 }
 
 void Simulator::start()

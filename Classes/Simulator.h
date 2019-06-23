@@ -36,6 +36,7 @@ private:
 
 	float speed_multiplier;
 
+	void setup();
 	void start();
 	void stop();
 	void proceed();

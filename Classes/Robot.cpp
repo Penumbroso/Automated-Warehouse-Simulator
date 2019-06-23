@@ -83,8 +83,8 @@ bool Robot::isInThe(vector<Point> path)
 
 void Robot::addSensor(Sensor sensor)
 {
-	sensors.push_back(sensor);
-	sensor.setOwner(this);
+	//sensors.push_back(sensor);
+	//sensor.setOwner(this);
 }
 
 void Robot::updateGridPosition()
