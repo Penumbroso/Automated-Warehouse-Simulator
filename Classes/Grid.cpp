@@ -13,7 +13,7 @@ bool Grid::init()
 	menu->setPosition(Vec2::ZERO);
 	addChild(menu);
 
-	auto visibleSize = Director::getInstance()->getVisibleSize();
+	const auto visibleSize = Director::getInstance()->getVisibleSize();
 
 	number_of_lines = visibleSize.height / square_size + 1;
 	number_of_columns = visibleSize.width / square_size + 1;

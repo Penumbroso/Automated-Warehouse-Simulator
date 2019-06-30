@@ -46,8 +46,8 @@ private:
 	std::map<Point, Sprite*> symbols;
 
 	void createSquares();
-	bool onTouchBegan(cocos2d::Touch * touch, cocos2d::Event * event);
-	void onTouchMoved(cocos2d::Touch * touch, cocos2d::Event * event);
+	bool onTouchBegan(cocos2d::Touch * touch, cocos2d::Event * event) override;
+	void onTouchMoved(cocos2d::Touch * touch, cocos2d::Event * event) override;
 
 	Point initial_touch_location;
 };
