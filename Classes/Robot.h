@@ -45,7 +45,6 @@ public:
 	bool isFull();
 	bool isAtPackage();
 	bool isInThe(vector<Point> path);
-
 	void addSensor(Sensor sensor);
 
 	CREATE_FUNC(Robot);

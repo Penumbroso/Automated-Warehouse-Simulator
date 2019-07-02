@@ -47,8 +47,8 @@ void Simulator::setCallbacks()
 	actionbar->speedUpItem->setCallback(CC_CALLBACK_0(Simulator::menuChangeSpeedCallback, this, 1/2.0));
 	actionbar->slowDownItem->setCallback(CC_CALLBACK_0(Simulator::menuChangeSpeedCallback, this, 2.0));
 	actionbar->moveItem->setCallback(CC_CALLBACK_1(Simulator::menuMoveGridCallback, this));
-	actionbar->zoomInItem->setCallback(CC_CALLBACK_0(Simulator::menuZoomCallback, this, 1.10));
-	actionbar->zoomOutItem->setCallback(CC_CALLBACK_0(Simulator::menuZoomCallback, this, 1/1.10));
+	actionbar->zoomInItem->setCallback(CC_CALLBACK_0(Simulator::menuZoomCallback, this, 1.1));
+	actionbar->zoomOutItem->setCallback(CC_CALLBACK_0(Simulator::menuZoomCallback, this, 1/1.1));
 
 	for (const auto &p : grid->squares)
 	{
@@ -224,8 +224,9 @@ void Simulator::menuExportCallback(cocos2d::Ref * pSender)
 	int id = 0;
 	for (auto robot : robots)
 	{
+		out << "id: ";
 		out << id;
-		out << " ";
+		out << " time: ";
 		out << robot_times[robot].getCString();
 		out << std::endl;
 		id++;
@@ -249,7 +250,7 @@ void Simulator::menuMoveGridCallback(cocos2d::Ref * pSender)
 
 void Simulator::menuZoomCallback(float multiplier)
 {
-	float scale = grid->getScale();
+	const float scale = grid->getScale();
 	grid->setScale(scale * multiplier);
 	infobar->updateZoom(scale * multiplier);
 
@@ -257,7 +258,6 @@ void Simulator::menuZoomCallback(float multiplier)
 
 bool Simulator::onContactBegin(PhysicsContact & contact)
 {
-	CCLOG("Collision");
 	auto bodyA = contact.getShapeA()->getBody();
 	auto bodyB = contact.getShapeB()->getBody();
 
@@ -275,21 +275,21 @@ bool Simulator::onContactBegin(PhysicsContact & contact)
 
 void Simulator::robotIsAtDelivery(EventCustom* event)
 {
-	Robot* robot = static_cast<Robot*>(event->getUserData());
+	const Robot* robot = static_cast<Robot*>(event->getUserData());
 	Point grid_package = grid->getGridPositionOf(robot->screen_package);
 	Util::addIfUnique<Point>(&packages_delivered, grid_package);
 }
 
 void Simulator::robotIsAtPackage(EventCustom* event)
 {
-	Robot* robot = static_cast<Robot*>(event->getUserData());
+	const Robot* robot = static_cast<Robot*>(event->getUserData());
 	Point grid_package = grid->getGridPositionOf(robot->screen_package);
 	grid->setState(Square::EMPTY, grid_package);
 }
 
 void Simulator::robotIsParked(EventCustom* event)
 {
-	Robot* robot = static_cast<Robot*>(event->getUserData());
+	const Robot* robot = static_cast<Robot*>(event->getUserData());
 	robot_times[robot] = stopwatch->toString();
 
 	if (allRobotsAreParked() && allPackagesWereDelivered())
