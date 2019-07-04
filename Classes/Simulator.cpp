@@ -221,6 +221,11 @@ void Simulator::gridSquareCallback(Point coord)
 void Simulator::menuExportCallback(cocos2d::Ref * pSender)
 {
 	std::ofstream out("times.txt");
+
+	out << "Total time: ";
+	out << stopwatch->toString();
+	out << std::endl;
+
 	int id = 0;
 	for (auto robot : robots)
 	{
@@ -289,7 +294,7 @@ void Simulator::robotIsAtPackage(EventCustom* event)
 
 void Simulator::robotIsParked(EventCustom* event)
 {
-	const Robot* robot = static_cast<Robot*>(event->getUserData());
+	Robot* robot = static_cast<Robot*>(event->getUserData());
 	robot_times[robot] = stopwatch->toString();
 
 	if (allRobotsAreParked() && allPackagesWereDelivered())
